@@ -11,6 +11,7 @@ import Posts from './pages/protected/profile/Posts.jsx'
 import Replies from './pages/protected/profile/Replies.jsx'
 import Reposts from './pages/protected/profile/Reposts.jsx'
 import Login from './pages/Login.jsx'
+import Test from './components/Test.jsx'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
       <Header />
       <Routes>
           <Route path='login' element={<Login />} />
+          <Route path='test' element={<Test />} />
           <Route path='/' element={<ProtectedLayout />} >
               <Route path='home' element={<Home />} />
               <Route path='search' element={<Search />} />
