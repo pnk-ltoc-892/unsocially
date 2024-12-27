@@ -1,20 +1,36 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import HomeLayout from './pages/HomeLayout.jsx'
-import Home from './components/Home.jsx'
-import Pnk from './components/Pnk.jsx'
-
+import ProtectedLayout from './pages/protected/ProtectedLayout.jsx'
+import Error from './pages/Error.jsx'
+import Header from './components/header/Header.jsx'
+import Home from './pages/protected/Home.jsx'
+import Search from './pages/protected/Search.jsx'
+import Post from './pages/protected/Post.jsx'
+import ProfileLayout from './pages/protected/profile/ProfileLayout.jsx'
+import Posts from './pages/protected/profile/Posts.jsx'
+import Replies from './pages/protected/profile/Replies.jsx'
+import Reposts from './pages/protected/profile/Reposts.jsx'
+import Login from './pages/Login.jsx'
 
 function App() {
 
   return (
-    <div className=''>
+    <div >
+      <Header />
       <Routes>
-        <Route path='/' element={<h1 className="text-3xl font-bold underline">Home</h1>} />
-        <Route path='home' element={<HomeLayout />} >
-          <Route path='' element={<Home />} />
-          <Route path='pnk' element={<Pnk />} />
-        </Route>
+          <Route path='login' element={<Login />} />
+          <Route path='/' element={<ProtectedLayout />} >
+              <Route path='home' element={<Home />} />
+              <Route path='search' element={<Search />} />
+              <Route path='post/:id' element={<Post />} />
+
+              <Route path='profile' element={<ProfileLayout />}>
+                  <Route path='posts/:id' element={<Posts />} />
+                  <Route path='replies/:id' element={<Replies />} />
+                  <Route path='reposts/:id' element={<Reposts />} />
+              </Route>
+          </Route>
+          <Route path='*' element={<Error />} />
       </Routes>
     </div>
   )
