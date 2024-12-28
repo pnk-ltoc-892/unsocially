@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import ProtectedLayout from './pages/protected/ProtectedLayout.jsx'
 import Error from './pages/Error.jsx'
-import Header from './components/header/Header.jsx'
 import Home from './pages/protected/Home.jsx'
 import Search from './pages/protected/Search.jsx'
 import Post from './pages/protected/Post.jsx'
@@ -17,10 +16,9 @@ function App() {
 
   return (
     <div >
-      <Header />
       <Routes>
           <Route path='login' element={<Login />} />
-          <Route path='test' element={<Test />} />
+          {/* <Route path='test' element={<Test />} /> */}
           <Route path='/' element={<ProtectedLayout />} >
               <Route path='home' element={<Home />} />
               <Route path='search' element={<Search />} />
