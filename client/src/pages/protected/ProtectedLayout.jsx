@@ -7,23 +7,23 @@ import { useSelector } from 'react-redux'
 const ProtectedLayout = () => {
     const { isLoading, isAuthenticated } = useSelector(state => state.auth);
 
-    if (isLoading) {
-        return <div className='bg-primary flex justify-center items-center h-screen text-white pt-3 overflow-y-scroll overflow-x-auto'>
-            <Loading />
-        </div>
-    }
+    // if (isLoading) {
+    //     return <div className='bg-primary flex justify-center items-center h-screen text-white pt-3 overflow-y-scroll overflow-x-auto'>
+    //         <Loading />
+    //     </div>
+    // }
 
-    const navigate = useNavigate()
-    // ! Call navigate Inside useEffect
-    useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/login');
-        }
-    }, [isAuthenticated])
+    // const navigate = useNavigate()
+    // // ! Call navigate Inside useEffect
+    // useEffect(() => {
+    //     if (!isAuthenticated) {
+    //         navigate('/login');
+    //     }
+    // }, [isAuthenticated])
 
 
     return (
-        <div className='bg-primary h-screen text-white pt-3 overflow-y-scroll overflow-x-auto'>
+        <div className='h-screen  text-white pt-3 overflow-y-scroll overflow-x-auto'>
             <Header />
             <Outlet />
         </div>

@@ -7,7 +7,7 @@ import { Button } from '@mui/material';
 
 const Home = () => {
     return (
-        <div className='max-w-[50%] mx-auto border border-neutral-900 rounded-t-3xl'>
+        <div className='w-[50%] mx-auto'>
             {/* // ! Add Post Filter On This Drop Icon */}
             <div className='py-2 flex justify-center items-center gap-2'>
                 <span className='py-2 rounded-full'>
@@ -15,8 +15,8 @@ const Home = () => {
                 </span>
                 <span className='text-xl p-1 hover:bg-gray-800/60 rounded-full'><IoIosArrowDropdown /></span>
             </div>
-            <div className='bg-secondary'>
-                <Search />
+            <Search />
+            <div className='border border-neutral-900 bg-secondary rounded-t-3xl mt-2'>
                 <Post />
                 <Post />
                 <Post />
