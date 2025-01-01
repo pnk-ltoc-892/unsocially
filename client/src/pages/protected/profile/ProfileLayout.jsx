@@ -2,10 +2,17 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 import av from "../../../../public/avatar.jpg"
 import { Avatar, Button } from '@mui/material'
+import { useSelector } from 'react-redux'
 
 
 
 const ProfileLayout = () => {
+
+    // ! Should Have a separate Route for Profile Info
+    const { user } = useSelector(state => state.auth);
+
+    console.log(user);
+
     return (
         <div>
             <div className='max-w-[50%] mx-auto'>
@@ -16,10 +23,10 @@ const ProfileLayout = () => {
                     <div className='flex'>
                         <div className='flex-1 flex flex-col justify-center'>
                             <div className='text-2xl font-bold'>
-                                Pankaj Singh
+                                {user?.fullname || "User Singh"}
                             </div>
                             <div className='text-lg font-semibold text-neutral-300'>
-                                pnk.dev.892
+                                {user?.username}
                             </div>
                         </div>
                         <div className="flex justify-center items-centercenter">
@@ -52,7 +59,7 @@ const ProfileLayout = () => {
                         <button type="button" className="w-full max-w-sm py-1 text-md font-medium text-gray-900 bg-white rounded-xl border border-gray-200 hover:bg-[#111316] hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-600">Follow</button>
                     </div>
 
-// ! For Navbar Profile Info Menu 
+// ! For Navbar Profile Info Menu
                     <div>
 
                     </div>

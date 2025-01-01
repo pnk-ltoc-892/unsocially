@@ -1,6 +1,6 @@
 import React from 'react'
 import { IoIosArrowDropdown } from "react-icons/io";
-import Search from '../../components/home/Search.jsx';
+import AddPost from '../../components/home/AddPost.jsx';
 import Post from '../../components/home/Post.jsx';
 import { Button } from '@mui/material';
 
@@ -15,7 +15,7 @@ const Home = () => {
                 </span>
                 <span className='text-xl p-1 hover:bg-gray-800/60 rounded-full'><IoIosArrowDropdown /></span>
             </div>
-            <Search />
+            <AddPost />
             <div className='border border-neutral-900 bg-secondary rounded-t-3xl mt-2'>
                 <Post />
                 <Post />

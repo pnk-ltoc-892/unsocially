@@ -1,18 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from '@mui/material/Avatar';
 import { Link } from 'react-router-dom';
 import av from "../../../public/avatar.jpg"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog.jsx';
 import { Textarea } from '../ui/textarea.jsx';
 import { Button } from '../ui/button.jsx';
+import { Label } from '../ui/label.jsx';
+import { ImagePlus } from 'lucide-react';
 
 
-const Search = () => {
+const AddPost = () => {
+    const [postImage, setPostImage] = useState(null);
+    const [postText, setPostText] = useState('');
+    console.log(postText);
+    
+
     return (
         <div className='flex justify-center items-center p-2'>
 
             {/* // !Trigger Start A Thought */}
-            <Dialog className='min-w-max'>
+            <Dialog className='min-w-max bg-neutral-950'>
                 <DialogTrigger className='w-[60%]'>
                     <div className='min-w-full bg-neutral-950 px-5 py-2 text-md font-semibold text-neutral-300 rounded-lg cursor-pointer'>
                         Share a thought...
@@ -31,17 +38,24 @@ const Search = () => {
                     </DialogHeader>
                     <DialogDescription className=''>
                         <div className='w-[84%] mx-auto flex flex-col gap-4'>
+                            
+                            {/* // ! Post Text Input */}
                             <div>
                                 <Textarea   placeholder="Share Whats Going On..." 
-                                            className='w-full h-32 bg-neutral-950 text-neutral-300'
+                                            className='w-full h-32 bg-neutral-950 font-semibold'
+                                            value={postText}
+                                            onChange={(e) => setPostText(e.target.value)}
                                 />
                             </div>
+
+                            {/* // ! Post Image Input */}
                             <div>
-                                <input type="file" className='w-full bg-neutral-950 text-neutral-300' />
+                                <Label htmlFor='postimage'><ImagePlus /></Label>
+                                <input id='postimage' type="file" className='hidden' />
                             </div>
                             <div className='flex justify-between items-center'>
                                 {/* // ! Add Menu To Restrict Comments From Specific Users */}
-                                <div className='hover:underline text-neutral-300 text-sm'>
+                                <div className='hover:underline hover:bg-gray-700/80 px-3 py-1 text-neutral-300 text-sm'>
                                     AnyOne Can Reply
                                 </div>
                                 <div>
@@ -78,4 +92,4 @@ const Search = () => {
     )
 }
 
-export default Search
+export default AddPost

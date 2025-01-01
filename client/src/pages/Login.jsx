@@ -1,27 +1,97 @@
 import { Button } from '@/components/ui/button.jsx'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
-import React from 'react'
+import { Input } from '@/components/ui/input.jsx'
+import { Label } from '@/components/ui/label.jsx'
+import { loginUser, registerUser } from '@/store/slices/authSlice.js'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
-    return <div className='bg-thoughts bg-repeat flex justify-center items-center h-screen text-white pt-3 overflow-y-scroll overflow-x-auto'>
-        <div className='' >
-            <div class="flex justify-center items-center text-5xl font-extrabold ...">
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-                    Thoughts
-                </span>
-            </div>
-            <div>
-                <Tabs defaultValue='login' className='w-[400px]' >
-                    <TabsList>
-                        <TabsTrigger value='register' >Register</TabsTrigger>
-                        <TabsTrigger value='login' >Login</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="account">Make changes to your account here.</TabsContent>
-                    <TabsContent value="password">Change your password here.</TabsContent>
+    const { isLoading, isAuthenticated } = useSelector(state => state.auth);
 
-                </Tabs>
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+    })
+
+    const [login, setLogin] = useState(true);
+    console.log(login);
+
+    const dispatch = useDispatch();
+    const handleLogin = () => {
+        login ? dispatch(loginUser(formData)) : dispatch(registerUser(formData))
+    }
+
+    const navigate = useNavigate()
+    // ! Call navigate Inside useEffect
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/home');
+        }
+    }, [isAuthenticated])
+
+    return <div className='bg-thoughts bg-repeat h-screen flex justify-center items-center'>
+        <div className='bg-background w-[35%] mx-auto px-6 py-8 rounded-lg border border-neutral-200'>
+            <div defaultValue='login' className='w-full flex flex-col justify-center items-center' >
+
+                <div className='bg-gray-800 flex justify-center items-center gap-4 px-6 py-1 rounded-xl'>
+                    <span className={`px-5 py-1 cursor-pointer rounded-xl ${login ? 'bg-black' : ''}`} onClick={() => setLogin(true)}>Login</span>
+                    <span className={`px-5 py-1 cursor-pointer rounded-xl ${!login ? 'bg-black' : ''}`} onClick={() => setLogin(false)}>Register</span>
+                </div>
+
+                <div className='w-full p-2'>
+                    {
+                        login ?
+                            (
+                                <div>
+                                    <Label>Email</Label>
+                                    <Input type="email"
+                                        placeholder="Email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    />
+                                    <Label>Password</Label>
+                                    <Input type="password"
+                                        placeholder="Password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    />
+                                </div>
+                            )
+                            :
+                            (
+                                <div>
+                                    <Label>Username</Label>
+                                    <Input type="text"
+                                        placeholder="Username"
+                                        value={formData.username}
+                                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                    />
+                                    <Label>Email</Label>
+                                    <Input type="email"
+                                        placeholder="Email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    />
+                                    <Label>Password</Label>
+                                    <Input type="password"
+                                        placeholder="Password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    />
+                                </div>
+                            )
+                    }
+                </div>
             </div>
+
+            <Button className='w-full mt-8'
+                onClick={handleLogin}
+            >
+                {login === true ? "Login" : "Register"}
+            </Button>
         </div>
     </div>
 }

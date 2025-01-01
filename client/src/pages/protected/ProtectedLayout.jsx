@@ -13,13 +13,13 @@ const ProtectedLayout = () => {
     //     </div>
     // }
 
-    // const navigate = useNavigate()
-    // // ! Call navigate Inside useEffect
-    // useEffect(() => {
-    //     if (!isAuthenticated) {
-    //         navigate('/login');
-    //     }
-    // }, [isAuthenticated])
+    const navigate = useNavigate()
+    // ! Call navigate Inside useEffect
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+        }
+    }, [isAuthenticated])
 
 
     return (

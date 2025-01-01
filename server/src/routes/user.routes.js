@@ -18,15 +18,17 @@ const router = Router();
 router.get("/", (req, res) => {
     res.json({hey: "Hello Routes"});
 })
-router.get("/checkAuth", verifyJWT, (req, res) => {
-    res.json({hey: "Hello Routes"});
-})
+
 
 
 // User Routes
 router.route("/register").post(registerUser);
 
 router.route("/login").post(loginUser);
+
+router.get("/check-auth", verifyJWT, async (req, res) => {
+    res.status(201).json({user: req.user});
+})
 
 router.route("/logout").post(verifyJWT, logoutUser);
 
