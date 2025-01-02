@@ -1,17 +1,14 @@
 import multer from "multer";
 
-// explore more.....
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb){   // cb - CallBack function
-        cb(null, './public/temp')    // file - has access to file coming
+    destination: function(req, file, cb){
+        cb(null, './public/temp')
     },
     filename: function(req, file, cb){
-        // console.log(file);
-        cb(null, file.originalname) // update name of file to random character addition
+        cb(null, file.originalname + Date.now())
+
     }
 })
 
-export const upload = multer({  // Storage methods - used as a middleware
-    storage: storage
-})
+export const upload = multer({storage: storage});

@@ -3,34 +3,47 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
-export const verifyJWT = async (req, _, next) => {
+
+// Protected Routes
+export const verifyJWT = asyncHandler( async (req, _, next) => {
     try {
         const token =
             req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
         if (!token) {
-            console.log("UnAuthorized request");
+            throw new ApiError(401, "Unauthorized, Please Login First");
         }
 
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-        // const user = await User.findById(decodedToken?._id).select("-password")
         const user = await User.findById(decodedToken.token)
-            // .select("-password")
-            .populate("followers")
-            .populate("posts")
-            .populate("replies")
-            .populate("reposts");
+            .select("-password")
         if (!user) {
-            // TODO: discussion on frontend
-            console.log("Invaid Token");
+            throw new ApiError(401, "Invalid access token");
         }
-        // Add Information To req, so that can be used by further controllers
-        req.user = user;
-        console.log("User Auth");
 
+        req.user = user;
         next();
     }
     catch (error) {
-        console.log("Error in Authetication: ", error);
+        throw new ApiError(401, error?.message || "Unauthorized, Invalid Access Token");
     }
-};
+});
+
+
+// ! Will Explore Its Use-Case Later
+// Middleware to check if user is logged in, for unprotected routes, if no user  then fail silently
+export const getLoggedInUserOrIgnore = asyncHandler( async (req, _, next) => {
+    const token =  req.cookies?.token 
+                || req.header("Authorization")?.replace("Bearer ", "");
+
+    try {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decodedToken.token).select("-password")
+        req.user = user;
+        next();
+    } 
+    catch (error) {
+        // Fail silently with req.user being falsy
+        next();
+    }
+});

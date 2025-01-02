@@ -1,5 +1,4 @@
 
-// Using Nodejs Error-Class
 class ApiError extends Error {
     constructor(
         statusCode,
@@ -10,9 +9,9 @@ class ApiError extends Error {
         // Overwrite Things
         super(message)
         this.statusCode = statusCode
-        this.data = null    // Explore
+        this.data = null
         this.message = message
-        this.success = false    // as apierror, handles not api response
+        this.success = false
         this.errors = errors
 
         if(stack){

@@ -1,26 +1,22 @@
 import mongoose, { Schema } from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
-
-const commentSchema = new mongoose.Schema(
+const bookmarkSchema = new Schema(
     {
-        content: {
-            type: String,
-            required: true,
-        },
         postId: {
             type: Schema.Types.ObjectId,
             ref: "Post",
         },
-        author: {
+        bookmarkedBy: {
             type: Schema.Types.ObjectId,
-        },
+            ref: "User"
+        }
     },
     { 
         timestamps: true 
     }
 );
 
-commentSchema.plugin(mongooseAggregatePaginate);
+bookmarkSchema.plugin(mongooseAggregatePaginate);
 
-export const Comment = mongoose.model("Comment", commentSchema);
+export const Bookmark = mongoose.model("Bookmark", bookmarkSchema);

@@ -8,7 +8,7 @@ const userSchema = new Schema(
             required: true,
             unique: true,
             trim: true,
-            index: true     // DB Searching - Optimization, :Explore It...
+            index: true
         },
         email: {
             type: String,
@@ -19,30 +19,25 @@ const userSchema = new Schema(
         },
         password: {
             type: String,
-            required: [true, "Password Is Required"],
-            // select: false, // Password Will Not Be Shown In Response
+            required: true,
+        },
+        fullname: {
+            type: String,
+            default: ""
         },
         bio: {
             type: String,
             default: "",
         },
-        profilePic: {
+        avatar: {
             type: String,
-            default: "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Clipart.png",
-        },
-        public_id: {
-            type: String,
-            default: "",
-        },
-        followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-        posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-        replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-        reposts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+            default: "https://res.cloudinary.com/learn-backend/image/upload/v1735838945/root/ebn3ruluofxovr10zh0u.png",
+        }
     },
     {
         timestamps: true
     }
-)
+);
 
 
 export const User = mongoose.model("User", userSchema);

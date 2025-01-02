@@ -1,28 +1,30 @@
 import mongoose, { Schema } from "mongoose";
-
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const postSchema = new Schema(
     {
-        admin: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-        },
-        text: {
+        content: {
             type: String,
+            index: true,
         },
-        media: {
-            type: String,
+        images: {
+            type: [String],
+            default: [],
         },
-        public_id: {
-            type: String,
+        tags: {
+            type: [String],
+            default: [],
         },
-        likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-        comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+        author: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        }
     },
     { 
         timestamps: true 
     }
 );
 
+postSchema.plugin(mongooseAggregatePaginate);
 
 export const Post = mongoose.model("Post", postSchema);
