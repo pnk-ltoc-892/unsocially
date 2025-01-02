@@ -2,7 +2,12 @@ import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { addComment, deleteComment } from "../controllers/comment.controller.js";
 
-const router = Router()
+const router = Router();
+
+// Check if the routes are working
+router.get("/", (req, res) => {
+    res.json({hey: "Hello Routes"});
+})
 
 
 router.use(verifyJWT)

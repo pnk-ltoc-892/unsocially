@@ -4,7 +4,12 @@ import { addPost, allPost, deletePost, likePost, repost, singlePost, uploadPostI
 import { upload } from "../middlewares/multer.middleware.js";
 
 
-const router = Router()
+const router = Router();
+
+// Check if the routes are working
+router.get("/", (req, res) => {
+    res.json({hey: "Hello Routes"});
+})
 
 // All Post Routes Needs To Be Authenticated
 router.use(verifyJWT)

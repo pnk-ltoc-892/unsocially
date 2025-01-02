@@ -1,7 +1,9 @@
 import { Router } from "express";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { followUser, getCurrentUser,
+import { 
+        followUser, 
+        getCurrentUser,
         loginUser, 
         logoutUser, 
         myInfo, 
@@ -13,6 +15,7 @@ import { followUser, getCurrentUser,
 
 
 const router = Router();
+
 
 // Check if the routes are working
 router.get("/", (req, res) => {
