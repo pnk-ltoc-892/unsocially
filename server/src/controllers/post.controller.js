@@ -1,7 +1,7 @@
 import { User } from "../models/user.model.js"
 import { Post } from "../models/post.model.js";
 import { Comment } from "../models/comment.model.js";
-import { cloudinary } from "../service/cloudinary.js";
+import { cloudinary, UploadOnCloudinary } from "../service/cloudinary.js";
 import formidable from "formidable";
 import mongoose from "mongoose";
 // import {ApiError} from "../utils/ApiError.js"
@@ -9,42 +9,61 @@ import mongoose from "mongoose";
 // import {asyncHandler} from "../utils/asyncHandler.js"
 
 
+const uploadPostImage = async (req, res) => {
+    try {
+        const postImage = req.file?.path;
+        if (!postImage) {
+            res.json({
+                success: false,
+                message: "Error occured Uploading Image on cloudinary",
+            });
+        }
+        const result = await UploadOnCloudinary(postImage);
+        res.json({
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: "Error occured Uploading Image on cloudinary",
+        });
+    }
+};
+
 
 const addPost = async (req, res) => {
     try {
-        const form = formidable({});
-        form.parse(req, async (err, fields, files) => {
-            if (err) {
-                return res.status(400).json({ msg: "Error in form parse !" });
-            }
-            const post = new Post();
-            if (fields.text) {
-                post.text = fields.text;
-            }
-            if (files.media) {
-                const uploadedImage = await cloudinary.uploader.upload(
-                    files.media.filepath,
-                    { folder: "socap/Posts" }
-                );
-                if (!uploadedImage) {
-                    return res.status(400).json({ msg: "Error while uploading Image !" });
-                }
-                post.media = uploadedImage.secure_url;
-                post.public_id = uploadedImage.public_id;
-            }
-            post.admin = req.user._id;
-            const newPost = await post.save();
-            await User.findByIdAndUpdate(
-                req.user._id,
-                {
-                    $push: { posts: newPost._id },
-                },
-                { new: true }
-            );
-            res.status(201).json({ msg: "Post created !", newPost });
+        const { text, image } = req.body;
+        console.log(req.body);
+
+        if (!text && !image) {
+            return res.status(400).json({
+                success: false,
+                message: "Text or Image is required !",
+            });
+        }
+
+        const newPost = new Post({
+            text,
+            image,
+            postedBy: req.user._id,
+        })
+        await newPost.save();
+
+        res.status(200).json({
+            success: true,
+            data: newPost,
         });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in addPost !", err: err.message });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(200).json({
+            success: false,
+            message: "Error Adding New Post",
+        });
     }
 };
 
@@ -77,29 +96,44 @@ const singlePost = async (req, res) => {
 // TODO: Study This Important Function - OPtimise This Further
 const allPost = async (req, res) => {
     try {
-        const { page } = req.query;
-        let pageNumber = page;
-        if (!page || page === undefined) {
-            pageNumber = 1;
-        }
         const posts = await Post.find({})
-            .sort({ createdAt: -1 }) // Get Latest Post
-            .skip((pageNumber - 1) * 3) // Skipping Previous Posts
-            .limit(3) // Limit Post entries
-            .populate({ path: "admin", select: "-password" })
-            .populate({ path: "likes", select: "-password" })
-            .populate({
-                path: "comments",
-                populate: {
-                    path: "admin",
-                    model: "User",
-                },
-            });
-        res.status(200).json({ msg: "Post Fetched !", posts });
+        res.status(200).json({
+            success: true,
+            data: posts,
+        });
     } catch (err) {
-        res.status(400).json({ msg: "Error in allPost !", err: err.message });
+        res.status(200).json({
+            success: false,
+            message: "Error Adding New Post",
+        });
     }
 };
+// // TODO: Study This Important Function - OPtimise This Further
+// const allPost = async (req, res) => {
+//     try {
+//         const { page } = req.query;
+//         let pageNumber = page;
+//         if (!page || page === undefined) {
+//             pageNumber = 1;
+//         }
+//         const posts = await Post.find({})
+//             .sort({ createdAt: -1 }) // Get Latest Post
+//             .skip((pageNumber - 1) * 3) // Skipping Previous Posts
+//             .limit(3) // Limit Post entries
+//             .populate({ path: "admin", select: "-password" })
+//             .populate({ path: "likes", select: "-password" })
+//             .populate({
+//                 path: "comments",
+//                 populate: {
+//                     path: "admin",
+//                     model: "User",
+//                 },
+//             });
+//         res.status(200).json({ msg: "Post Fetched !", posts });
+//     } catch (err) {
+//         res.status(400).json({ msg: "Error in allPost !", err: err.message });
+//     }
+// };
 
 
 const deletePost = async (req, res) => {
@@ -213,10 +247,11 @@ const repost = async (req, res) => {
 
 
 export {
+    uploadPostImage,
     addPost,
     singlePost,
     allPost,
     deletePost,
     likePost,
-    repost   
+    repost
 }

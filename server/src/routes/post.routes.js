@@ -1,12 +1,15 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { addPost, allPost, deletePost, likePost, repost, singlePost } from "../controllers/post.controller.js";
+import { addPost, allPost, deletePost, likePost, repost, singlePost, uploadPostImage } from "../controllers/post.controller.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 
 const router = Router()
 
 // All Post Routes Needs To Be Authenticated
 router.use(verifyJWT)
+
+router.route("/post-image").post(upload.single("imageFile"), uploadPostImage)
 
 router.route("/post").post(addPost)
 

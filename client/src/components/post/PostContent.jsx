@@ -2,23 +2,27 @@ import { Stepper } from '@mui/material'
 import React from 'react'
 import image from "../../../public/image.jpg"
 
-const text = "Take full Dental Care at Home . We Recommend you the best flosser in the market and most selling on Amazon aff.ull Dental Care at Home . We Recommend you the best flosser in the market and most selling on Amazon a"
 
-
-const PostContent = () => {
+const PostContent = ({post}) => {
     return (
         <div className='w-[80%] mx-auto'>
-            <div className='pb-2'>
-                {text}
-            </div>
-            <div className='max-h-[28rem]'>
-                <img src={image} 
-                    alt="Post Image" 
-                    className='h-auto max-h-[28rem] object-contain rounded-md'
-                    // className='h-auto w-[100%] max-w-object-none rounded-sm'
-                    // loading='lazy'
-                    />
-            </div>
+            {
+                post.text && 
+                    <div className='pb-2'>
+                        {post.text}
+                    </div>
+            }
+            {
+                post.image && (
+                    <div className='max-h-[28rem]'>
+                        <img src={post.image} 
+                            alt="Post Image" 
+                            className='h-auto max-h-[28rem] object-cover rounded-md'
+                            loading='lazy'
+                            />
+                    </div>
+                )
+            }
         </div>
     )
 }
