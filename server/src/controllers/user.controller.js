@@ -2,122 +2,105 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
-// import { UploadOnCloudinary } from "../service/cloudinary.js"
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import formidable from "formidable"
-import { cloudinary } from "../service/cloudinary.js"
+import { cookieOptions } from "../config/index.js";
 
 
-// ! User-Controller Functions
-const registerUser = async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-        if (!username || !email || !password) {
-            return res
-                .status(400)
-                .json({ msg: "username , email and password are required !" });
-        }
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res
-                .status(400)
-                .json({ msg: "User is already registerd ! Please Login ." });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        if (!hashedPassword) {
-            return res.status(400).json({ msg: "Error in password hashing !" });
-        }
-        const user = new User({
-            username,
-            email,
-            password: hashedPassword,
-        });
-        const result = await user.save();
-        if (!result) {
-            return res.status(400).json({ msg: "Error while saving user !" });
-        }
-        const accessToken = jwt.sign(
-            { token: result._id },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "7d",
-            }
-        );
-        if (!accessToken) {
-            return res
-                .status(400)
-                .json({ msg: "Error while generating token !" });
-        }
-        res.cookie("token", accessToken, {
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-            httpOnly: true,
-            sameSite: "none",
-            secure: true,
-            partitioned: true,
-        });
-        res.status(201).json({
-            msg: `User Signed in successfully ! hello ${result?.username}`,
-        });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in signin !", err: err.message });
+// ! User - Authentication Controllers
+const registerUser = asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+        throw new ApiError(400, "All fields are required !");
     }
-};
 
-const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ msg: "Email and Password are required !" });
-        }
-        const userExists = await User.findOne({ email });
-        if (!userExists) {
-            return res.status(400).json({ msg: "Please Signin first !" });
-        }
-        const passwordMatched = await bcrypt.compare(password, userExists.password);
-        if (!passwordMatched) {
-            return res.status(400).json({ msg: "Incorrect credentials !" });
-        }
-        const accessToken = jwt.sign(
-            { token: userExists._id },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
-        );
-        if (!accessToken) {
-            return res.status(400).json({ msg: "Token not gemnerated in login !" });
-        }
-        res.cookie("token", accessToken, {
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            partitioned: true,
-        });
-        res.status(200).json({ msg: "User logged in succcessfully !" });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in login !", err: err.message });
+    const existingUser = await User.findOne({
+        $or: [{ username }, { email }]
+    });
+    if (existingUser) {
+        throw new ApiError(409, "User Already Exists");
     }
-};
 
-
-const logoutUser = async (req, res) => {
-    try {
-        res.cookie("token", "", {
-            maxAge: 0,
-            httpOnly: true,
-            sameSite: "none",
-            secure: true,
-            partitioned: true,
-        });
-
-        res.status(201).json({ msg: "You logged out !" });
-    } catch (error) {
-        res.status(400).json({ msg: "Error in logout" });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    if (!hashedPassword) {
+        throw new ApiError(409, "Error Hashing Passowrd");
     }
-};
+
+    const user = await User.create({
+        username,
+        email,
+        password: hashedPassword,
+    });
+
+    const createdUser = await User.findById(user._id).select("-password");
+    if (!createdUser) {
+        throw new ApiError(500, "Error Registering User");
+    }
+
+    return res
+        .status(201)
+        .json(new ApiResponse(201, { user: createdUser }, "User Registered Successfully !"));
+
+});
 
 
+const loginUser = asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body;
+    if ((!username && !email) || !password) {
+        throw new ApiError(400, "Email Or Username and Password are required !");
+    }
+
+    const user = await User.findOne({
+        $or: [{ username }, { email }]
+    });
+    if (!user) {
+        throw new ApiError(400, "User Doesn't Exist !");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        throw new ApiError(400, "Invalid Credentials !");
+    }
+
+    const accessToken = jwt.sign(
+        {
+            id: user._id
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    );
+    if (!accessToken) {
+        throw new ApiError(500, "Error Generating Access Token");
+    }
+
+    const loggedUser = await User.findById(user._id).select("-password");
+
+    return res
+        .status(200)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedUser,
+                },
+                "User logged in successfully !"
+            )
+        )
+});
+
+
+const logoutUser = asyncHandler(async (req, res) => {
+    return res
+        .status(200)
+        .clearCookie("accessToken", cookieOptions)
+        .json(new ApiResponse(200, {}, "User logged out successfully"));
+});
+
+
+
+
+// ! User - Profile Controllers
 const getCurrentUser = async (req, res) => {
     try {
         const { id } = req.params

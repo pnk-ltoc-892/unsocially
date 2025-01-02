@@ -8,15 +8,15 @@ import jwt from "jsonwebtoken";
 export const verifyJWT = asyncHandler( async (req, _, next) => {
     try {
         const token =
-            req.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
+            req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
         if (!token) {
             throw new ApiError(401, "Unauthorized, Please Login First");
         }
 
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        const user = await User.findById(decodedToken.token)
-            .select("-password")
+        // ! Adding User To Request Object - For Protected Routes
+        const user = await User.findById(decodedToken.id).select("-password")
         if (!user) {
             throw new ApiError(401, "Invalid access token");
         }
@@ -33,11 +33,11 @@ export const verifyJWT = asyncHandler( async (req, _, next) => {
 // ! Will Explore Its Use-Case Later
 // Middleware to check if user is logged in, for unprotected routes, if no user  then fail silently
 export const getLoggedInUserOrIgnore = asyncHandler( async (req, _, next) => {
-    const token =  req.cookies?.token 
+    const token =  req.cookies?.accessToken 
                 || req.header("Authorization")?.replace("Bearer ", "");
 
     try {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         const user = await User.findById(decodedToken.token).select("-password")
         req.user = user;
         next();

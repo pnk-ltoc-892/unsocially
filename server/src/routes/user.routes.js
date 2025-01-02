@@ -17,24 +17,19 @@ import {
 const router = Router();
 
 
-// Check if the routes are working
-router.get("/", (req, res) => {
-    res.json({hey: "Hello Routes"});
-})
-
-
-
-// User Routes
+// ! User Auth Routes
 router.route("/register").post(registerUser);
 
 router.route("/login").post(loginUser);
+
+router.route("/logout").post(verifyJWT, logoutUser);
 
 router.get("/check-auth", verifyJWT, async (req, res) => {
     res.status(201).json({user: req.user});
 })
 
-router.route("/logout").post(verifyJWT, logoutUser);
 
+// ! User Profile Routes
 router.route("/update-profile").put(verifyJWT, updateProfile)
 
 router.route("/my-profile").post(verifyJWT, myInfo)

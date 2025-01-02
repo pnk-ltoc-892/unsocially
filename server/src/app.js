@@ -45,5 +45,10 @@ app.use("/api/v1/like", likeRouter);
 
 app.use("/api/v1/bookmarks", bookmarkRouter);
 
+// Server - Check
+app.get("/api/v1/", (req, res) => {
+    res.status(200).json({ message: "Server is running !" });
+});
+
 
 export { app }
