@@ -13,8 +13,6 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         setUser: (state, action) => {
-
-            console.log(action)
             state.user = action.payload;
         }
     },
@@ -37,7 +35,7 @@ export const authSlice = createSlice({
         })
         .addCase(loginUser.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.isAuthenticated = false;
+            state.isAuthenticated = true;
         })
         .addCase(loginUser.rejected, (state, action) => {
             state.isLoading = false;
@@ -68,7 +66,7 @@ export const authSlice = createSlice({
 // Asynchronous Actions Thunks
 export const registerUser = createAsyncThunk('auth/registerUser',
     async (formData) => {
-        const response = await axios.post('http://localhost:5000/api/v1/users/register',
+        const response = await axios.post('http://localhost:5000/api/v1/user/register',
             formData,
             {
                 withCredentials: true
@@ -79,7 +77,7 @@ export const registerUser = createAsyncThunk('auth/registerUser',
 
 export const loginUser = createAsyncThunk('auth/loginUser',
     async (formData) => {
-        const response = await axios.post('http://localhost:5000/api/v1/users/login',
+        const response = await axios.post('http://localhost:5000/api/v1/user/login',
             formData,
             {
                 withCredentials: true
@@ -89,7 +87,7 @@ export const loginUser = createAsyncThunk('auth/loginUser',
 
 export const checkAuth = createAsyncThunk('auth/checkAuth',
     async () => {
-        const response = await axios.get('http://localhost:5000/api/v1/users/check-auth',
+        const response = await axios.get('http://localhost:5000/api/v1/user/check-auth',
             {
                 withCredentials: true
             });
@@ -98,7 +96,7 @@ export const checkAuth = createAsyncThunk('auth/checkAuth',
 
 export const logOutUser = createAsyncThunk('auth/logOutUser',
     async (formData) => {
-        const response = await axios.post('http://localhost:5000/api/v1/users/logout',
+        const response = await axios.post('http://localhost:5000/api/v1/user/logout',
             formData,
             {
                 withCredentials: true

@@ -3,30 +3,41 @@ import av from "../../../public/avatar.jpg"
 import { Avatar } from '@mui/material'
 
 
+const profile =
+{
+    username: "pnk.dev.ultimate.892",
+    email: "pnk1@gmail.com",
+    fullname: "Pankaj Singh",
+    bio: "The Official Account of Pankaj Singh, The OG Guy Amazing Personality Loved By Many Founder, CEO Osm DevTech\n#Developer #Founder #Invester",
+    avatar: "https://res.cloudinary.com/learn-backend/image/upload/v1735847754/root/xuadg9wvesvfqarztabg.jpg",
+    followers: "99M",
+    following: "112",
+}
+
 const SearchProfileBar = () => {
     return (
-        <div className="flex border-b-[1px] border-neutral-600">
-            <div className="flex justify-center px-2 py-2">
+        <div className="flex border-b-[1px] border-neutral-600 cursor-pointer mb-2">
+            <div className="flex justify-center items-center px-2 py-1">
                 <Avatar
                     alt="Profile"
-                    src={av}
-                    sx={{ width: 36, height: 36 }}
+                    src={profile?.avatar || av}
+                    sx={{ width: 62, height: 62 }}
                 />
             </div>
 
-            <div className='flex-1 flex flex-col p-1'>
-                <div className='text-md font-semibold'>
-                    pnk.dev.892
+            <div className='flex-1 flex flex-col py-2 ml-3'>
+                <div className='text-lg tracking-wide font-semibold'>
+                    {profile?.username || "dev.ultimate.892"}
                 </div>
-                <div className='text-lg font-normal text-neutral-500'>
-                    Pankaj Singh
+                <div className='text-[1.2rem] font-normal text-neutral-300'>
+                    {profile?.fullname || "User Singh"}
                 </div>
                 <div className='mt-2 font-medium'>
-                    999k followers
+                    {profile?.followers || "0"} Followers
                 </div>
             </div>
-            <div className="flex justify-center items-start p-4">
-                <button className='border border-neutral-600 font-bold rounded-lg px-6 py-1  text-white'>
+            <div className="flex justify-center items-center">
+                <button className="px-10 text-lg font-semibold text-gray-900 bg-white rounded-full border border-gray-200 hover:bg-[#000000] hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-600">
                     Follow
                 </button>
             </div>

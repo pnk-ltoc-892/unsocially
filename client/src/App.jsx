@@ -1,4 +1,4 @@
-import { Route, Routes, useSearchParams } from 'react-router-dom'
+import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom'
 import './App.css'
 import ProtectedLayout from './pages/protected/ProtectedLayout.jsx'
 import Error from './pages/Error.jsx'
@@ -10,18 +10,17 @@ import Posts from './pages/protected/profile/Posts.jsx'
 import Replies from './pages/protected/profile/Replies.jsx'
 import Reposts from './pages/protected/profile/Reposts.jsx'
 import Login from './pages/Login.jsx'
-import Test from './components/Test.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
 
 function App() {
-  // const {isAuthenticated, user } = useSelector(state => state.auth)
-  const dispatch = useDispatch()
+  const {isAuthenticated } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   useEffect(() => {
-    // console.log({isAuthenticated, user });
-    dispatch(checkAuth())
+    dispatch(checkAuth());
   }, [dispatch])
 
 

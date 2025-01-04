@@ -4,13 +4,17 @@ import SearchProfileBar from '../../components/search/SearchProfileBar.jsx'
 
 const Search = () => {
     return (
-        <div className='max-w-[50%] mx-auto'>
-            <div className='pb-2 flex justify-center items-center gap-2'>
-                <span className='py-1 rounded-full'>Search</span>
+        <div className='max-w-[60%] mx-auto'>
+
+            <div className='p-2 flex justify-center items-center'>
+                Search
             </div>
-            <div className='bg-secondary border border-neutral-600 rounded-t-3xl p-6'>
+
+            <div className='p-4'>
                 <SearchInput />
-                <div className='text-neutral-500 font-semibold text-sm py-4'>
+            </div>
+            <div className='border-[1px] border-neutral-500 rounded-lg p-8'>
+                <div className='text-neutral-100 font-semibold text-sm py-4'>
                     Follow Suggestions
                 </div>
                 <SearchProfileBar />
@@ -28,9 +32,10 @@ const Search = () => {
                 <SearchProfileBar />
                 <SearchProfileBar />
                 <SearchProfileBar />
+
             </div>
         </div>
-        )
+    )
 }
 
 

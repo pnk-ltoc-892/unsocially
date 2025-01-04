@@ -17,7 +17,6 @@ const Login = () => {
     })
 
     const [login, setLogin] = useState(true);
-    console.log(login);
 
     const dispatch = useDispatch();
     const handleLogin = () => {
