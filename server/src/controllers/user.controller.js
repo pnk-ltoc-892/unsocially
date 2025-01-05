@@ -153,6 +153,13 @@ const updateProfile = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {updatedUser}, "Profile Updated Sucessfully"));
 });
 
+const myProfile = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user?._id).select('-password');
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {user}, "User Profile Fetched"));
+});
+
 
 export {
     registerUser,
@@ -160,5 +167,6 @@ export {
     logoutUser,
 
     updateProfileAvatar,
-    updateProfile
+    updateProfile,
+    myProfile
 };

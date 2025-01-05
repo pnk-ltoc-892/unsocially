@@ -7,7 +7,8 @@ import {
         logoutUser,
 
         updateProfileAvatar,
-        updateProfile
+        updateProfile,
+        myProfile
 } from "../controllers/user.controller.js";
 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -34,7 +35,10 @@ router
     .post(upload.single("imageFile"), updateProfileAvatar);
 
 
-router.route("/update-profile").patch(updateProfile)
+router.route("/update-profile").patch(updateProfile);
+
+
+router.get("/my-profile", myProfile);
 
 
 export default router;
