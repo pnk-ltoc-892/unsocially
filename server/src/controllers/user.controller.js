@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { cookieOptions } from "../config/index.js";
+import { UploadOnCloudinary } from "../service/cloudinary.js";
 
 
 // ! User - Authentication Controllers
@@ -98,161 +99,66 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 
-
-
 // ! User - Profile Controllers
-const getCurrentUser = async (req, res) => {
-    try {
-        const { id } = req.params
-        if (!id) {
-            return res.status(400).json({ msg: "id is required !" });
-        }
-        const user = await User.findById(id)
-            .select("-password")
-            .populate("followers")
-            .populate({
-                path: "threads",
-                populate: [{ path: "likes" }, { path: "comments" }, { path: "admin" }],
-            })
-            .populate({ path: "replies", populate: { path: "admin" } })
-            .populate({
-                path: "reposts",
-                populate: [{ path: "likes" }, { path: "comments" }, { path: "admin" }],
-            });
-        res.status(200).json({ msg: "User Details Fetched !", user });
-
-    } catch (error) {
-        res.status(400).json({ msg: "Error in userDetails !", err: err.message });
+const updateProfileAvatar = asyncHandler(async (req, res) => {
+    const avatarLocalPath = req.file?.path;
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Profile Avatar File Is Missing");
     }
-};
 
-// TODO: Fix This Error
-// * User Details Updation Controllers - Problem
-const updateProfile = async (req, res) => {
-    try {
-        const userExists = await User.findById(req.user._id);
-        if (!userExists) {
-            return res.status(400).json({ msg: "No such user !" });
-        }
+    const uploadResponse = await UploadOnCloudinary(avatarLocalPath);
+    if (!uploadResponse) {
+        throw new ApiError(500, "Error Uploading File On Server");
+    }
 
-        // Updating Bio And Profile Picture
-        // ! Using Formidable Library
-        const form = formidable({});
-
-        form.parse(req, async (err, fields, files) => {
-            console.log([fields, files]);
-
-            console.log(fields);
-
-            if (err) {
-                return res.status(400).json({ msg: "Error in formidable !", err: err });
+    const profileAvatarUrl = uploadResponse.secure_url
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                avatar: profileAvatarUrl
             }
-            if (fields.text) {
-                await User.findByIdAndUpdate(
-                    req.user._id,
-                    { bio: fields.text },
-                    { new: true }
-                );
-            }
-            if (files.media) {
-                if (userExists.public_id) {
-                    await cloudinary.uploader.destroy(
-                        userExists.public_id,
-                        (error, result) => {
-                            console.log({ error, result });
-                        }
-                    );
-                }
-                const uploadedImage = await cloudinary.uploader.upload(
-                    files.media.filepath,
-                    { folder: "socap/Profiles" }
-                );
-                if (!uploadedImage) {
-                    return res.status(400).json({ msg: "Error while uploading pic !" });
-                }
-                await User.findByIdAndUpdate(
-                    req.user._id,
-                    {
-                        profilePic: uploadedImage.secure_url,
-                        public_id: uploadedImage.public_id,
-                    },
-                    { new: true }
-                );
-            }
-        });
-        res.status(201).json({ msg: "Profile updated successfully !" });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in updateProfile !", err: err.message });
+        },
+        { new: true }
+    );
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Profile Avatar Updated Sucessfully"));
+});
+
+
+const updateProfile = asyncHandler(async (req, res) => {
+    const { username, fullname, bio } = req.body;
+    console.log({ username, fullname, bio });
+
+    const users = await User.find({ username });
+
+    // TODO: Separate route - check while user is entering info
+    if (users.length) {
+        throw new ApiError(400, "username already taken, Try a different username");
     }
-};
 
+    // Find User, Update local Copy , Save it in DB & Finally Fetch updatedUser
+    const user = await User.findById(req.user?._id);
+    user.username = username || user.username;
+    user.fullname = fullname || user.fullname;
+    user.bio = bio || user.bio;
+    await user.save();
 
-// TODO: Add Pagination
-const searchUser = async (req, res) => {
-    try {
-        const { query } = req.params;
-        const users = await User.find({
-            $or: [ // ! Match anyone of username or email
-                { username: { $regex: query, $options: "i" } }, // ! 'i' - case-insensitive
-                { email: { $regex: query, $options: "i" } },
-            ],
-        });
-        res.status(200).json({ msg: "Searched !", users });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in searchUser !", err: err.message });
-    }
-};
+    const updatedUser = await User.findById(user._id);
 
-
-const myInfo = async (req, res) => {
-    try {
-        res.status(200).json({ me: req.user });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in myInfo !" });
-    }
-};
-
-const followUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ msg: "Id is required !" });
-        }
-        const userExists = await User.findById(id);
-        if (!userExists) {
-            return res.status(400).json({ msg: "User don`t Exist !" });
-        }
-        if (userExists.followers.includes(req.user._id)) {
-            await User.findByIdAndUpdate(
-                userExists._id,
-                {
-                    $pull: { followers: req.user._id },
-                },
-                { new: true }
-            );
-            return res.status(201).json({ msg: `Unfollowed ${userExists.userName}` });
-        }
-        await User.findByIdAndUpdate(
-            userExists._id,
-            {
-                $push: { followers: req.user._id },
-            },
-            { new: true }
-        );
-        return res.status(201).json({ msg: `Following ${userExists.userName}` });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in followUser !", err: err.message });
-    }
-};
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {updatedUser}, "Profile Updated Sucessfully"));
+});
 
 
 export {
     registerUser,
     loginUser,
     logoutUser,
-    getCurrentUser,
-    updateProfile,
-    searchUser,
-    myInfo,
-    followUser
+
+    updateProfileAvatar,
+    updateProfile
 };
