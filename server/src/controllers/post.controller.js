@@ -4,68 +4,51 @@ import { Comment } from "../models/comment.model.js";
 import { cloudinary, UploadOnCloudinary } from "../service/cloudinary.js";
 import formidable from "formidable";
 import mongoose from "mongoose";
-// import {ApiError} from "../utils/ApiError.js"
-// import {ApiResponse} from "../utils/ApiResponse.js"
-// import {asyncHandler} from "../utils/asyncHandler.js"
+import { ApiError } from "../utils/ApiError.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
+import { asyncHandler } from "../utils/asyncHandler.js"
 
 
-const uploadPostImage = async (req, res) => {
-    try {
-        const postImage = req.file?.path;
-        if (!postImage) {
-            res.json({
-                success: false,
-                message: "Error occured Uploading Image on cloudinary",
-            });
-        }
-        const result = await UploadOnCloudinary(postImage);
-        res.json({
-            success: true,
-            data: result,
-        });
+const uploadPostImage = asyncHandler(async (req, res) => {
+    const postImage = req.file?.path;
+    if (!postImage) {
+        throw new ApiError(400, "Image is required !");
     }
-    catch (error) {
-        console.log(error);
-        res.json({
-            success: false,
-            message: "Error occured Uploading Image on cloudinary",
-        });
+    const result = await UploadOnCloudinary(postImage);
+    if (!result) {
+        throw new ApiError(500, "Error Uploading Image !");
     }
-};
+    res.json(new ApiResponse(200, result, "Post Image Uploaded !"));
+});
 
 
-const addPost = async (req, res) => {
-    try {
-        const { text, image } = req.body;
-        console.log(req.body);
+const addPost = asyncHandler(async (req, res) => {
+    // TODO: 'tags', mentions, location, etc. can be added here Skipping for now kept empty by default
 
-        if (!text && !image) {
-            return res.status(400).json({
-                success: false,
-                message: "Text or Image is required !",
-            });
-        }
-
-        const newPost = new Post({
-            text,
-            image,
-            postedBy: req.user._id,
-        })
-        await newPost.save();
-
-        res.status(200).json({
-            success: true,
-            data: newPost,
-        });
+    const { content, images } = req.body;
+    // ! Checking Done On FrontEnd - Also
+    // console.log({ content, images });
+    
+    if (!content && !images.length) {
+        throw new ApiError(400, "Content or Image is required !");
     }
-    catch (error) {
-        console.log(error);
-        res.status(200).json({
-            success: false,
-            message: "Error Adding New Post",
-        });
+
+    // Add Separate Image Upload Functionality Here ?
+
+    const newPost = await Post.create({
+        content,
+        images,
+        author: req.user._id,
+    })
+    if (!newPost) {
+        throw new ApiError(500, "Error Adding a New Post !");
     }
-};
+    
+    // TODO: Return result after applying the necessary aggregations
+    return res
+        .status(201)
+        .json(new ApiResponse(201, newPost, "Post Added !"));
+});
 
 
 const singlePost = async (req, res) => {

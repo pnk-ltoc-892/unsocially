@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Label } from '../ui/label.jsx'
 import { ImagePlus } from 'lucide-react'
 import { Input } from '../ui/input.jsx'
@@ -15,6 +15,7 @@ const PostImageUpload = ({
     setImageLoadingState
 }) => {
 
+    // const [postImage, setPostImage] = useState(null);
     const inputRef = useRef(null);
 
     function handleImageFileChange(e) {
@@ -42,7 +43,7 @@ const PostImageUpload = ({
                     withCredentials: true,
                 }
         );
-        // console.log(response.data);
+        console.log(response.data);
         if(response.data.success){
             console.log(response.data.data.secure_url);
             setUploadedImageUrl(response.data.data.secure_url);
@@ -73,8 +74,8 @@ const PostImageUpload = ({
                 )
             }
             {/* // ! Remove Image Button */}
-            <Label htmlFor='postimage'>
-                <ImagePlus />
+            <Label htmlFor='postimage' className='m-4 cursor-pointer'>
+                <ImagePlus size={32} className='hover:text-white'/>
             </Label>
             <Input 
                 ref={inputRef}

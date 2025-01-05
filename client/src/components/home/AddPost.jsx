@@ -9,6 +9,8 @@ import PostImageUpload from './PostImageUpload.jsx';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { addNewPost, getAllPosts } from '@/store/slices/post-slice.js';
+import { BadgePlus } from 'lucide-react';
+import { toast } from '@/hooks/use-toast.js';
 
 
 const AddPost = () => {
@@ -25,61 +27,64 @@ const AddPost = () => {
         setPostLoadingState(true);
         //! if both are empty return early and show a toast
         const data = {
-            text: postText || "",
-            image: uploadedImageUrl || "",
+            content: postText || "",
+            images: [uploadedImageUrl] || [],
         }
 
-        dispatch(addNewPost(data)).then( () => {
+        dispatch(addNewPost(data)).then((data) => {
             setOpenPostDialog(false);
             setPostLoadingState(false);
             setPostText("");
             setUploadedImageUrl("");
             setImageLoadingState(false);
-            setPostImage(null);
+
+            // !Handled while Uploading Image
+            // setPostImage(null);
             // handleRemoveImage(); // ! ?
 
             // ! Refetching
-            dispatch(getAllPosts());
-        } )
+            // dispatch(getAllPosts());
+            console.log(data.payload.message);
+            toast({title: data.payload.message});
+        })
 
-            // ! Refetch the data from server, and close the dialog, and redirect user the created post
+        // ! Refetch the data from server, and close the dialog, and redirect user the created post
     }
 
     return (
         <div className='flex justify-center items-center p-2'>
 
-            {/* // !Trigger Start A Thought */}
-            <Dialog className='min-w-max bg-neutral-950' open={openPostDialog} onClose={() => setOpenPostDialog(false)}>
-                <DialogTrigger className='w-[60%]' onClick={() => setOpenPostDialog(true)}>
-                    <div className='min-w-full bg-neutral-950 px-5 py-2 text-md font-semibold text-neutral-300 rounded-lg cursor-pointer'>
-                        Share a thought...
-                    </div>
-                </DialogTrigger>
+            {/* // ! Add Post Dialog Trigger */}
+            <div onClick={() => setOpenPostDialog(true)}
+                className='max-w-content flex justify-center items-center gap-2 bg-neutral-800 px-5 py-2 text-md font-semibold text-neutral-300 rounded-lg cursor-pointer'
+            >
+                < BadgePlus />
+                <span>New Post</span>
+            </div>
 
+            <Dialog open={openPostDialog}
+                    onOpenChange={() => setOpenPostDialog(false)}
+            >
                 {/* // ! Dialog Pop-Up Content */}
                 <DialogContent className='min-w-[50%] p-4'>
                     <DialogHeader>
-                        <div className='flex justify-start items-center gap-6'>
-                            <Link to='/profile'>
-                                <Avatar alt="Profile" src={av} />
-                            </Link>
-                            <DialogTitle className='underline text-md'>pnk.dev.op.892</DialogTitle>
+                        <div className='flex justify-center items-center gap-6'>
+                            <DialogTitle className='text-lg'>Create New Post</DialogTitle>
                         </div>
                     </DialogHeader>
-                    <DialogDescription className=''>
-                        <div className='w-[84%] mx-auto flex flex-col gap-4'>
-
+                    <DialogDescription className='w-[90%] mx-auto'>
+                        <div className='flex flex-col gap-4'>
                             {/* // ! Post Text Input */}
                             <div>
-                                <Textarea placeholder="Share Whats Going On..."
-                                    className='w-full h-32 bg-neutral-950 font-semibold'
+                                <Textarea placeholder="What`s Going On..."
+                                    className='w-full h-32 bg-neutral-950'
                                     value={postText}
                                     onChange={(e) => setPostText(e.target.value)}
                                 />
                             </div>
 
                             {/* // ! Post Image Input */}
-                            <div>
+                            <div className='flex justify-start items-center'>
                                 <PostImageUpload
                                     postImage={postImage}
                                     setPostImage={setPostImage}

@@ -13,6 +13,7 @@ import Login from './pages/Login.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
+import { Toaster } from './components/ui/toaster.jsx'
 
 function App() {
   const {isAuthenticated } = useSelector(state => state.auth);
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <div >
+      <Toaster />
       <Routes>
         <Route path='login' element={<Login />} />
         {/* <Route path='test' element={<Test />} /> */}

@@ -9,52 +9,36 @@ import { getAllPosts } from '@/store/slices/post-slice.js';
 
 
 const Home = () => {
-    const { isLoading, posts } = useSelector( state => state.postSlice );
+    const { isLoading, posts } = useSelector(state => state.postSlice);
     const dispatch = useDispatch();
 
 
-    useEffect( () => {
+    useEffect(() => {
         dispatch(getAllPosts());
         console.log('Fetching Posts');
-        
+
     }, [dispatch])
 
-    if (isLoading) {
-        return (
-            <div className='w-[50%] mx-auto'>
-                <div className='py-2 flex justify-center items-center gap-2'>
-                    <span className='py-2 rounded-full'>
-                        ForYou 
-                    </span>
-                    <span className='text-xl p-1 hover:bg-gray-800/60 rounded-full'><IoIosArrowDropdown /></span>
-                </div>
-                <AddPost />
-                <div className='border border-neutral-900 bg-secondary rounded-t-3xl mt-2'>
-                    <h1 className='text-center text-2xl'>Loading...</h1>
-                </div>
-            </div>
-        )
-    }
 
     return (
         <div className='w-[50%] mx-auto'>
             {/* // ! Add Post Filter On This Drop Icon */}
             <div className='py-2 flex justify-center items-center gap-2'>
                 <span className='py-2 rounded-full'>
-                    ForYou 
+                    ForYou
                 </span>
                 <span className='text-xl p-1 hover:bg-gray-800/60 rounded-full'><IoIosArrowDropdown /></span>
             </div>
             <AddPost />
             <div className='bg-[#212121] border-[0.25px] border-neutral-100 rounded-t-xl mt-2'>
                 {
-                    posts && posts.length > 0 && posts.map( (post) => (
-                        <Post   key={post._id}
-                                post={post}
+                    posts && posts.length > 0 && posts.map((post) => (
+                        <Post key={post._id}
+                            post={post}
                         />
-                    ) )
+                    ))
                 }
-                
+
                 {/* // ! Replace With Infinite Scroll Pagination */}
                 <Button className='w-full'>Load More</Button>
             </div>
