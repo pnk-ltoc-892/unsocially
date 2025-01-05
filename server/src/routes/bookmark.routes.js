@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { togglePostBookmark } from "../controllers/bookmark.controller.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 
 const router = Router();
@@ -12,7 +13,7 @@ router.get("/", (req, res) => {
 
 router
     .route("/:postId")
-    .post(togglePostBookmark);
+    .post(verifyJWT, togglePostBookmark);
 
 
 export default router;

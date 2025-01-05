@@ -17,4 +17,4 @@ const followSchema = new Schema(
 
 followSchema.plugin(mongooseAggregatePaginate);
 
-export const SocialFollow = mongoose.model("SocialFollow", followSchema);
+export const Follow = mongoose.model("Follow", followSchema);
