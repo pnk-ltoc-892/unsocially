@@ -32,7 +32,7 @@ router.use(verifyJWT);
 // ! User Profile Routes
 router
     .route("/update-avatar")
-    .post(upload.single("imageFile"), updateProfileAvatar);
+    .patch(upload.single("imageFile"), updateProfileAvatar);
 
 
 router.route("/update-profile").patch(updateProfile);

@@ -9,15 +9,15 @@ import { getAllPosts } from '@/store/slices/post-slice.js';
 
 
 const Home = () => {
-    const { isLoading, posts } = useSelector(state => state.postSlice);
-    const dispatch = useDispatch();
+    // const { isLoading, posts } = useSelector(state => state.postSlice);
+    // const dispatch = useDispatch();
 
 
-    useEffect(() => {
-        dispatch(getAllPosts());
-        console.log('Fetching Posts');
+    // useEffect(() => {
+    //     dispatch(getAllPosts());
+    //     console.log('Fetching Posts');
 
-    }, [dispatch])
+    // }, [dispatch])
 
 
     return (
@@ -31,13 +31,13 @@ const Home = () => {
             </div>
             <AddPost />
             <div className='bg-[#212121] border-[0.25px] border-neutral-100 rounded-t-xl mt-2'>
-                {
+                {/* {
                     posts && posts.length > 0 && posts.map((post) => (
                         <Post key={post._id}
                             post={post}
                         />
                     ))
-                }
+                } */}
 
                 {/* // ! Replace With Infinite Scroll Pagination */}
                 <Button className='w-full'>Load More</Button>

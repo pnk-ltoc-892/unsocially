@@ -43,7 +43,7 @@ const PostImageUpload = ({
                     withCredentials: true,
                 }
         );
-        console.log(response.data);
+        // console.log(response.data);
         if(response.data.success){
             console.log(response.data.data.secure_url);
             setUploadedImageUrl(response.data.data.secure_url);
