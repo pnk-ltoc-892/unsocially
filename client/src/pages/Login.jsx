@@ -8,8 +8,6 @@ import { useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
-    const { isLoading, isAuthenticated } = useSelector(state => state.auth);
-
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -20,16 +18,8 @@ const Login = () => {
 
     const dispatch = useDispatch();
     const handleLogin = () => {
-        login ? dispatch(loginUser(formData)) : dispatch(registerUser(formData))
+        login ? dispatch(loginUser(formData)) : dispatch(registerUser(formData));
     }
-
-    const navigate = useNavigate()
-    // ! Call navigate Inside useEffect
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/home');
-        }
-    }, [isAuthenticated])
 
     return <div className='bg-thoughts bg-repeat h-screen flex justify-center items-center'>
         <div className='bg-background w-[35%] mx-auto px-6 py-8 rounded-lg border border-neutral-200'>

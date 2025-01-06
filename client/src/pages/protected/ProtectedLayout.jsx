@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Header from '../../components/header/Header.jsx'
 import { useSelector } from 'react-redux'
 
@@ -7,14 +7,18 @@ import { useSelector } from 'react-redux'
 const ProtectedLayout = () => {
     const { isAuthenticated } = useSelector(state => state.auth);
 
+    const location = useLocation();
+    console.log(location);
+    
+
     const navigate = useNavigate()
     // ! Call navigate Inside useEffect
     useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/home');
-        }
-        else {
+        if (!isAuthenticated) {
             navigate('/login');
+        }
+        else{
+            navigate('/home');
         }
     }, [isAuthenticated]);
 

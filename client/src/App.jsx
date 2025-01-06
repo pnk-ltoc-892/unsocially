@@ -16,7 +16,7 @@ import { checkAuth } from './store/slices/authSlice.js'
 import { Toaster } from './components/ui/toaster.jsx'
 
 function App() {
-  const {isAuthenticated } = useSelector(state => state.auth);
+  const { isAuthenticated } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
@@ -29,12 +29,13 @@ function App() {
     <div >
       <Toaster />
       <Routes>
-        <Route path='login' element={<Login />} />
+        <Route path='post/:id' element={<Post />} />
         {/* <Route path='test' element={<Test />} /> */}
         <Route path='/' element={<ProtectedLayout />} >
+          <Route path='login' element={<Login />} />
           <Route path='home' element={<Home />} />
           <Route path='search' element={<Search />} />
-          <Route path='post/:id' element={<Post />} />
+          
 
           <Route path='profile' element={<ProfileLayout />}>
             <Route path='posts/:id' element={<Posts />} />

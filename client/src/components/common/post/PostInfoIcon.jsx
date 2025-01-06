@@ -2,13 +2,13 @@ import React from 'react'
 
 
 // ! Add A PopOver On Hover
-const PostInfoIcon = ({ children, info}) => {
+const PostInfoIcon = ({ children, info, className}) => {
     return (
-        <div className='flex gap-2 items-center cursor-pointer hover:bg-gray-600/10 p-2 rounded-full'>
-            <div className='hover:text-neutral-300'>
+        <div className={`flex gap-1 items-center cursor-pointer py-[0.1rem] rounded-full ${className}`}>
+            <div className='flex justify-center items-center hover:text-neutral-300 hover:bg-neutral-600/20 p-[0.4rem] rounded-full'>
                 {children}
             </div>
-            {info && <span className='text-sm'>{info}</span>}
+            {info && <span className='text-[0.8rem]'>{info}</span>}
         </div>
     )
 }
