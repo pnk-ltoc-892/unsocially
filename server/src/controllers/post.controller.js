@@ -7,6 +7,269 @@ import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
+import { getMongoosePaginationOptions } from "../utils/helpers.js";
+
+
+// ! Common Aggregation For Any Given Post - W.R.T Current User
+
+const postCommonAggregation = (req) => {
+    return [
+        {
+            $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "postId",
+                as: "Comments"
+            }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "postId",
+                as: "Likes"
+            }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "postId",
+                as: "isLiked",
+                pipeline: [
+                    {
+                        $match: {
+                            likedBy: new mongoose.Types.ObjectId(req.user?._id)
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $lookup: {
+                from: "bookmarks",
+                localField: "_id",
+                foreignField: "postId",
+                as: "isBookmarked",
+                pipeline: [
+                    {
+                        $match: {
+                            bookmarkedBy: new mongoose.Types.ObjectId(req.user?._id)
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $addFields: {
+                likes: { $size: "$Likes" },
+                comments: { $size: "$Comments" },
+                isLiked: {
+                    $cond: {
+                        if: {
+                            $gte: [
+                                {
+                                    // if the isLiked key has document in it
+                                    $size: "$isLiked",
+                                },
+                                1,
+                            ],
+                        },
+                        then: true,
+                        else: false,
+                    },
+                },
+                isBookmarked: {
+                    $cond: {
+                        if: {
+                            $gte: [
+                                {
+                                    // if the isBookmarked key has document in it
+                                    $size: "$isBookmarked",
+                                },
+                                1,
+                            ],
+                        },
+                        then: true,
+                        else: false,
+                    },
+                }
+            }
+        }
+    ]
+}
+
+
+
+const getAllPosts = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 5 } = req.query;
+
+    const postsAggregation = Post.aggregate([...postCommonAggregation(req)]);
+
+    // ! await (Execute Pipeline) - not used as Raw aggregation needs to be passed to pagination
+    const posts = await Post.aggregatePaginate(
+        postsAggregation,
+        getMongoosePaginationOptions(
+            {
+                page,
+                limit,
+                customLabels: {
+                    totalDocs: "totalPosts",
+                    docs: "posts"
+                }
+            }
+        )
+    )
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, posts, "All Posts Fetched Successfully"));
+});
+
+
+const getPostById = asyncHandler(async (req, res) => {
+    const { postId } = req.params;
+    if (!postId) {
+        throw new ApiError(404, "PostId Is Missing");;
+    }
+
+    const postData = await Post.aggregate(
+        [
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(postId)
+                }
+            },
+            ...postCommonAggregation(req)
+        ]
+    )
+    if (!postData[0]) {
+        throw new ApiError(404, "Post does not exist");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, postData[0], "Post fetched successfully"));
+});
+
+
+const getMyPosts = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 5 } = req.query;
+
+    const postsAggregation = Post.aggregate(
+        [
+            {
+                $match: {
+                    author: new mongoose.Types.ObjectId(req.user?._id)
+                }
+            },
+            ...postCommonAggregation(req)
+        ]
+    );
+
+    const posts = await Post.aggregatePaginate(
+        postsAggregation,
+        getMongoosePaginationOptions({
+            page,
+            limit,
+            customLabels: {
+                totalDocs: "totalPosts",
+                docs: "posts"
+            }
+        })
+    )
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, posts, "All User Posts Fetched Successfully"));
+});
+
+
+const getPostsByUsername = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 5 } = req.query;
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+    if (!user) {
+        throw new ApiError(404, "User with username '" + username + "' Does Not Exist");
+    }
+
+    const postsAggregation = Post.aggregate(
+        [
+            {
+                $match: {
+                    author: new mongoose.Types.ObjectId(user._id)
+                }
+            },
+            ...postCommonAggregation(req)
+        ]
+    );
+
+    const posts = await Post.aggregatePaginate(
+        postsAggregation,
+        getMongoosePaginationOptions({
+            page,
+            limit,
+            customLabels: {
+                totalDocs: "totalPosts",
+                docs: "posts"
+            }
+        })
+    )
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, posts, `All Posts Fetched For ${username} Successfully`));
+});
+
+
+// !
+const getPostsByTag = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 5 } = req.query;
+    const { tag } = req.params;
+
+    const postsAggregation = Post.aggregate(
+        [   // ! See if this does work Out ?
+            // {
+            //     $match: {
+            //         tags: tag
+            //     }
+            // },
+            {
+                $redact: {
+                    $cond: {
+                        if: {
+                            $in: [tag, "$tags"]
+                        },
+                        then: "$$KEEP",
+                        else: "$$PRUNE"
+                    }
+                }
+            }
+            ,
+            ...postCommonAggregation(req)
+        ]
+    );
+
+    const posts = await Post.aggregatePaginate(
+        postsAggregation,
+        getMongoosePaginationOptions({
+            page,
+            limit,
+            customLabels: {
+                totalDocs: "totalPosts",
+                docs: "posts"
+            }
+        })
+    )
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, posts, `Posts With #${username} Fetched Successfully`));
+});
+
+
+
 
 
 const uploadPostImage = asyncHandler(async (req, res) => {
@@ -28,7 +291,7 @@ const addPost = asyncHandler(async (req, res) => {
     const { content, images } = req.body;
     // ! Checking Done On FrontEnd - Also
     // console.log({ content, images });
-    
+
     if (!content && !images.length) {
         throw new ApiError(400, "Content or Image is required !");
     }
@@ -43,7 +306,7 @@ const addPost = asyncHandler(async (req, res) => {
     if (!newPost) {
         throw new ApiError(500, "Error Adding a New Post !");
     }
-    
+
     // TODO: Return result after applying the necessary aggregations
     return res
         .status(201)
@@ -51,190 +314,56 @@ const addPost = asyncHandler(async (req, res) => {
 });
 
 
-const singlePost = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ msg: "Id is required !" });
-        }
-        const post = await Post.findById(id)
-            .populate({
-                path: "admin",
-                select: "-password",
-            })
-            .populate({ path: "likes", select: '-password' })
-            .populate({
-                path: "comments",
-                populate: {
-                    path: "admin",
-                },
-            });
-        res.status(200).json({ msg: "Post Fetched !", post });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in singlePost !", err: err.message });
+
+
+
+const updatePost = asyncHandler(async (req, res) => {
+
+})
+
+
+const removePostImage = asyncHandler(async (req, res) => {
+
+});
+
+const deletePost = asyncHandler(async (req, res) => {
+    const { postId } = req.params;
+    if (!postId) {
+        throw new ApiError(404, "PostId Is Missing");;
     }
-};
 
-
-// TODO: Study This Important Function - OPtimise This Further
-const allPost = async (req, res) => {
-    try {
-        const posts = await Post.find({})
-        res.status(200).json({
-            success: true,
-            data: posts,
-        });
-    } catch (err) {
-        res.status(200).json({
-            success: false,
-            message: "Error Adding New Post",
-        });
+    const post = await Post.findOneAndDelete({
+        _id: postId,
+        author: req.user?._id
+    });
+    if (!post) {
+        throw new ApiError(404, "Post does not exist");
     }
-};
-// // TODO: Study This Important Function - OPtimise This Further
-// const allPost = async (req, res) => {
-//     try {
-//         const { page } = req.query;
-//         let pageNumber = page;
-//         if (!page || page === undefined) {
-//             pageNumber = 1;
-//         }
-//         const posts = await Post.find({})
-//             .sort({ createdAt: -1 }) // Get Latest Post
-//             .skip((pageNumber - 1) * 3) // Skipping Previous Posts
-//             .limit(3) // Limit Post entries
-//             .populate({ path: "admin", select: "-password" })
-//             .populate({ path: "likes", select: "-password" })
-//             .populate({
-//                 path: "comments",
-//                 populate: {
-//                     path: "admin",
-//                     model: "User",
-//                 },
-//             });
-//         res.status(200).json({ msg: "Post Fetched !", posts });
-//     } catch (err) {
-//         res.status(400).json({ msg: "Error in allPost !", err: err.message });
-//     }
-// };
+
+    // ! Delete Post Images From Cloudinary
+    // const postImages = [...(post.images) || []];
 
 
-const deletePost = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ msg: "Id is required !" });
-        }
-        const postExists = await Post.findById(id);
-        if (!postExists) {
-            return res.status(400).json({ msg: "Post not found !" });
-        }
-        // TODO: Optimize For Frontend
-        const userId = req.user._id.toString();
-        const adminId = postExists.admin._id.toString();
-        if (userId !== adminId) {
-            return res
-                .status(400)
-                .json({ msg: "You are not authorized to delete this post !" });
-        }
-        // TODO: Do cleanup tasks before deleting
-        if (postExists.media) {
-            await cloudinary.uploader.destroy(
-                postExists.public_id,
-                (error, result) => {
-                    console.log({ error, result });
-                }
-            );
-        }
-        await Comment.deleteMany({ _id: { $in: postExists.comments } });
-        await User.updateMany(
-            {
-                $or: [{ posts: id }, { reposts: id }, { replies: id }],
-            },
-            {
-                $pull: {
-                    posts: id,
-                    reposts: id,
-                    replies: id,
-                },
-            },
-            { new: true }
-        );
-        await Post.findByIdAndDelete(id);
-        res.status(400).json({ msg: "Post deleted !" });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in deletePost !", err: err.message });
-    }
-};
-
-
-const likePost = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ msg: "Id is required !" });
-        }
-        const post = await Post.findById(id);
-        if (!post) {
-            return res.status(400).json({ msg: "No such Post !" });
-        }
-        if (post.likes.includes(req.user._id)) {
-            await Post.findByIdAndUpdate(
-                id,
-                { $pull: { likes: req.user._id } },
-                { new: true }
-            );
-            return res.status(201).json({ msg: "Post unliked !" });
-        }
-        await Post.findByIdAndUpdate(
-            id,
-            { $push: { likes: req.user._id } },
-            { new: true }
-        );
-        return res.status(201).json({ msg: "Post liked !" });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in likePost !", err: err.message });
-    }
-};
-
-
-// ! ALso good to explore route
-const repost = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(400).json({ msg: "Id is needed !" });
-        }
-        const post = await Post.findById(id);
-        if (!post) {
-            return res.status(400).json({ msg: "No such post !" });
-        }
-        const newId = new mongoose.Types.ObjectId(id); // Convert id string to Mongoose ID
-        if (req.user.reposts.includes(newId)) {
-            return res.status(400).json({ msg: "This post is already reposted !" });
-        }
-        await User.findByIdAndUpdate(
-            req.user._id,
-            {
-                $push: { reposts: post._id },
-            },
-            { new: true }
-        );
-        res.status(201).json({ msg: "Reposted !" });
-    } catch (err) {
-        res.status(400).json({ msg: "Error in repost !", err: err.message });
-    }
-};
+    // TODO: Optimize - Delete All Likes, Boomarks and commenst associated with Post
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Post deleted successfully"));
+});
 
 
 
 
 export {
+    getAllPosts,
+    getPostById,
+    getMyPosts,
+    getPostsByUsername,
+    getPostsByTag,
+
     uploadPostImage,
     addPost,
-    singlePost,
-    allPost,
-    deletePost,
-    likePost,
-    repost
+
+    updatePost,
+    removePostImage,
+    deletePost
 }
