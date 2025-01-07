@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { cookieOptions } from "../config/index.js";
 import { UploadOnCloudinary } from "../service/cloudinary.js";
+import mongoose from "mongoose";
+import { Follow } from "../models/follow.model.js";
 
 
 // ! User - Authentication Controllers
@@ -99,7 +101,148 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 
+// ! Profile Data Routes
+
+const getSocialProfile = async (userId, req) => {
+    const user = await User.findById(userId);
+    if(!user){
+        throw new ApiError(404, "User Does Not Exist");
+    }
+
+    const socialProfile = await User.aggregate(
+        [
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(userId)
+                }
+            },
+            {
+                $project: {
+                    username: 1,
+                    fullname: 1,
+                    avatar: 1,
+                    bio: 1
+                }
+            },
+            {   // Users followed by current user
+                $lookup: {
+                    from: "follows",
+                    localField: "_id",
+                    foreignField: "followerId",
+                    as: "Following"
+                }
+            },
+            {   // Users following current user
+                $lookup: {
+                    from: "follows",
+                    localField: "_id",
+                    foreignField: "followeeId",
+                    as: "Followers"
+                }
+            },
+            {
+                $lookup: {
+                    from: "posts",
+                    localField: "_id",
+                    foreignField: "author",
+                    as: "Posts"
+                }
+            },
+            {
+                $addFields: {
+                    following: {$size: "$Following"},
+                    followers: {$size: "$Followers"},
+                    posts: {$size: "$Posts"},
+                }
+            },
+            {
+                $project: {
+                    Followers: 0,
+                    Following: 0,
+                    Posts: 0
+                }
+            }
+        ]
+    );
+    // ! Check if profile is not of the current user => add a isFollowing Field
+    let isFollowing = false;
+    let isCurrentUserProfile = false;
+    
+    if(req.user?._id && userId.toString() !== req.user?._id?.toString()){
+        // Check IF follow Insatnce Exists
+        const followInstance = await Follow.findOne({
+            followerId: req.user?._id,
+            followeeId: userId
+        });
+        isFollowing = followInstance ? true : false;
+    }
+    // ! Check if we are on current logged in user profile
+    else if(req.user?._id && userId.toString() === req.user?._id?.toString()){
+        isCurrentUserProfile = true;
+    }
+    
+    const userProfile = socialProfile[0];
+    if(!userProfile){
+        throw new ApiError(404, "User Does Not Exist");
+    }
+
+    return {...userProfile, isFollowing, isCurrentUserProfile};
+}
+
+
+const getMyProfile = asyncHandler( async(req, res) => {
+
+    const profile = await getSocialProfile(req.user?._id, req);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {profile}, "Profile Fetched Succesfully"));
+} );
+
+
+const getProfileByUsername = asyncHandler( async(req, res) => {
+    const { username } = req.params;
+    const user = await User.findOne({username});
+    if(!user){
+        throw new ApiError(404, "User Does Not Exist");
+    }
+    
+    const profile = await getSocialProfile(user._id, req);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {profile}, "Profile Fetched Succesfully"));
+} );
+
+
+
 // ! User - Profile Controllers
+
+const updateProfile = asyncHandler(async (req, res) => {
+    const { username, fullname, bio } = req.body;
+
+    const users = await User.find({ username });
+
+    // TODO: Separate route - check while user is entering info for username - Should be unique
+    if (users.length) {
+        throw new ApiError(400, "username already taken, Try a different username");
+    }
+
+    // Find User, Update local Copy , Save it in DB & Finally Fetch updatedUser
+    const user = await User.findById(req.user?._id);
+    user.username = username || user.username;
+    user.fullname = fullname || user.fullname;
+    user.bio = bio || user.bio;
+    await user.save();
+
+    const profile = await getSocialProfile(user._id, req);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {profile}, "Profile Updated Sucessfully"));
+});
+
+
 const updateProfileAvatar = asyncHandler(async (req, res) => {
     const avatarLocalPath = req.file?.path;
     if (!avatarLocalPath) {
@@ -112,7 +255,7 @@ const updateProfileAvatar = asyncHandler(async (req, res) => {
     }
 
     const profileAvatarUrl = uploadResponse.secure_url
-    const user = await User.findByIdAndUpdate(
+    let user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {
@@ -122,43 +265,13 @@ const updateProfileAvatar = asyncHandler(async (req, res) => {
         { new: true }
     );
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, "Profile Avatar Updated Sucessfully"));
-});
-
-
-const updateProfile = asyncHandler(async (req, res) => {
-    const { username, fullname, bio } = req.body;
-    console.log({ username, fullname, bio });
-
-    const users = await User.find({ username });
-
-    // TODO: Separate route - check while user is entering info
-    if (users.length) {
-        throw new ApiError(400, "username already taken, Try a different username");
-    }
-
-    // Find User, Update local Copy , Save it in DB & Finally Fetch updatedUser
-    const user = await User.findById(req.user?._id);
-    user.username = username || user.username;
-    user.fullname = fullname || user.fullname;
-    user.bio = bio || user.bio;
-    await user.save();
-
-    const updatedUser = await User.findById(user._id);
+    const profile = await getSocialProfile(user._id, req);
 
     return res
         .status(200)
-        .json(new ApiResponse(200, {updatedUser}, "Profile Updated Sucessfully"));
+        .json(new ApiResponse(200, {profile}, "Profile Avatar Updated Sucessfully"));
 });
 
-const myProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user?._id).select('-password');
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {user}, "User Profile Fetched"));
-});
 
 
 export {
@@ -166,7 +279,9 @@ export {
     loginUser,
     logoutUser,
 
+    getMyProfile,
+    getProfileByUsername,
+
     updateProfileAvatar,
     updateProfile,
-    myProfile
 };
