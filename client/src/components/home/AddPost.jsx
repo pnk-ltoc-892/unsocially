@@ -32,6 +32,7 @@ const AddPost = () => {
         }
 
         dispatch(addNewPost(data)).then((data) => {
+            dispatch(getAllPosts())
             setOpenPostDialog(false);
             setPostLoadingState(false);
             setPostText("");
@@ -45,7 +46,7 @@ const AddPost = () => {
             // ! Refetching
             // dispatch(getAllPosts());
             console.log(data.payload.message);
-            toast({title: data.payload.message});
+            toast({ title: data.payload.message });
         })
 
         // ! Refetch the data from server, and close the dialog, and redirect user the created post
@@ -63,7 +64,7 @@ const AddPost = () => {
             </div>
 
             <Dialog open={openPostDialog}
-                    onOpenChange={() => setOpenPostDialog(false)}
+                onOpenChange={() => setOpenPostDialog(false)}
             >
                 {/* // ! Dialog Pop-Up Content */}
                 <DialogContent className='min-w-[50%] p-4'>
@@ -73,15 +74,7 @@ const AddPost = () => {
                         </div>
                     </DialogHeader>
                     <DialogDescription className='w-[90%] mx-auto'>
-                        <div className='flex flex-col gap-4'>
-                            {/* // ! Post Text Input */}
-                            <div>
-                                <Textarea placeholder="What`s Going On..."
-                                    className='w-full h-32 bg-neutral-950'
-                                    value={postText}
-                                    onChange={(e) => setPostText(e.target.value)}
-                                />
-                            </div>
+                        <div className='flex gap-6 justify-center items-center '>
 
                             {/* // ! Post Image Input */}
                             <div className='flex justify-start items-center'>
@@ -95,11 +88,19 @@ const AddPost = () => {
                                 />
                             </div>
 
-                            <div className='flex justify-between items-center'>
+                            {/* // ! Post Text Input */}
+                            <div>
+                                <Textarea placeholder="What`s Going On..."
+                                    className='w-full h-32 bg-neutral-950'
+                                    value={postText}
+                                    onChange={(e) => setPostText(e.target.value)}
+                                />
                                 {/* // ! Add Menu To Restrict Comments From Specific Users */}
                                 <div className='hover:underline hover:bg-gray-700/80 px-3 py-1 text-neutral-300 text-sm'>
                                     AnyOne Can Reply
                                 </div>
+                            </div>
+                            <div className='flex justify-between items-center'>
                                 <div>
                                     {
                                         postLoadingState ? (

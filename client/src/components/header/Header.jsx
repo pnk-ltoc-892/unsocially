@@ -1,10 +1,10 @@
 import React from 'react'
 import Navbar from './Navbar.jsx'
-import { RxHamburgerMenu } from "react-icons/rx";
 import { LogOut, Menu } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu.jsx';
 import { useDispatch } from 'react-redux';
 import { logOutUser } from '@/store/slices/authSlice.js';
+import { Link } from 'react-router-dom';
 
 
 const Header = () => {
@@ -27,11 +27,14 @@ const Header = () => {
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='cursor-pointer'>
-                    <DropdownMenuItem className='cursor-pointer font-semibold'>My Profile</DropdownMenuItem>
+                    <Link to={'profile/my'} >
+                        <DropdownMenuItem className='cursor-pointer font-semibold'>My Profile</DropdownMenuItem>
+                    </Link>
+
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem 
-                        onClick={ handleLogout}
+                    <DropdownMenuItem
+                        onClick={handleLogout}
                         className='text-red-600 focus:text-text-red-600 font-semibold cursor-pointer'
                     >
                         <LogOut />LogOut

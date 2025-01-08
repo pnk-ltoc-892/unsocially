@@ -12,7 +12,7 @@ const Navbar = () => {
             <Link to={'/search'} >
                 <Search size={28} />
             </Link>
-            <Link to={'/profile'} >
+            <Link to={'/profile/my'} >
                 <UserRound size={28} />
             </Link>
         </div>

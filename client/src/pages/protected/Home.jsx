@@ -1,10 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { IoIosArrowDropdown } from "react-icons/io";
 import AddPost from '../../components/home/AddPost.jsx';
 import { Button } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllPosts } from '@/store/slices/post-slice.js';
+import CommonPost from '@/components/common/post/CommonPost.jsx';
 
 
 const Home = () => {
+    const { posts } = useSelector( (state) => state.postSlice );
+
+    const dispatch = useDispatch();
+
+    useEffect( () => {
+        dispatch(getAllPosts());
+        // console.log(posts);
+    }, [dispatch] ) 
     
 
     return (
@@ -19,9 +30,10 @@ const Home = () => {
             <AddPost />
 
             {/* // ! All Posts */}
-            <div className='border-[0.25px] border-neutral-100 rounded-t-xl mt-2'>
-                
-
+            <div className='rounded-t-md mt-2'>
+                {
+                    posts.length && posts.map( (post) => <CommonPost post={post} key={post._id} /> )
+                }
             </div>
 
             {/* // ! Replace With Infinite Scroll Pagination */}

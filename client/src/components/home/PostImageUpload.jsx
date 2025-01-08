@@ -4,6 +4,7 @@ import { ImagePlus } from 'lucide-react'
 import { Input } from '../ui/input.jsx'
 import axios from 'axios'
 import { Skeleton } from '../ui/skeleton.jsx'
+import { toast } from '@/hooks/use-toast.js'
 
 
 const PostImageUpload = ({
@@ -53,6 +54,13 @@ const PostImageUpload = ({
         }
         else{
             // Show a error toast
+            toast({
+                title: "Error Uploading Image"
+            });
+            setUploadedImageUrl("");
+            setImageLoadingState(false);
+            setPostImage(null);
+            handleRemoveImage();
         }
     }
 

@@ -37,8 +37,8 @@ export const postSlice = createSlice({
         })
         .addCase(getAllPosts.fulfilled, (state, action) => {
             state.isLoading = false;
-            // console.log(action.payload.data);            
-            state.posts = action.payload.data.reverse();
+            // console.log(action.payload.data.posts);            
+            state.posts = action.payload.data.posts;
         })
         .addCase(getAllPosts.rejected, (state, action) => {
             state.isLoading = false;
@@ -75,12 +75,10 @@ export const getPostById = createAsyncThunk('post/getPostById',
 
 export const getAllPosts = createAsyncThunk('post/getAllPosts',
     async () => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/`,
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/`,
             {
                 withCredentials: true
             });
-            console.log("Fetching posts from serer");
-            
             return response.data;
     });
 

@@ -3,23 +3,24 @@ import { Share } from 'lucide-react';
 import PostShareDialog from './PostShareDialog.jsx';
 import { Dialog } from '../../ui/dialog.jsx';
 import { useDispatch } from 'react-redux';
-import { getPostById, togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
+import { getAllPosts, togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
+import { Link } from 'react-router-dom';
 
 
 const PostInfo = ({ post }) => {
     const [openShareDialog, setOpenShareDialog] = useState(false);
-    console.log(post);
+    // console.log(post);
 
     const dispatch = useDispatch();
-    const handlePostLike = () => {
-        dispatch(togglePostLike(post._id)).then( () => {
-            dispatch(getPostById(post._id));
-        } );
+    const handlePostLike = () => {        
+        dispatch(togglePostLike(post._id)).then(() => {
+            dispatch(getAllPosts());
+        });
     }
     const handlePostBookmark = () => {
-        dispatch(togglePostBookmark(post._id)).then( () => {
-            dispatch(getPostById(post._id));
-        } );
+        dispatch(togglePostBookmark(post._id)).then(() => {
+            dispatch(getAllPosts());
+        });
     }
 
     return (
@@ -33,9 +34,12 @@ const PostInfo = ({ post }) => {
                 </PostInfoIcon>
 
                 {/* // ! Add Post Comment */}
-                <PostInfoIcon info={post.comments}>
-                    <Comment active={false} className={"hover:text-green-600"} />
-                </PostInfoIcon>
+                <Link to={`/post/${post._id}`}>
+                    <PostInfoIcon info={post.comments}>
+                        <Comment active={false} className={"hover:text-green-600"} />
+                    </PostInfoIcon>
+                </Link>
+
 
                 {/* // ! Bookmark Post */}
                 <PostInfoIcon onClick={handlePostBookmark} >
