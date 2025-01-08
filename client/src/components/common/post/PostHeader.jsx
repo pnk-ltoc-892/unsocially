@@ -1,6 +1,5 @@
 import React from 'react'
-import av from "../../../public/avatar.jpg"
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.jsx'
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar.jsx'
 import { avatar } from '@/config/index.js'
 import { Ellipsis } from 'lucide-react'
 
@@ -10,16 +9,16 @@ const PostHeader = ({ post }) => {
             <div className='cursor-pointer flex justify-start items-center gap-2'>
                 <div>
                     <Avatar className='cursor-pointer h-10 w-10'>
-                        <AvatarImage src={post?.authorDetails?.avatar || avatar} className='object-cover' />
-                        <AvatarFallback>{post?.username || ""}</AvatarFallback>
+                        <AvatarImage src={post?.author?.avatar || avatar} className='object-cover' />
+                        <AvatarFallback>{post?.author?.username[0] || ""}</AvatarFallback>
                     </Avatar>
                 </div>
                 <div className='flex flex-col justify-center'>
                     <div className='text-sm font-semibold tracking-wide hover:underline'>
-                        @{post?.authorDetails?.username || ""}
+                        @{post?.author?.username || ""}
                     </div>
                     <div className='text-xs font-normal text-neutral-300'>
-                        {post?.authorDetails?.fullname || ""}
+                        {post?.author?.fullname || ""}
                     </div>
                 </div>
             </div>

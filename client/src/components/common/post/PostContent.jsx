@@ -11,7 +11,7 @@ const PostContent = ({post}) => {
                     </div>
             }
             {
-                post.images.length && (
+                post.images?.length && (
                     <div className='rounded-[1.25rem] overflow-clip'>
                         <img src={post.images[0]} 
                             alt="Post Image" 
