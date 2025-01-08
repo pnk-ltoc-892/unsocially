@@ -10,7 +10,8 @@ import {
         updateProfile,
 
         getProfileByUsername,
-        getMyProfile
+        getMyProfile,
+        searchUsers
 } from "../controllers/user.controller.js";
 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -52,6 +53,13 @@ router
 router
     .route("/update-profile")
     .patch(updateProfile);
+
+
+// ! User Profile Searching
+
+router
+    .route("/search")
+    .get(searchUsers);
 
 
 

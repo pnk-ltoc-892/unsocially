@@ -215,6 +215,25 @@ const getProfileByUsername = asyncHandler( async(req, res) => {
 } );
 
 
+//  User - Profile fetching
+const searchUsers = asyncHandler( async(req, res) => {
+    const { keyword } = req.query;
+
+    const regExp = new RegExp(keyword, "i");
+    const users = await User.find({
+        $or: [
+            {username: regExp},
+            {fullname: regExp},
+            // {bio: regExp},
+        ]
+    })
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {users}, "Fetched User With Given Keyword"));
+
+} )
+
 
 // ! User - Profile Controllers
 
@@ -281,6 +300,8 @@ export {
 
     getMyProfile,
     getProfileByUsername,
+
+    searchUsers,
 
     updateProfileAvatar,
     updateProfile,
