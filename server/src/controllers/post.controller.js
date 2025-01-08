@@ -61,7 +61,25 @@ const postCommonAggregation = (req) => {
             }
         },
         {
+            $lookup: {
+                from: "users",
+                localField: "author",
+                foreignField: "_id",
+                as: "author",
+                pipeline: [
+                    {
+                        $project: {
+                            username: 1,
+                            fullname: 1,
+                            avatar: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
             $addFields: {
+                author: {$first: "$author"},
                 likes: { $size: "$Likes" },
                 comments: { $size: "$Comments" },
                 isLiked: {
@@ -140,7 +158,7 @@ const getPostById = asyncHandler(async (req, res) => {
                     _id: new mongoose.Types.ObjectId(postId)
                 }
             },
-            ...postCommonAggregation(req)
+            ...postCommonAggregation(req),
         ]
     )
     if (!postData[0]) {
