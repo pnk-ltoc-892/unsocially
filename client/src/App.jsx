@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
 import { Toaster } from './components/ui/toaster.jsx'
+import MyProfile from './pages/protected/profile/MyProfile/MyProfile.jsx'
+import UserProfile from './pages/protected/profile/UserProfile/UserProfile.jsx'
 
 function App() {
   const { isAuthenticated } = useSelector(state => state.auth);
@@ -38,9 +40,12 @@ function App() {
           
 
           <Route path='profile' element={<ProfileLayout />}>
-            <Route path='posts/:id' element={<Posts />} />
+            <Route path='my' element={<MyProfile />} />
+            <Route path='user/:username' element={<UserProfile />} />
+
+            {/* <Route path='posts/:id' element={<Posts />} />
             <Route path='replies/:id' element={<Replies />} />
-            <Route path='reposts/:id' element={<Reposts />} />
+            <Route path='reposts/:id' element={<Reposts />} /> */}
           </Route>
         </Route>
         <Route path='*' element={<Error />} />

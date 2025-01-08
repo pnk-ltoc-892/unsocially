@@ -5,9 +5,8 @@ import { Input } from '../ui/input.jsx';
 import { Button } from '../ui/button.jsx';
 import { Textarea } from '../ui/textarea.jsx';
 import { useDispatch } from 'react-redux';
-import { getProfile, updateProfile } from '@/store/slices/profileSlice.js';
+import { getMyProfile, updateProfile } from '@/store/slices/profileSlice.js';
 import { toast } from '@/hooks/use-toast.js';
-import { Avatar, AvatarImage } from '../ui/avatar.jsx';
 import ProfileAvatarUpdate from './ProfileAvatarUpdate.jsx';
 
 const formData = {
@@ -30,7 +29,7 @@ const ProfileUpdateDialog = ({ profileUpdateDialog, setProfileUpdateDialog }) =>
             toast({
                 title: "Profile Updated Succesfully"
             });
-            dispatch(getProfile());
+            dispatch(getMyProfile());
         })
     }
 

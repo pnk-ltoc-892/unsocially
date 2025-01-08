@@ -4,7 +4,9 @@ import axios from "axios";
 
 const initialState = {
     isLoading: false,
-    profileData: {}
+    isFollowLoading: false,
+    myProfile: {},
+    userProfile: {}
 }
 
 export const profileSlice = createSlice({
@@ -15,30 +17,64 @@ export const profileSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        .addCase(getProfile.pending, (state) => {
-            state.isLoading = true;
-        })
-        .addCase(getProfile.fulfilled, (state, action) => {
-            state.isLoading = false;
-            state.profileData = action.payload.data.user;
-        })
-        .addCase(getProfile.rejected, (state) => {
-            state.isLoading = false;
-            state.profileData = {};
-        })
+            .addCase(getMyProfile.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getMyProfile.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.myProfile = action.payload.data.profile;
+            })
+            .addCase(getMyProfile.rejected, (state) => {
+                state.isLoading = false;
+                state.myProfile = {};
+            })
+
+            .addCase(getProfileByUsername.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getProfileByUsername.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.userProfile = action.payload.data.profile;
+            })
+            .addCase(getProfileByUsername.rejected, (state, action) => {
+                state.isLoading = false;
+                state.userProfile = {};
+            })
+
+            .addCase(toggleUserFollow.pending, (state) => {
+                state.isFollowLoading = true;
+            })
+            .addCase(toggleUserFollow.fulfilled, (state) => {
+                state.isFollowLoading = false;
+            })
+            .addCase(toggleUserFollow.rejected, (state) => {
+                state.isFollowLoading = false;
+            })
     }
 });
 
 
 // Asynchronous Actions Thunks
-export const getProfile = createAsyncThunk('profile/get',
+//! Profile Data Actions
+export const getMyProfile = createAsyncThunk('get/myprofile',
     async () => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/my-profile`,
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/`,
             {
                 withCredentials: true
             });
-            return response.data;
+        return response.data;
     });
+
+export const getProfileByUsername = createAsyncThunk('get/userprofile',
+    async (username) => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/u/${username}`,
+            {
+                withCredentials: true
+            });
+        // console.log(response.data);
+        return response.data;
+    });
+
 
 export const updateProfileAvatar = createAsyncThunk('profile/update-avatar',
     async (data) => {
@@ -47,9 +83,9 @@ export const updateProfileAvatar = createAsyncThunk('profile/update-avatar',
             {
                 withCredentials: true
             });
-            console.log(response.error);
-            
-            return response.data;
+        // console.log(response.error);
+
+        return response.data;
     });
 
 export const updateProfile = createAsyncThunk('profile/update-profile',
@@ -59,7 +95,19 @@ export const updateProfile = createAsyncThunk('profile/update-profile',
             {
                 withCredentials: true
             });
-            return response.data;
+        return response.data;
+    });
+
+
+
+export const toggleUserFollow = createAsyncThunk('/profile/toggleUserFollow',
+    async (userId) => {
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/follow/${userId}`,
+            {},
+            {
+                withCredentials: true
+            });
+        return response.data
     });
 
 

@@ -3,11 +3,11 @@ import { Label } from '../ui/label.jsx'
 import { Avatar, AvatarImage } from '../ui/avatar.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { Input } from '../ui/input.jsx'
-import { getProfile, updateProfileAvatar } from '@/store/slices/profileSlice.js'
+import { getMyProfile, updateProfileAvatar } from '@/store/slices/profileSlice.js'
 
 
 const ProfileAvatarUpdate = () => {
-    const { profileData } = useSelector(state => state.profileSlice);
+    const { myProfile } = useSelector(state => state.profileSlice);
 
     const [profileAvatar, setProfileAvatar] = useState(null);
     const [imageLoadingState, setImageLoadingState] = useState(false);
@@ -30,7 +30,7 @@ const ProfileAvatarUpdate = () => {
             setProfileAvatar(null);
             inputRef.current.value=""
 
-            dispatch(getProfile());
+            dispatch(getMyProfile());
         } )
     }
 
@@ -47,7 +47,7 @@ const ProfileAvatarUpdate = () => {
                         src="../../../public/loading.mp4" autoPlay="autoplay" muted="muted" loop="loop" playsinline="" type="video/mp4"></video>
                     :
                     <Avatar className='cursor-pointer h-28 w-28'>
-                        <AvatarImage src={profileData?.avatar}
+                        <AvatarImage src={myProfile?.avatar}
                             className='object-cover'
                         />
                     </Avatar>
