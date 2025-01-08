@@ -113,6 +113,11 @@ const postCommonAggregation = (req) => {
                     },
                 }
             }
+        },
+        {
+            $sort: {
+                updatedAt: -1
+            }
         }
     ]
 }
