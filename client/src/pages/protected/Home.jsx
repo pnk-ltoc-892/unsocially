@@ -30,7 +30,7 @@ const Home = () => {
                 <span className='text-xl p-1 hover:bg-gray-800/60 rounded-full'><IoIosArrowDropdown /></span>
             </div>
             <AddPost />
-            <div className='bg-[#212121] border-[0.25px] border-neutral-100 rounded-t-xl mt-2'>
+            <div className='border-[0.25px] border-neutral-100 rounded-t-xl mt-2'>
                 {/* {
                     posts && posts.length > 0 && posts.map((post) => (
                         <Post key={post._id}

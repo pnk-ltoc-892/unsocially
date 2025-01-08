@@ -31,13 +31,12 @@ function App() {
     <div >
       <Toaster />
       <Routes>
-        <Route path='post/:id' element={<Post />} />
+        <Route path='post/:postId' element={<Post />} />
         {/* <Route path='test' element={<Test />} /> */}
         <Route path='/' element={<ProtectedLayout />} >
           <Route path='login' element={<Login />} />
           <Route path='home' element={<Home />} />
           <Route path='search' element={<Search />} />
-          
 
           <Route path='profile' element={<ProfileLayout />}>
             <Route path='my' element={<MyProfile />} />

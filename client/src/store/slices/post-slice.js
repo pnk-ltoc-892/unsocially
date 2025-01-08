@@ -4,8 +4,9 @@ import axios from "axios";
 
 const initialState = {
     isLoading: false,
+    isPostLoading: false,
     posts: [],
-    post: null
+    post: {}
 }
 
 export const postSlice = createSlice({
@@ -43,11 +44,73 @@ export const postSlice = createSlice({
             state.isLoading = false;
             state.posts = [];
         })
+
+        .addCase(getPostById.pending, (state, action) => {
+            state.isPostLoading = true;
+        })
+        .addCase(getPostById.fulfilled, (state, action) => {
+            state.isPostLoading = false;
+            state.post = action.payload.data;
+        })
+        .addCase(getPostById.rejected, (state, action) => {
+            state.isPostLoading = false;
+            state.post = null;
+        })
     }
 })
 
 
 // Asynchronous Actions Thunks
+
+// ! Post Fetching
+export const getPostById = createAsyncThunk('post/getPostById',
+    async (postId) => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/${postId}`,
+            {
+                withCredentials: true
+            });
+            return response.data;
+    });
+
+
+export const getAllPosts = createAsyncThunk('post/getAllPosts',
+    async () => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/`,
+            {
+                withCredentials: true
+            });
+            console.log("Fetching posts from serer");
+            
+            return response.data;
+    });
+
+
+// ! Post Controllers
+export const togglePostLike = createAsyncThunk('post/toggleLike',
+    async (postId) => {
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/like/post/${postId}`,
+            {},
+            {
+                withCredentials: true
+            });
+            return response.data;
+    });
+
+export const togglePostBookmark = createAsyncThunk('post/toggleBookmark',
+    async (postId) => {
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/bookmarks/${postId}`,
+            {},
+            {
+                withCredentials: true
+            });
+            return response.data;
+    });
+
+
+
+
+
+
 export const addNewPost = createAsyncThunk('post/addNewPost',
     async (data) => {
         const response = await axios.post("http://localhost:5000/api/v1/posts/post",
@@ -58,16 +121,7 @@ export const addNewPost = createAsyncThunk('post/addNewPost',
             return response.data;
     })
 
-export const getAllPosts = createAsyncThunk('post/getAllPosts',
-    async () => {
-        const response = await axios.get("http://localhost:5000/api/v1/posts/",
-            {
-                withCredentials: true
-            });
-            console.log("Fetching posts from serer");
-            
-            return response.data;
-    })
+
 
 
 

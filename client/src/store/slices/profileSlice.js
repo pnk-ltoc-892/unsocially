@@ -29,6 +29,7 @@ export const profileSlice = createSlice({
                 state.myProfile = {};
             })
 
+            
             .addCase(getProfileByUsername.pending, (state) => {
                 state.isLoading = true;
             })
