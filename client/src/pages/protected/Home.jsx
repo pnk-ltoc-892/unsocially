@@ -19,7 +19,7 @@ const Home = () => {
     
 
     return (
-        <div className='w-[50%] mx-auto'>
+        <div className='w-[45%] mx-auto'>
             {/* // ! Add Post Filter On This Drop Icon */}
             <div className='py-2 flex justify-center items-center gap-2'>
                 <span className='py-2 rounded-full'>

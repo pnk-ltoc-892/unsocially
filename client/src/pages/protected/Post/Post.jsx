@@ -1,4 +1,5 @@
 import Header from '@/components/header/Header.jsx'
+import Comments from '@/components/postPage/Comments.jsx'
 import PostContent from '@/components/postPage/PostContent.jsx'
 import PostHeader from '@/components/postPage/PostHeader.jsx'
 import PostInfo from '@/components/postPage/PostInfo.jsx'
@@ -27,6 +28,7 @@ const Post = () => {
                     <PostHeader post={post}/>
                     <PostContent post={post}/>
                     <PostInfo post={post}/>
+                    <Comments post={post}/>
                 </div>
             </div>
         </div>
