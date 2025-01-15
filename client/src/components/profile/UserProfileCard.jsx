@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { avatar } from '@/config/index.js'
 import { toast } from '@/hooks/use-toast.js'
-import { getProfileByUsername, toggleUserFollow } from '@/store/slices/profileSlice.js'
+import { getUserProfile, toggleUserFollow } from '@/store/slices/profileSlice.js'
 
 
 export const UserProfileCard = ({ profile }) => {
@@ -14,7 +14,7 @@ export const UserProfileCard = ({ profile }) => {
     // ! Handle Toggling User Following
     const handleUserFollow = () => {
         dispatch(toggleUserFollow(profile._id)).then( (data) => {
-            dispatch(getProfileByUsername(profile.username));            
+            dispatch(getUserProfile(profile.username));            
             toast({
                 title: profile.isFollowing ? "Unfollowed" : "Followed"
             })
@@ -24,7 +24,6 @@ export const UserProfileCard = ({ profile }) => {
     return (
         <>
             <div className='border-[1px] border-neutral-500 rounded-lg p-8'>
-
                 {/* // ! For Profile Info */}
                 <div className='flex'>
                     {/* // ! Name Section */}

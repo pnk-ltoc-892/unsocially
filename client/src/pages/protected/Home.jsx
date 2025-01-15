@@ -1,16 +1,20 @@
 import React, { useEffect } from 'react'
 import { IoIosArrowDropdown } from "react-icons/io";
 import AddPost from '../../components/home/AddPost.jsx';
-import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPosts } from '@/store/slices/post-slice.js';
 import CommonPost from '@/components/common/post/CommonPost.jsx';
+import { Button } from '@/components/ui/button.jsx';
 
 
 const Home = () => {
-    const { posts } = useSelector( (state) => state.postSlice );
+    const { posts, prevPage, page, nextPage } = useSelector( (state) => state.postSlice );
 
     const dispatch = useDispatch();
+
+    const handlePostLoading = (value) => {
+        dispatch(getAllPosts(page+value));
+    }
 
     useEffect( () => {
         dispatch(getAllPosts());
@@ -37,7 +41,15 @@ const Home = () => {
             </div>
 
             {/* // ! Replace With Infinite Scroll Pagination */}
-            <Button className='w-full'>Load More</Button>
+            <div className='py-8 flex justify-center items-center gap-4' >
+                <Button onClick={() => handlePostLoading(-1)}
+                        disabled={prevPage === null}
+                >{"<"}</Button>
+                <Button>{page}</Button>
+                <Button onClick={() => handlePostLoading(1)}
+                        disabled={nextPage === null}
+                >{">"}</Button>
+            </div>
         </div>
     )
 }

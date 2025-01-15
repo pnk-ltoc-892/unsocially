@@ -1,9 +1,12 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { House, Search, UserRound } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 
 const Navbar = () => {
+    const { user } = useSelector(state => state.auth);
+    
     return (
         <div className='text-gray-400 text-3xl flex justify-center items-center gap-12'>
             <Link to={'/home'} >
@@ -12,7 +15,7 @@ const Navbar = () => {
             <Link to={'/search'} >
                 <Search size={28} />
             </Link>
-            <Link to={'/profile/my'} >
+            <Link to={`/profile/user/${user?.username}`} >
                 <UserRound size={28} />
             </Link>
         </div>

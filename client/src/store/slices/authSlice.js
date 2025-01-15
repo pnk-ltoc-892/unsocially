@@ -49,7 +49,7 @@ export const authSlice = createSlice({
         .addCase(checkAuth.fulfilled, (state, action) => {
             state.isLoading = false;
             state.isAuthenticated = true;
-            state.user = action.payload?.user;
+            state.user = action.payload?.user;                
         })
         .addCase(checkAuth.rejected, (state, action) => {
             state.isLoading = false;

@@ -5,41 +5,33 @@ import axios from "axios";
 const initialState = {
     isLoading: false,
     isFollowLoading: false,
-    myProfile: {},
-    userProfile: {}
+    isCurrentUserProfile: false,
+    profile: {},
+    posts: [],
+    comments: [],
+    bookmarks: []
 }
 
 export const profileSlice = createSlice({
     name: "profileSlice",
     initialState,
     reducers: {
-
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getMyProfile.pending, (state) => {
+            .addCase(getUserProfile.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(getMyProfile.fulfilled, (state, action) => {
+            .addCase(getUserProfile.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.myProfile = action.payload.data.profile;
+                // console.log(action.payload.data.profile);
+                
+                state.profile = action.payload.data.profile;
+                state.isCurrentUserProfile = action.payload.data.profile.isCurrentUserProfile;
             })
-            .addCase(getMyProfile.rejected, (state) => {
+            .addCase(getUserProfile.rejected, (state, action) => {
                 state.isLoading = false;
-                state.myProfile = {};
-            })
-
-            
-            .addCase(getProfileByUsername.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(getProfileByUsername.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.userProfile = action.payload.data.profile;
-            })
-            .addCase(getProfileByUsername.rejected, (state, action) => {
-                state.isLoading = false;
-                state.userProfile = {};
+                state.profile = {};
             })
 
             .addCase(toggleUserFollow.pending, (state) => {
@@ -56,17 +48,21 @@ export const profileSlice = createSlice({
 
 
 // Asynchronous Actions Thunks
-//! Profile Data Actions
-export const getMyProfile = createAsyncThunk('get/myprofile',
-    async () => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/`,
-            {
-                withCredentials: true
-            });
-        return response.data;
-    });
+//! Profile Data Fetching
+// export const getMyProfile = createAsyncThunk('get/myprofile',
+//     async () => {
+//         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/`,
+//             {
+//                 withCredentials: true
+//             });
+//         return response.data;
+//     });
 
-export const getProfileByUsername = createAsyncThunk('get/userprofile',
+
+
+
+//! Profile Data Actions
+export const getUserProfile = createAsyncThunk('get/userprofile',
     async (username) => {
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/u/${username}`,
             {

@@ -6,6 +6,9 @@ const initialState = {
     isLoading: false,
     isPostLoading: false,
     posts: [],
+    page: 1,
+    prevPage: null,
+    nextPage: null,
     post: {}
 }
 
@@ -37,8 +40,12 @@ export const postSlice = createSlice({
         })
         .addCase(getAllPosts.fulfilled, (state, action) => {
             state.isLoading = false;
-            // console.log(action.payload.data.posts);            
+            console.log(action.payload.data);            
             state.posts = action.payload.data.posts;
+
+            state.prevPage = action.payload.data.prevPage;
+            state.page = action.payload.data.page;
+            state.nextPage = action.payload.data.nextPage;
         })
         .addCase(getAllPosts.rejected, (state, action) => {
             state.isLoading = false;
@@ -74,11 +81,13 @@ export const getPostById = createAsyncThunk('post/getPostById',
 
 
 export const getAllPosts = createAsyncThunk('post/getAllPosts',
-    async () => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/`,
+    async (page) => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?page=${page}&limit=${5}`,
             {
                 withCredentials: true
             });
+            // console.log("state.page");
+            
             return response.data;
     });
 

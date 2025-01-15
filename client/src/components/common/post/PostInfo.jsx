@@ -2,24 +2,26 @@ import React, { useState } from 'react'
 import { Share } from 'lucide-react';
 import PostShareDialog from './PostShareDialog.jsx';
 import { Dialog } from '../../ui/dialog.jsx';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAllPosts, togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
 import { Link } from 'react-router-dom';
 
 
 const PostInfo = ({ post }) => {
+    const { posts, prevPage, page, nextPage } = useSelector( (state) => state.postSlice );
+
     const [openShareDialog, setOpenShareDialog] = useState(false);
     // console.log(post);
 
     const dispatch = useDispatch();
     const handlePostLike = () => {        
         dispatch(togglePostLike(post._id)).then(() => {
-            dispatch(getAllPosts());
+            dispatch(getAllPosts(page));
         });
     }
     const handlePostBookmark = () => {
         dispatch(togglePostBookmark(post._id)).then(() => {
-            dispatch(getAllPosts());
+            dispatch(getAllPosts(page));
         });
     }
 

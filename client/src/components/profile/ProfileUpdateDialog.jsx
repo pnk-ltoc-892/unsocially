@@ -5,9 +5,10 @@ import { Input } from '../ui/input.jsx';
 import { Button } from '../ui/button.jsx';
 import { Textarea } from '../ui/textarea.jsx';
 import { useDispatch } from 'react-redux';
-import { getMyProfile, updateProfile } from '@/store/slices/profileSlice.js';
+import { getUserProfile, updateProfile } from '@/store/slices/profileSlice.js';
 import { toast } from '@/hooks/use-toast.js';
 import ProfileAvatarUpdate from './ProfileAvatarUpdate.jsx';
+import { useParams } from 'react-router-dom';
 
 const formData = {
     username: "",
@@ -16,6 +17,7 @@ const formData = {
 }
 
 const ProfileUpdateDialog = ({ profileUpdateDialog, setProfileUpdateDialog }) => {
+    const {username} = useParams();
 
     const [profileData, SetprofileData] = useState(formData);
 
@@ -29,7 +31,7 @@ const ProfileUpdateDialog = ({ profileUpdateDialog, setProfileUpdateDialog }) =>
             toast({
                 title: "Profile Updated Succesfully"
             });
-            dispatch(getMyProfile());
+            dispatch(getUserProfile(username));
         })
     }
 
