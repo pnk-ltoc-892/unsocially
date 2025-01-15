@@ -6,16 +6,15 @@ import Home from './pages/protected/Home.jsx'
 import Search from './pages/protected/Search.jsx'
 import Post from './pages/protected/Post/Post.jsx'
 import ProfileLayout from './pages/protected/profile/ProfileLayout.jsx'
-import Posts from './pages/protected/profile/Posts.jsx'
-import Replies from './pages/protected/profile/Replies.jsx'
-import Reposts from './pages/protected/profile/Reposts.jsx'
 import Login from './pages/Login.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
 import { Toaster } from './components/ui/toaster.jsx'
-import MyProfile from './pages/protected/profile/MyProfile/MyProfile.jsx'
 import UserProfile from './pages/protected/profile/UserProfile/UserProfile.jsx'
+import Posts from './components/profile/Content/Posts.jsx'
+import Comments from './components/profile/Content/Comments.jsx'
+import Bookmarks from './components/profile/Content/Bookmarks.jsx'
 
 function App() {
   const { isAuthenticated } = useSelector(state => state.auth);
@@ -39,12 +38,12 @@ function App() {
           <Route path='search' element={<Search />} />
 
           <Route path='profile' element={<ProfileLayout />}>
-            <Route path='my' element={<MyProfile />} />
-            <Route path='user/:username' element={<UserProfile />} />
+            <Route path='user/:username' element={<UserProfile />} >
+              <Route path='' element={<Posts />} />
+              <Route path='comments' element={<Comments />} />
+              <Route path='saved' element={<Bookmarks />} />
+            </Route>
 
-            {/* <Route path='posts/:id' element={<Posts />} />
-            <Route path='replies/:id' element={<Replies />} />
-            <Route path='reposts/:id' element={<Reposts />} /> */}
           </Route>
         </Route>
         <Route path='*' element={<Error />} />
