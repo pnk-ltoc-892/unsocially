@@ -96,9 +96,27 @@ const getBookMarkedPosts = asyncHandler(async (req, res) => {
                             }
                         },
                         {
+                            $lookup: {
+                                from: "users",
+                                localField: "author",
+                                foreignField: "_id",
+                                as: "author",
+                                pipeline: [
+                                    {
+                                        $project: {
+                                            username: 1,
+                                            fullname: 1,
+                                            avatar: 1
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
                             $addFields: {
                                 likes: { $size: "$Likes" },
                                 comments: { $size: "$Comments" },
+                                author: { $first: "$author" },
                                 isLiked: {
                                     $cond: {
                                         if: {
