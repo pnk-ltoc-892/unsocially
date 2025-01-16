@@ -145,11 +145,11 @@ const getBookMarkedPosts = asyncHandler(async (req, res) => {
                     Post: 1,
                 },
             },
-            {
-                $replaceRoot: {
-                    newRoot: "$Post",
-                },
-            },
+            // {
+            //     $replaceRoot: {
+            //         newRoot: "$Post",
+            //     },
+            // },
         ]
     );
 
