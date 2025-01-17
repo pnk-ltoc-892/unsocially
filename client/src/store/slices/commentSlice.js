@@ -63,6 +63,25 @@ export const addPostComment = createAsyncThunk('comment/addPostComments',
         return response.data;
     });
 
+export const deletePostComment = createAsyncThunk('comment/deletePostComments',
+    async (commentId) => {
+        const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}`,
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    });
+
+export const editPostComment = createAsyncThunk('comment/deletePostComments',
+    async ({commentId, data}) => {
+        const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}`,
+            data,
+            {
+                withCredentials: true,
+            });
+        return response.data;
+    });
+
 export const toggleCommentLike = createAsyncThunk('comment/likePostComments',
     async (commentId) => {
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/like/comment/${commentId}`,

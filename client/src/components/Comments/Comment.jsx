@@ -3,9 +3,42 @@ import { Ellipsis } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.jsx'
 import { avatar } from '@/config/index.js'
 import CommentInfo from './CommentInfo.jsx'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu.jsx'
+import { useDispatch, useSelector } from 'react-redux'
+import { deletePostComment, editPostComment, getPostComments } from '@/store/slices/commentSlice.js'
+import { useParams } from 'react-router-dom'
+import { toast } from '@/hooks/use-toast.js'
+import { Button } from '../ui/button.jsx'
 
 
 const Comment = ({ comment }) => {
+    const { user } = useSelector(state => state.auth);
+    const { postId } = useParams();
+
+    const [isEdit, setIsEdit] = useState(false);
+    const [edit, setEdit] = useState('');
+
+    const dispatch = useDispatch();
+    const handleCommentDelete = () => {
+        dispatch(deletePostComment(comment._id)).then(() => {
+            dispatch(getPostComments(postId))
+            toast({
+                title: "Comment Deleted"
+            })
+        })
+    }
+    const handleCommentEdit = () => {
+        const data = { content: edit };
+        dispatch(editPostComment({ commentId: comment._id, data })).then(() => {
+            dispatch(getPostComments(postId));
+            setEdit('');
+            toast({
+                title: "Comment Updated"
+            });
+            setIsEdit(false);
+        })
+    }
+
     return (
         <div className='p-4 pb-1 w-full border rounded-md'>
             <div className='flex gap-2' >
@@ -25,12 +58,44 @@ const Comment = ({ comment }) => {
                                 {comment?.author?.fullname || ""}
                             </div>
                         </div>
-                        <div className='hover:bg-neutral-600/20 rounded-full p-0.5 cursor-pointer'>
-                            <Ellipsis />
-                        </div>
+
+                        {
+                            user?._id === comment?.author?._id
+                                ?
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <div className='hover:bg-neutral-600/20 rounded-full p-0.5 cursor-pointer'>
+                                            <Ellipsis />
+                                        </div>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className='bg-black'>
+                                        <DropdownMenuLabel className='cursor-pointer' onClick={() => { setIsEdit(true); setEdit(comment.content) }}>Edit</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuLabel className='cursor-pointer text-red-800' onClick={handleCommentDelete} >Delete</DropdownMenuLabel>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                                : null
+                        }
                     </div>
-                    <div className='mt-1 cursor-pointer text-md'>
-                        {comment.content}
+                    <div className='mt-1 cursor-pointer text-md w-full max-w-md'>
+                        {
+                            isEdit
+                                ?
+                                <div className=''>
+                                    <textarea
+                                        onChange={(e) => setEdit(e.target.value)}
+                                        value={edit}
+                                        type="text"
+                                        // placeholder="Add a Comment..."
+                                        className="flex h-[60px] w-full resize-auto rounded-sm border-[0.5px] border-neutral-700 bg-transparent px-2 py-1"
+                                    />
+                                    <Button onClick={handleCommentEdit} className='mt-2' disabled={edit === ''} >
+                                        Edit
+                                    </Button>
+                                </div>
+                                :
+                                comment.content
+                        }
                     </div>
                 </div>
             </div>
