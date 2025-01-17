@@ -45,7 +45,7 @@ const ProfileAvatarUpdate = () => {
                 imageLoadingState
                     ?
                     <video className='h-[8.2rem] w-[8.2rem]'
-                        src="../../../public/loading.mp4" autoPlay="autoplay" muted="muted" loop="loop" playsinline="" type="video/mp4"></video>
+                        src="../../../public/loading.mp4" autoPlay="autoplay" muted="muted" loop="loop" playsInline="" type="video/mp4"></video>
                     :
                     <Avatar className='cursor-pointer h-28 w-28'>
                         <AvatarImage src={profile?.avatar}

@@ -15,11 +15,15 @@ const Header = () => {
     }
 
     return (
-        <div className='border-b-2 border-b-white py-2 flex justify-around items-center'>
-            <div className='text-white text-2xl cursor-pointer'>
-                <span className='px-3 bg-gray-800 text-primary rounded-full flex-1'>T</span>
+        <div className='mx-auto w-full border-b-[0.5px] border-b-white py-2 flex justify-center items-center gap-28'>
+            {/* <div className=''> */}
+                <span className='cursor-pointer tracking-wider font-bold text-xl px-3 py-1 bg-white/80 text-black rounded-xl'>US</span>
+            {/* </div> */}
+
+            <div>
+                <Navbar />
             </div>
-            <Navbar />
+            
             <DropdownMenu>
                 <DropdownMenuTrigger>
                     <div className='hover:bg-gray-900/40 p-2 rounded-full text-gray-400 '>

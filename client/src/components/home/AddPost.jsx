@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import Avatar from '@mui/material/Avatar';
-import { Link } from 'react-router-dom';
-import av from "../../../public/avatar.jpg"
+import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog.jsx';
 import { Textarea } from '../ui/textarea.jsx';
 import { Button } from '../ui/button.jsx';
 import PostImageUpload from './PostImageUpload.jsx';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { addNewPost, getAllPosts } from '@/store/slices/post-slice.js';
-import { BadgePlus } from 'lucide-react';
+import { BadgePlus, Plus, SquarePlus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast.js';
 
 
@@ -53,14 +49,14 @@ const AddPost = () => {
     }
 
     return (
-        <div className='flex justify-center items-center p-2'>
+        <div className='flex justify-center items-center'>
 
             {/* // ! Add Post Dialog Trigger */}
             <div onClick={() => setOpenPostDialog(true)}
-                className='max-w-content flex justify-center items-center gap-2 bg-neutral-800 px-5 py-2 text-md font-semibold text-neutral-300 rounded-lg cursor-pointer'
+                className=' bg-white px-5 py-2 text-md font-semibold text-neutral-900 rounded-lg cursor-pointer'
             >
-                < BadgePlus />
-                <span>New Post</span>
+                < SquarePlus />
+                {/* <span>New Post</span> */}
             </div>
 
             <Dialog open={openPostDialog}

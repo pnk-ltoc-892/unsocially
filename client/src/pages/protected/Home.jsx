@@ -31,7 +31,7 @@ const Home = () => {
                 </span>
                 <span className='text-xl p-1 hover:bg-gray-800/60 rounded-full'><IoIosArrowDropdown /></span>
             </div>
-            <AddPost />
+            {/* <AddPost /> */}
 
             {/* // ! All Posts */}
             <div className='rounded-t-md mt-2'>

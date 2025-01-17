@@ -1,7 +1,8 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { House, Search, UserRound } from 'lucide-react';
+import { House, Search, UserPlus, UserRound, UserRoundPlus } from 'lucide-react';
 import { useSelector } from 'react-redux';
+import AddPost from '../home/AddPost.jsx';
 
 
 const Navbar = () => {
@@ -12,10 +13,14 @@ const Navbar = () => {
             <Link to={'/home'} >
                 <House size={28} />
             </Link>
+            <Link to={'/people'} >
+                <UserRoundPlus size={28} />
+            </Link>
+            <AddPost />
             <Link to={'/search'} >
                 <Search size={28} />
             </Link>
-            <Link to={`/profile/user/${user?.username}`} >
+            <Link to={`/profile/user/${user?.username}/posts`} >
                 <UserRound size={28} />
             </Link>
         </div>

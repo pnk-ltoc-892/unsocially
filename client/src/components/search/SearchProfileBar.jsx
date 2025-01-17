@@ -4,7 +4,9 @@ import { avatar } from '@/config/index.js'
 
 
 const SearchProfileBar = ({profile}) => {
+
     return (
+        
         <div className="flex border-b-[1px] border-neutral-600 cursor-pointer mb-2">
             <div className="flex justify-center items-center px-2 py-1">
                 <Avatar

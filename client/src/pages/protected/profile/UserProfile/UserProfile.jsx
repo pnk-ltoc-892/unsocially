@@ -4,7 +4,7 @@ import { toast } from '@/hooks/use-toast.js'
 import { getUserProfile } from '@/store/slices/profileSlice.js'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, Outlet, useParams } from 'react-router-dom'
+import { NavLink, Outlet, useParams } from 'react-router-dom'
 
 const UserProfile = () => {
     const { profile, isCurrentUserProfile } = useSelector((state) => state.profileSlice);
@@ -23,16 +23,18 @@ const UserProfile = () => {
 
     return (
         <>
-            {
-                isCurrentUserProfile
-                    ? <MyProfileCard profile={profile} />
-                    : <UserProfileCard profile={profile} />
-            }
+            <div className='flex flex-col gap-2' >
+                <div className='w-[90%] mx-auto' >
+                    {
+                        isCurrentUserProfile
+                            ? <MyProfileCard profile={profile} />
+                            : <UserProfileCard profile={profile} />
+                    }
+                </div>
 
-            <div className='mt-10 border-[1px] border-neutral-500 rounded-lg'>
                 {/* // ! For Routes Stats */}
-                <div className='flex justify-center items-center text-neutral-100 text-xl font-bold tracking-wide py-4'>
-                    <Link to={'./'} className='hover:underline cursor-pointer'>
+                <div className='flex justify-center items-center gap-4 text-neutral-100 text-xl font-bold tracking-wide'>
+                    <Link to={'./posts'} className='hover:underline cursor-pointer'>
                         Posts
                     </Link>
                     <div className='px-2'>|</div>
@@ -44,11 +46,23 @@ const UserProfile = () => {
                         Saved
                     </Link>
                 </div>
-            </div>
-            <div className='mt-10 border-[1px] border-neutral-500 rounded-lg'>
-                <Outlet />
+                <div className='w-[80%] mx-auto'>
+                    <Outlet />
+                </div>
             </div>
         </>
+    )
+}
+
+
+const Link = ({ to, classname = "", children }) => {
+    const styles = "hover:underline p-2"
+    return (
+        <NavLink to={to}
+            className={({ isActive }) => isActive ? `underline ${styles}` : styles}
+        >
+            {children}
+        </NavLink>
     )
 }
 

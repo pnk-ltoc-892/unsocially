@@ -1,4 +1,3 @@
-// import { MyProfileCard } from '@/components/profile/MyProfileCard.jsx'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 
@@ -12,7 +11,6 @@ const ProfileLayout = () => {
             <div>
                 <Outlet />
             </div>
-
         </div>
     )
 }
