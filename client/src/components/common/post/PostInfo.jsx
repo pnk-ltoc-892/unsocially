@@ -31,13 +31,13 @@ const PostInfo = ({ post }) => {
 
             <div className='border-y-[1px] py-[0.1rem] text-neutral-400 font-medium text-lg flex justify-around items-center'>
                 {/* // ! Like Post */}
-                <PostInfoIcon info={post.likes} onClick={handlePostLike}>
-                    <Heart active={post.isLiked} className={!post.isLiked ? "hover:text-pink-700" : ""} />
+                <PostInfoIcon info={post?.likes} onClick={handlePostLike}>
+                    <Heart active={post?.isLiked} className={!post?.isLiked ? "hover:text-pink-700" : ""} />
                 </PostInfoIcon>
 
                 {/* // ! Add Post Comment */}
-                <Link to={`/post/${post._id}`}>
-                    <PostInfoIcon info={post.comments}>
+                <Link to={`/post/${post?._id}`}>
+                    <PostInfoIcon info={post?.comments}>
                         <Comment active={false} className={"hover:text-green-600"} />
                     </PostInfoIcon>
                 </Link>
@@ -45,7 +45,7 @@ const PostInfo = ({ post }) => {
 
                 {/* // ! Bookmark Post */}
                 <PostInfoIcon onClick={handlePostBookmark} >
-                    <Bookmark active={post.isBookmarked} className={!post.isBookmarked ? "hover:text-blue-600" : ""} />
+                    <Bookmark active={post?.isBookmarked} className={!post?.isBookmarked ? "hover:text-blue-600" : ""} />
                 </PostInfoIcon>
 
                 {/* // ! Post Share Dialog */}
@@ -69,9 +69,9 @@ const PostInfo = ({ post }) => {
 const PostTimeStamp = ({ post }) => {
     return (
         <div className='text-neutral-400 text-sm py-1 mr-2 flex justify-end'>
-            <span>{(new Date(post.updatedAt)).toLocaleTimeString()}</span>
+            <span>{(new Date(post?.updatedAt)).toLocaleTimeString()}</span>
             <span className='mx-2'>|</span>
-            <span>{(new Date(post.updatedAt)).toDateString()}</span>
+            <span>{(new Date(post?.updatedAt)).toDateString()}</span>
         </div>
     )
 }

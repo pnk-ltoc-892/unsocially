@@ -4,6 +4,7 @@ import axios from "axios";
 
 const initialState = {
     isLoading: false,
+    isContentLoading: false,
     isFollowLoading: false,
     isCurrentUserProfile: false,
     profile: {},
@@ -19,6 +20,49 @@ export const profileSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+        // Posts
+            .addCase(getUserPosts.pending, (state) => {
+                state.isContentLoading = true;
+            })
+            .addCase(getUserPosts.fulfilled, (state, action) => {
+                state.isContentLoading = false;
+                // console.log(action.payload.data);
+
+                state.posts = action.payload.data.posts
+            })
+            .addCase(getUserPosts.rejected, (state, action) => {
+                state.isContentLoading = false;
+                state.posts = {};
+            })
+        // Comments
+            .addCase(getUserComments.pending, (state) => {
+                state.isContentLoading = true;
+            })
+            .addCase(getUserComments.fulfilled, (state, action) => {
+                state.isContentLoading = false;
+                // console.log(action.payload.data);
+
+                state.comments = action.payload.data.comments
+            })
+            .addCase(getUserComments.rejected, (state, action) => {
+                state.isContentLoading = false;
+                state.posts = {};
+            })
+        // Bookmarks
+            .addCase(getUserBookmarks.pending, (state) => {
+                state.isContentLoading = true;
+            })
+            .addCase(getUserBookmarks.fulfilled, (state, action) => {
+                state.isContentLoading = false;
+                console.log(action.payload.data);
+
+                state.bookmarks = action.payload.data.bookmarkedPosts
+            })
+            .addCase(getUserBookmarks.rejected, (state, action) => {
+                state.isContentLoading = false;
+                state.posts = {};
+            })
+
             .addCase(getUserProfile.pending, (state) => {
                 state.isLoading = true;
             })
@@ -49,14 +93,32 @@ export const profileSlice = createSlice({
 
 // Asynchronous Actions Thunks
 //! Profile Data Fetching
-// export const getMyProfile = createAsyncThunk('get/myprofile',
-//     async () => {
-//         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/`,
-//             {
-//                 withCredentials: true
-//             });
-//         return response.data;
-//     });
+export const getUserPosts = createAsyncThunk('get/userPosts',
+    async (username) => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/u/${username}`,
+            {
+                withCredentials: true
+            });
+        return response.data;
+    });
+
+export const getUserComments = createAsyncThunk('get/userComments',
+    async (userId) => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/u/${userId}`,
+            {
+                withCredentials: true
+            });
+        return response.data;
+    });
+
+export const getUserBookmarks = createAsyncThunk('get/userBookmarks',
+    async (username) => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/bookmarks`,
+            {
+                withCredentials: true
+            });
+        return response.data;
+    });
 
 
 

@@ -12,9 +12,9 @@ import { useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
 import { Toaster } from './components/ui/toaster.jsx'
 import UserProfile from './pages/protected/profile/UserProfile/UserProfile.jsx'
-import Posts from './components/profile/Content/Posts.jsx'
-import Comments from './components/profile/Content/Comments.jsx'
-import Bookmarks from './components/profile/Content/Bookmarks.jsx'
+import Posts from './components/Profile/Content/Posts.jsx'
+import Comments from './components/Profile/Content/Comments.jsx'
+import Bookmarks from './components/Profile/Content/Bookmarks.jsx'
 
 function App() {
   const { isAuthenticated } = useSelector(state => state.auth);

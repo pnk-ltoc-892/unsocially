@@ -1,23 +1,26 @@
+import { getPostComments, toggleCommentLike } from '@/store/slices/commentSlice.js';
 import React from 'react'
 import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 
 const CommentInfo = ({ comment }) => {
+    const { postId } = useParams();
 
     const dispatch = useDispatch();
-    const handleCommentLike = () => {
-        // dispatch(toggleCommentLike(Comment._id)).then( () => {
-        //     dispatch(getCommentById(Comment._id));
-        // } );
+    const handleCommentLike = (commentId) => {
+        dispatch(toggleCommentLike(commentId)).then( () => {
+            dispatch(getPostComments(postId));
+        } );
     }
 
     return (
         <div
             className='flex items-center cursor-pointer py-[0.1rem] rounded-full'>
-            <div className='flex justify-center items-center p-[0.25rem] rounded-full'>
-                <Heart active={comment.isLiked} className={!comment.isLiked ? "hover:text-pink-700" : ""} />
+            <div className='flex justify-center items-center p-[0.25rem] rounded-full' onClick={() => handleCommentLike(comment._id)}>
+                <Heart active={comment?.isLiked} className={!comment?.isLiked ? "hover:text-pink-700" : ""} />
             </div>
-            {comment.likes && <span className='text-[0.75rem]'>{comment.likes}</span>}
+            {comment.Likes && <span className='text-[0.75rem]'>{comment.Likes}</span>}
         </div>
     )
 }

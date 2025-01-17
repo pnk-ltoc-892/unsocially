@@ -1,5 +1,5 @@
-import { MyProfileCard } from '@/components/profile/MyProfileCard.jsx'
-import { UserProfileCard } from '@/components/profile/UserProfileCard.jsx'
+import { MyProfileCard } from '@/components/Profile/MyProfileCard.jsx'
+import { UserProfileCard } from '@/components/Profile/UserProfileCard.jsx'
 import { toast } from '@/hooks/use-toast.js'
 import { getUserProfile } from '@/store/slices/profileSlice.js'
 import React, { useEffect } from 'react'

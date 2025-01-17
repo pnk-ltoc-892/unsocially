@@ -8,7 +8,7 @@ import { getPostById, togglePostBookmark, togglePostLike } from '@/store/slices/
 
 const PostInfo = ({ post }) => {
     const [openShareDialog, setOpenShareDialog] = useState(false);
-    console.log(post);
+    // console.log(post);
 
     const dispatch = useDispatch();
     const handlePostLike = () => {

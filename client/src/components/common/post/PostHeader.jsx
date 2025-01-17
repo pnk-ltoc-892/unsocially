@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 const PostHeader = ({ post }) => {
     return (
         <div className='flex justify-between items-center border-b-[1px] pb-2'>
-            <Link to={`/profile/user/${post.author.username}`} >
+            <Link to={`/profile/user/${post?.author?.username}`} >
                 <div className='cursor-pointer flex justify-start items-center gap-2'>
                     <div>
                         <Avatar className='cursor-pointer h-10 w-10'>
