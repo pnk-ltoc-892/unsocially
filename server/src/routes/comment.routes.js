@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { addComment, deleteComment, updateComment } from "../controllers/comment.controller.js";
+import { addComment, deleteComment, getPostComment, getUserComments, updateComment } from "../controllers/comment.controller.js";
 
 const router = Router();
 
@@ -13,7 +13,17 @@ router.get("/", (req, res) => {
 router.use(verifyJWT);
 
 // ! Aggregate Routes for getting post comments
-router.route("/post/:postId").post(addComment);
+router
+    .route("/post/:postId")
+    .post(addComment);
+
+router
+    .route("/:postId")
+    .get(getPostComment)
+
+router
+    .route("/u/:userId")
+    .get(getUserComments)
 
 router
     .route("/:commentId")
