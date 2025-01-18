@@ -69,7 +69,7 @@ export const UserProfileCard = ({ profile }) => {
                     !isFollowLoading
                         ?
                         <ProfileButton
-                            className={profile.isFollowing ? "bg-[#000000] text-white" : ""}
+                            className={profile.isFollowing ? "bg-[#0f0521] text-white" : ""}
                             onClick={handleUserFollow}
                         >{profile.isFollowing ? "UnFollow" : "Follow"}</ProfileButton>
                         :

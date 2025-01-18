@@ -1,23 +1,26 @@
 import Comment from "@/components/Comments/Comment.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import { getUserComments } from "@/store/slices/profileSlice.js";
-import { useEffect } from "react"
+import { useEffect, useId } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useParams } from "react-router-dom";
 
 
 
 const Comments = () => {
     const { user } = useSelector(state => state.auth);
+    const { profile } = useSelector(state => state.profileSlice);
     const { comments } = useSelector(state => state.profileSlice);
+    
     
     console.log(comments);
     
 
     const dispatch = useDispatch();
     useEffect( () => {
-        if(user?._id) dispatch(getUserComments(user?._id))
+        if(profile?._id) dispatch(getUserComments(profile?._id))
         
-    },[user] )
+    },[profile] )
     return (
         <div>
             <div className='rounded-t-md mt-2'>

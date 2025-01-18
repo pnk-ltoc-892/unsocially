@@ -12,10 +12,10 @@ const PostContent = ({post}) => {
             }
             {
                 post.images?.length && (
-                    <div className='rounded-[1.25rem] overflow-clip'>
+                    <div className='rounded-[1.25rem]'>
                         <img src={post.images[0]} 
                             alt="Post Image" 
-                            className='h-auto object-cover aspect-square'
+                            className='h-auto object-cover aspect-square rounded-[1.25rem] border-[1px]'
                             loading='lazy'
                             />
                     </div>

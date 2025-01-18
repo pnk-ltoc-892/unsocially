@@ -129,6 +129,17 @@ export const addNewPost = createAsyncThunk('post/addNewPost',
     })
 
 
+export const deletePost = createAsyncThunk('post/deletePost',
+    async (data) => {
+        const response = await axios.post("http://localhost:5000/api/v1/posts/post",
+            data,
+            {
+                withCredentials: true
+            });
+            return response.data;
+    })
+
+
 
 
 

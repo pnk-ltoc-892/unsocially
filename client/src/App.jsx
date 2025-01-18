@@ -16,6 +16,7 @@ import Comments from './components/Profile/Content/Comments.jsx'
 import Bookmarks from './components/Profile/Content/Bookmarks.jsx'
 import People from './pages/protected/People.jsx'
 import Search from './pages/protected/Search.jsx'
+import Header from './components/header/Header.jsx'
 
 function App() {
   const { isAuthenticated } = useSelector(state => state.auth);
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <div >
+      <Header />
       <Toaster />
       <Routes>
         <Route path='post/:postId' element={<Post />} />

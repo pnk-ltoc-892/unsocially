@@ -6,7 +6,7 @@ import CommentInfo from './CommentInfo.jsx'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { deletePostComment, editPostComment, getPostComments } from '@/store/slices/commentSlice.js'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { toast } from '@/hooks/use-toast.js'
 import { Button } from '../ui/button.jsx'
 
@@ -14,6 +14,8 @@ import { Button } from '../ui/button.jsx'
 const Comment = ({ comment }) => {
     const { user } = useSelector(state => state.auth);
     const { postId } = useParams();
+    // console.log(comment);
+    
 
     const [isEdit, setIsEdit] = useState(false);
     const [edit, setEdit] = useState('');
@@ -21,7 +23,8 @@ const Comment = ({ comment }) => {
     const dispatch = useDispatch();
     const handleCommentDelete = () => {
         dispatch(deletePostComment(comment._id)).then(() => {
-            dispatch(getPostComments(postId))
+            // dispatch(getPostComments(comment.postId))
+            window.location.reload();
             toast({
                 title: "Comment Deleted"
             })
@@ -30,7 +33,8 @@ const Comment = ({ comment }) => {
     const handleCommentEdit = () => {
         const data = { content: edit };
         dispatch(editPostComment({ commentId: comment._id, data })).then(() => {
-            dispatch(getPostComments(postId));
+            dispatch(getPostComments(comment.postId));
+            // window.location.reload();
             setEdit('');
             toast({
                 title: "Comment Updated"
