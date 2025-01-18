@@ -6,9 +6,10 @@ import CommentInfo from './CommentInfo.jsx'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { deletePostComment, editPostComment, getPostComments } from '@/store/slices/commentSlice.js'
-import { useLocation, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { toast } from '@/hooks/use-toast.js'
 import { Button } from '../ui/button.jsx'
+import { getPostById } from '@/store/slices/post-slice.js'
 
 
 const Comment = ({ comment }) => {
@@ -23,8 +24,9 @@ const Comment = ({ comment }) => {
     const dispatch = useDispatch();
     const handleCommentDelete = () => {
         dispatch(deletePostComment(comment._id)).then(() => {
-            // dispatch(getPostComments(comment.postId))
-            window.location.reload();
+            dispatch(getPostComments(comment.postId))
+            dispatch(getPostById(postId));
+            // window.location.reload();
             toast({
                 title: "Comment Deleted"
             })

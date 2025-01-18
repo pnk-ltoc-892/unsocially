@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Input } from '../ui/input.jsx'
-import { CirclePlus, Ellipsis } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.jsx'
 import { avatar } from '@/config/index.js'
 import Comment from '../Comments/Comment.jsx'
-import { Form, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addPostComment, getPostComments } from '@/store/slices/commentSlice.js'
 import { Button } from '../ui/button.jsx'
+import { getPostById } from '@/store/slices/post-slice.js'
 
 
-const Comments = ({ post }) => {
+const Comments = () => {
     const { postId } = useParams();
     const { user } = useSelector(state => state.auth);
     const { comments } = useSelector(state => state.commentSlice);
@@ -18,9 +17,10 @@ const Comments = ({ post }) => {
     const [comment, setComment] = useState('');
     const dispatch = useDispatch();
     const handleAddComment = () => {
-        const data = {content: comment};
-        
-        dispatch(addPostComment({postId, data})).then(() => {
+        const data = { content: comment };
+
+        dispatch(addPostComment({ postId, data })).then(() => {
+            dispatch(getPostById(postId));
             dispatch(getPostComments(postId));
             setComment('');
         })
@@ -48,7 +48,6 @@ const Comments = ({ post }) => {
                 />
                 <Button onClick={handleAddComment} disabled={comment === ''}>
                     <span>Add</span>
-                    {/* <CirclePlus size={42} className='cursor-pointer p-2 rounded-full hover:bg-neutral-600/80' /> */}
                 </Button>
             </div>
 
