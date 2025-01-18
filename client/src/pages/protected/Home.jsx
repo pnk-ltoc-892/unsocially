@@ -1,29 +1,40 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoIosArrowDropdown } from "react-icons/io";
-import AddPost from '../../components/home/AddPost.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllPosts } from '@/store/slices/post-slice.js';
+
 import CommonPost from '@/components/common/post/CommonPost.jsx';
 import { Button } from '@/components/ui/button.jsx';
+import { getAllPosts } from '@/store/slices/homeSlice.js';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { toast } from '@/hooks/use-toast.js';
+import { Loader } from 'lucide-react';
 
 
 const Home = () => {
-    const { posts, prevPage, page, nextPage } = useSelector( (state) => state.postSlice );
+    const { posts, nextPage } = useSelector((state) => state.homeSlice);
 
+    const [page, setPage] = useState(0);
     const dispatch = useDispatch();
+    const handlePostFetching = () => {
+        setPage((prev) => prev + 1);
+        console.log(page);
 
-    const handlePostLoading = (value) => {
-        dispatch(getAllPosts(page+value));
+        setTimeout(() => {
+            dispatch(getAllPosts(page)).then(() => {
+                toast({
+                    title: "Post Fetched"
+                })
+            });
+        }, 1000);
     }
 
-    useEffect( () => {
-        dispatch(getAllPosts());
-        // console.log(posts);
-    }, [dispatch] ) 
-    
+    useEffect(() => {
+        handlePostFetching();
+    }, [])
+
 
     return (
-        <div className='w-[45%] mx-auto'>
+        <div className='bg-slate-950' >
             {/* // ! Add Post Filter On This Drop Icon */}
             <div className='py-2 flex justify-center items-center gap-2'>
                 <span className='py-2 rounded-full'>
@@ -31,27 +42,40 @@ const Home = () => {
                 </span>
                 <span className='text-xl p-1 hover:bg-gray-800/60 rounded-full'><IoIosArrowDropdown /></span>
             </div>
-            {/* <AddPost /> */}
 
             {/* // ! All Posts */}
-            <div className='rounded-t-md mt-2'>
-                {
-                    posts.length && posts.map( (post) => <CommonPost post={post} key={post._id} /> )
-                }
-            </div>
-
-            {/* // ! Replace With Infinite Scroll Pagination */}
-            <div className='py-8 flex justify-center items-center gap-4' >
-                <Button onClick={() => handlePostLoading(-1)}
-                        disabled={prevPage === null}
-                >{"<"}</Button>
-                <Button>{page}</Button>
-                <Button onClick={() => handlePostLoading(1)}
-                        disabled={nextPage === null}
-                >{">"}</Button>
+            <div className='bg-slate-900 w-[45%] mx-auto rounded-t-md mt-2'>
+                <InfiniteScroll
+                    dataLength={posts.length}
+                    next={handlePostFetching}
+                    hasMore={nextPage != null}
+                    loader={<Loading />}
+                    endMessage={
+                        <p className='h-[200]px text-center'>
+                            <b>That All Daisy!</b>
+                        </p>
+                    }
+                >
+                    {
+                        posts?.length
+                        ?
+                        posts?.map((post, index) => <CommonPost post={post} key={index} />)
+                        :
+                        <Loading />
+                    }
+                </InfiniteScroll>
             </div>
         </div>
     )
+}
+
+const Loading = () => {
+    return (
+        <div className='flex justify-center items-center py-4 text-4xl' >
+            <Loader />
+        </div>
+    )
+
 }
 
 export default Home

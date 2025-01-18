@@ -26,7 +26,8 @@ const ProtectedLayout = () => {
 
 
     return (
-        <div className='h-screen text-white overflow-y-scroll overflow-x-auto'>
+        // <div className='h-screen text-white overflow-y-scroll overflow-x-auto'>
+        <div>
             <Outlet />
         </div>
     )
