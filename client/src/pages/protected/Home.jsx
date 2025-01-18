@@ -3,38 +3,32 @@ import { IoIosArrowDropdown } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 
 import CommonPost from '@/components/common/post/CommonPost.jsx';
-import { Button } from '@/components/ui/button.jsx';
 import { getAllPosts } from '@/store/slices/homeSlice.js';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { toast } from '@/hooks/use-toast.js';
 import { Loader } from 'lucide-react';
 
 
 const Home = () => {
     const { posts, nextPage } = useSelector((state) => state.homeSlice);
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const dispatch = useDispatch();
     const handlePostFetching = () => {
-        setPage((prev) => prev + 1);
-        console.log(page);
-
         setTimeout(() => {
-            dispatch(getAllPosts(page)).then(() => {
-                toast({
-                    title: "Post Fetched"
-                })
-            });
+            dispatch(getAllPosts(page+1)).then( () => {
+                setPage((prev) => prev + 1);
+            } )
         }, 1000);
     }
 
     useEffect(() => {
-        handlePostFetching();
+        // handlePostFetching();
+        dispatch(getAllPosts(1))
     }, [])
 
 
     return (
-        <div className='bg-slate-950' >
+        <div className='bg-[#040D12]'>
             {/* // ! Add Post Filter On This Drop Icon */}
             <div className='py-2 flex justify-center items-center gap-2'>
                 <span className='py-2 rounded-full'>
@@ -44,22 +38,23 @@ const Home = () => {
             </div>
 
             {/* // ! All Posts */}
-            <div className='bg-slate-900 w-[45%] mx-auto rounded-t-md mt-2'>
+            <div className='w-[45%] mx-auto'>
                 <InfiniteScroll
+                    className='flex flex-col justify-center items-center gap-4'
                     dataLength={posts.length}
                     next={handlePostFetching}
                     hasMore={nextPage != null}
                     loader={<Loading />}
                     endMessage={
-                        <p className='h-[200]px text-center'>
-                            <b>That All Daisy!</b>
-                        </p>
+                        <div className='w-full py-4 bg-black rounded-md text-center'>
+                            That All Daisy!
+                        </div>
                     }
                 >
                     {
                         posts?.length
                         ?
-                        posts?.map((post, index) => <CommonPost post={post} key={index} />)
+                        posts?.map((post, index) => <CommonPost post={post} key={index} index={index} />)
                         :
                         <Loading />
                     }
@@ -75,7 +70,6 @@ const Loading = () => {
             <Loader />
         </div>
     )
-
 }
 
 export default Home

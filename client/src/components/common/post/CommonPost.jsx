@@ -4,16 +4,15 @@ import PostContent from './PostContent.jsx'
 import PostInfo from './PostInfo.jsx'
 import { Link } from 'react-router-dom'
 
-const CommonPost = ({ post }) => {
-    // console.log(post._id);
-    
+const CommonPost = ({ post, index }) => {
+
     return (
-        <div className='mt-4 border p-4 rounded-md'>
+        <div className='bg-black border p-4 rounded-md w-full'>
             <PostHeader post={post} />
             <Link to={`/post/${post?._id}`} className='cursor-pointer' >
                 <PostContent post={post} />
             </Link>
-            <PostInfo post={post} />
+            <PostInfo postData={post}/>
         </div>
     )
 }

@@ -2,26 +2,27 @@ import React, { useState } from 'react'
 import { Share } from 'lucide-react';
 import PostShareDialog from './PostShareDialog.jsx';
 import { Dialog } from '../../ui/dialog.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllPosts, togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
+import { useDispatch } from 'react-redux';
+import { togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
 import { Link } from 'react-router-dom';
 
 
-const PostInfo = ({ post }) => {
-    const { posts, prevPage, page, nextPage } = useSelector( (state) => state.postSlice );
+const PostInfo = ({ postData }) => {
+    // ! Storing PostData locally To Reflect Changes On Static Site
+    const [post, setPost] = useState({...postData})
 
     const [openShareDialog, setOpenShareDialog] = useState(false);
-    // console.log(post);
 
     const dispatch = useDispatch();
-    const handlePostLike = () => {        
+    const handlePostLike = () => {   
+        const value = post.isLiked ? -1 : 1;
         dispatch(togglePostLike(post._id)).then(() => {
-            dispatch(getAllPosts(page));
+            setPost({...post, likes: post.likes+value, isLiked: !post.isLiked});
         });
     }
     const handlePostBookmark = () => {
         dispatch(togglePostBookmark(post._id)).then(() => {
-            dispatch(getAllPosts(page));
+            setPost({...post, isBookmarked: !post.isBookmarked});
         });
     }
 

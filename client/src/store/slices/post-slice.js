@@ -35,22 +35,6 @@ export const postSlice = createSlice({
         //     state.isAuthenticated = false;
         //     state.user = null;
         // })
-        .addCase(getAllPosts.pending, (state, action) => {
-            state.isLoading = true;
-        })
-        .addCase(getAllPosts.fulfilled, (state, action) => {
-            state.isLoading = false;
-            console.log(action.payload.data);            
-            state.posts = action.payload.data.posts;
-
-            state.prevPage = action.payload.data.prevPage;
-            state.page = action.payload.data.page;
-            state.nextPage = action.payload.data.nextPage;
-        })
-        .addCase(getAllPosts.rejected, (state, action) => {
-            state.isLoading = false;
-            state.posts = [];
-        })
 
         .addCase(getPostById.pending, (state, action) => {
             state.isPostLoading = true;
@@ -76,18 +60,6 @@ export const getPostById = createAsyncThunk('post/getPostById',
             {
                 withCredentials: true
             });
-            return response.data;
-    });
-
-
-export const getAllPosts = createAsyncThunk('post/getAllPosts',
-    async (page) => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?page=${page}&limit=${5}`,
-            {
-                withCredentials: true
-            });
-            // console.log("state.page");
-            
             return response.data;
     });
 

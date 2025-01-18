@@ -22,7 +22,6 @@ const ProtectedLayout = () => {
         //     <Navigate to={'/home'} />
         // }
     // }, [isAuthenticated]);
-    
 
 
     return (

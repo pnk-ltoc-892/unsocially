@@ -4,7 +4,7 @@ import { Textarea } from '../ui/textarea.jsx';
 import { Button } from '../ui/button.jsx';
 import PostImageUpload from './PostImageUpload.jsx';
 import { useDispatch } from 'react-redux';
-import { addNewPost, getAllPosts } from '@/store/slices/post-slice.js';
+import { addNewPost } from '@/store/slices/post-slice.js';
 import { BadgePlus, Plus, SquarePlus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast.js';
 
@@ -28,12 +28,13 @@ const AddPost = () => {
         }
 
         dispatch(addNewPost(data)).then((data) => {
-            dispatch(getAllPosts())
             setOpenPostDialog(false);
             setPostLoadingState(false);
             setPostText("");
             setUploadedImageUrl("");
             setImageLoadingState(false);
+            
+            window.location.reload();
 
             // !Handled while Uploading Image
             // setPostImage(null);
