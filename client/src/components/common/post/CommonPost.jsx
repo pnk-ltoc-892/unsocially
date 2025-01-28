@@ -9,9 +9,9 @@ const CommonPost = ({ post, index }) => {
     return (
         <div className='bg-black border p-4 rounded-md w-full'>
             <PostHeader post={post} />
-            <Link to={`/post/${post?._id}`} className='cursor-pointer' >
+            {/* <Link to={`/post/${post?._id}`} className='cursor-pointer' > */}
                 <PostContent post={post} />
-            </Link>
+            {/* </Link> */}
             <PostInfo postData={post}/>
         </div>
     )

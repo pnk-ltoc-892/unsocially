@@ -70,19 +70,9 @@ const PostImageUpload = ({
 
 
     return (
-        <div>
-            {
-                uploadedImageUrl && (
-                    <img  className='h-[250px] object-cover p-2' src={uploadedImageUrl} alt="Post-Image" />
-                )
-            }
-            {
-                imageLoadingState && (
-                    <Skeleton className="h-[250px] w-[250px] rounded-xl" />
-                )
-            }
+        <>
             {/* // ! Remove Image Button */}
-            <Label htmlFor='postimage' className='m-4 cursor-pointer'>
+            <Label htmlFor='postimage' className='cursor-pointer'>
                 <ImagePlus size={32} className='hover:text-white'/>
             </Label>
             <Input 
@@ -92,7 +82,7 @@ const PostImageUpload = ({
                 className='hidden'
                 onChange={handleImageFileChange}
             />
-        </div>
+        </>
     )
 }
 

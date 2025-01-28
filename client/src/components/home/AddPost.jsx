@@ -5,8 +5,11 @@ import { Button } from '../ui/button.jsx';
 import PostImageUpload from './PostImageUpload.jsx';
 import { useDispatch } from 'react-redux';
 import { addNewPost } from '@/store/slices/post-slice.js';
-import { BadgePlus, Plus, SquarePlus } from 'lucide-react';
+import { SquarePlus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast.js';
+import { Skeleton } from '../ui/skeleton.jsx';
+import { Badge } from '../ui/badge.jsx';
+import PostTag from './PostTag.jsx';
 
 
 const AddPost = () => {
@@ -15,6 +18,7 @@ const AddPost = () => {
     const [uploadedImageUrl, setUploadedImageUrl] = useState("");
     const [imageLoadingState, setImageLoadingState] = useState(false);
     const [postText, setPostText] = useState('');
+    const [postTags, setPostTags] = useState([]);
 
     const [postLoadingState, setPostLoadingState] = useState(false);
 
@@ -25,6 +29,7 @@ const AddPost = () => {
         const data = {
             content: postText || "",
             images: [uploadedImageUrl] || [],
+            tags: postTags || []
         }
 
         dispatch(addNewPost(data)).then((data) => {
@@ -33,7 +38,7 @@ const AddPost = () => {
             setPostText("");
             setUploadedImageUrl("");
             setImageLoadingState(false);
-            
+
             window.location.reload();
 
             // !Handled while Uploading Image
@@ -42,7 +47,7 @@ const AddPost = () => {
 
             // ! Refetching
             // dispatch(getAllPosts());
-            console.log(data.payload.message);
+            // console.log(data.payload.message);
             toast({ title: data.payload.message });
         })
 
@@ -57,59 +62,81 @@ const AddPost = () => {
                 className=' bg-white px-5 py-2 text-md font-semibold text-neutral-900 rounded-lg cursor-pointer'
             >
                 < SquarePlus />
-                {/* <span>New Post</span> */}
             </div>
 
             <Dialog open={openPostDialog}
                 onOpenChange={() => setOpenPostDialog(false)}
             >
                 {/* // ! Dialog Pop-Up Content */}
-                <DialogContent className='min-w-[50%] p-4'>
+                <DialogContent className='p-4'>
                     <DialogHeader>
-                        <div className='flex justify-center items-center gap-6'>
-                            <DialogTitle className='text-lg'>Create New Post</DialogTitle>
-                        </div>
+                        <DialogTitle className='flex justify-center items-center gap-6 text-lg'>Create New Post</DialogTitle>
                     </DialogHeader>
-                    <DialogDescription className='w-[90%] mx-auto'>
-                        <div className='flex gap-6 justify-center items-center '>
 
-                            {/* // ! Post Image Input */}
-                            <div className='flex justify-start items-center'>
-                                <PostImageUpload
-                                    postImage={postImage}
-                                    setPostImage={setPostImage}
-                                    uploadedImageUrl={uploadedImageUrl}
-                                    setUploadedImageUrl={setUploadedImageUrl}
-                                    imageLoadingState={imageLoadingState}
-                                    setImageLoadingState={setImageLoadingState}
-                                />
-                            </div>
+                    <div className='flex justify-center items-center gap-2'>
+                        {/* // ! Image Section */}
+                        <div>
+                            {
+                                uploadedImageUrl && (
+                                    <div className='border w-[600px] h-[500px] object-contain rounded-lg overflow-clip'>
+                                        <img src={uploadedImageUrl} alt="Post-Image" />
+                                    </div>
+                                )
+                            }
+                            {
+                                imageLoadingState && (
+                                    <Skeleton className="w-[600px] h-[500px] rounded-lg" />
+                                )
+                            }
+                        </div>
 
-                            {/* // ! Post Text Input */}
-                            <div>
-                                <Textarea placeholder="What`s Going On..."
-                                    className='w-full h-32 bg-neutral-950'
-                                    value={postText}
-                                    onChange={(e) => setPostText(e.target.value)}
-                                />
-                                {/* // ! Add Menu To Restrict Comments From Specific Users */}
-                                <div className='hover:underline hover:bg-gray-700/80 px-3 py-1 text-neutral-300 text-sm'>
-                                    AnyOne Can Reply
-                                </div>
-                            </div>
-                            <div className='flex justify-between items-center'>
+                        {/* // ! Post Content Section */}
+                        <div>
+                            <div className='p-2 flex flex-col gap-2 justify-center items-start '>
+                                {/* // ! Post Text Input */}
                                 <div>
-                                    {
-                                        postLoadingState ? (
-                                            <Button className='cursor-not-allowed'>Posting..</Button>
-                                        )
-                                            :
-                                            <Button onClick={handleAddPost}>Post</Button>
-                                    }
+                                    <Textarea placeholder="What`s Going On..."
+                                        className='bg-neutral-950 h-[250px] w-[600px]'
+                                        value={postText}
+                                        onChange={(e) => setPostText(e.target.value)}
+                                    />
                                 </div>
+
+                                {/* // ! Post Image Input */}
+                                <div className='p-2'>
+                                    <PostImageUpload
+                                        postImage={postImage}
+                                        setPostImage={setPostImage}
+                                        uploadedImageUrl={uploadedImageUrl}
+                                        setUploadedImageUrl={setUploadedImageUrl}
+                                        imageLoadingState={imageLoadingState}
+                                        setImageLoadingState={setImageLoadingState}
+                                    />
+                                </div>
+
+                                {/* // ! Add Tags for Post */}
+                                <div className=''>
+                                    <PostTag postTags={postTags} setPostTags={setPostTags}/>
+                                </div>
+
+                                {/* // ! Add Menu To Restrict Comments From Specific Users */}
+                                <div className='cursor-pointer px-3 py-1 text-neutral-300'>
+                                    <Badge>AnyOne Can Reply</Badge>
+                                </div>
+                            </div>
+
+                            {/* // ! Post Button */}
+                            <div className='flex justify-end'>
+                                {
+                                    postLoadingState ? (
+                                        <Button className='cursor-not-allowed'>Posting..</Button>
+                                    )
+                                        :
+                                        <Button onClick={handleAddPost}>Post</Button>
+                                }
                             </div>
                         </div>
-                    </DialogDescription>
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>

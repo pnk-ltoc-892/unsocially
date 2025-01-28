@@ -311,9 +311,9 @@ const uploadPostImage = asyncHandler(async (req, res) => {
 const addPost = asyncHandler(async (req, res) => {
     // TODO: 'tags', mentions, location, etc. can be added here Skipping for now kept empty by default
 
-    const { content, images } = req.body;
+    const { content, images=[], tags=[] } = req.body;
     // ! Checking Done On FrontEnd - Also
-    // console.log({ content, images });
+    // console.log({content, images, tags});
 
     if (!content && !images.length) {
         throw new ApiError(400, "Content or Image is required !");
@@ -324,7 +324,8 @@ const addPost = asyncHandler(async (req, res) => {
     const newPost = await Post.create({
         content,
         images,
-        author: req.user._id,
+        tags,
+        author: req.user?._id,
     })
     if (!newPost) {
         throw new ApiError(500, "Error Adding a New Post !");
