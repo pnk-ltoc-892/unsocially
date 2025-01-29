@@ -31,7 +31,7 @@ const Login = () => {
         }
     }, [isAuthenticated] )
 
-    return <div className='bg-thoughts bg-repeat h-screen flex justify-center items-center'>
+    return <div className='relative h-screen flex justify-center items-center'>
         <div className='bg-background w-[35%] mx-auto px-6 py-8 rounded-lg border border-neutral-200'>
             <div defaultValue='login' className='w-full flex flex-col justify-center items-center' >
 
