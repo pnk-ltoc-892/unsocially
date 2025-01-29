@@ -20,7 +20,7 @@ const Navbar = () => {
             <Link to={'/search'} >
                 <Search size={28} />
             </Link>
-            <Link to={`/profile/user/${user?.username}/posts`} >
+            <Link to={`/profile/user/${user?.username}/`} >
                 <UserRound size={28} />
             </Link>
         </div>

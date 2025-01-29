@@ -34,7 +34,7 @@ const UserProfile = () => {
 
                 {/* // ! For Routes Stats */}
                 <div className='flex justify-center items-center gap-4 text-neutral-100 text-xl font-bold tracking-wide'>
-                    <Link to={'./posts'} className='hover:underline cursor-pointer'>
+                    <Link to={'./'} className='hover:underline cursor-pointer'>
                         Posts
                     </Link>
                     <div className='px-2'>|</div>
@@ -59,7 +59,8 @@ const Link = ({ to, classname = "", children }) => {
     const styles = "hover:underline p-2"
     return (
         <NavLink to={to}
-            className={({ isActive }) => isActive ? `underline ${styles}` : styles}
+            // className={({ isActive }) => isActive ? `underline ${styles}` : styles}
+            className={classname + " " + styles}
         >
             {children}
         </NavLink>

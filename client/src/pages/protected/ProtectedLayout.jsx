@@ -8,25 +8,22 @@ const ProtectedLayout = () => {
     const { isAuthenticated } = useSelector(state => state.auth);
 
     const location = useLocation();
-    // console.log(location);
+    console.log(location);
     
-
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     // ! Call navigate Inside useEffect
-    // useEffect(() => {
-        // if (!isAuthenticated) {
-        //     navigate('/login');
-        // }
-        // else{
-        //     // navigate('/home');
-        //     <Navigate to={'/home'} />
-        // }
-    // }, [isAuthenticated]);
+    useEffect(() => {
+        if (!isAuthenticated) {
+            sessionStorage.setItem('redirect', location.pathname);
+            navigate('/login');
+        }
+    }, [isAuthenticated]);
 
 
     return (
         // <div className='h-screen text-white overflow-y-scroll overflow-x-auto'>
         <div>
+            <Header />
             <Outlet />
         </div>
     )

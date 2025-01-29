@@ -16,38 +16,31 @@ import Comments from './components/Profile/Content/Comments.jsx'
 import Bookmarks from './components/Profile/Content/Bookmarks.jsx'
 import People from './pages/protected/People.jsx'
 import Search from './pages/protected/Search.jsx'
-import Header from './components/header/Header.jsx'
 
 function App() {
-  const { isAuthenticated } = useSelector(state => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch])
 
-
   return (
     <div >
-      <Header />
       <Toaster />
       <Routes>
-        <Route path='post/:postId' element={<Post />} />
-        {/* <Route path='test' element={<Test />} /> */}
+        <Route path='/login' element={<Login />} />
         <Route path='/' element={<ProtectedLayout />} >
-          <Route path='login' element={<Login />} />
           <Route path='home' element={<Home />} />
           <Route path='people' element={<People />} />
           <Route path='search' element={<Search />} />
+          <Route path='post/:postId' element={<Post />} />
 
           <Route path='profile' element={<ProfileLayout />}>
             <Route path='user/:username' element={<UserProfile />} >
-              <Route path='posts' element={<Posts />} />
+              <Route path='' element={<Posts />} />
               <Route path='comments' element={<Comments />} />
               <Route path='saved' element={<Bookmarks />} />
             </Route>
-
           </Route>
         </Route>
         <Route path='*' element={<Error />} />
