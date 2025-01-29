@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import Navbar from './Navbar.jsx'
-import { LogOut } from 'lucide-react';
+import { LogOut, Power } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logOutUser } from '@/store/slices/authSlice.js';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.jsx';
 
 
-const SideBar = () => {
+const SideBar = ({ setInit, init }) => {
     const dispatch = useDispatch()
     const handleLogout = () => {
         dispatch(logOutUser());
@@ -37,6 +37,11 @@ const SideBar = () => {
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
+
+            <div onClick={() => setInit(prev => !prev)}
+                className={`${init ? 'text-red-600' : 'text-white'} hover:bg-gray-900/40 rounded-xl p-2 cursor-pointer`}>
+                <Power size={30} />
+            </div>
         </div>
     )
 }
