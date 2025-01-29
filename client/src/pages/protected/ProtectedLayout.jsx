@@ -24,7 +24,7 @@ const ProtectedLayout = () => {
             <div className='fixed bg-transparent rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10'>
                 <SideBar />
             </div>
-            <div className='flex-1 '>
+            <div className='flex-1'>
                 <Outlet />
             </div>
         </div>

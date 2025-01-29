@@ -30,7 +30,7 @@ const PostInfo = ({ postData }) => {
         <div>
             <PostTimeStamp post={post} />
 
-            <div className='border-y-[1px] py-[0.1rem] text-neutral-400 font-medium text-lg flex justify-around items-center'>
+            <div className='border-t-[1px] py-[0.1rem] text-neutral-400 font-medium text-lg flex justify-around items-center'>
                 {/* // ! Like Post */}
                 <PostInfoIcon info={post?.likes} onClick={handlePostLike}>
                     <Heart active={post?.isLiked} className={!post?.isLiked ? "hover:text-pink-700" : ""} />
@@ -59,7 +59,7 @@ const PostInfo = ({ postData }) => {
                             <Share size={20} className={"hover:text-blue-600"} />
                         </PostInfoIcon>
                     </div>
-                    <PostShareDialog />
+                    <PostShareDialog postLink={post?._id}/>
                 </Dialog>
             </div>
         </div>
@@ -84,7 +84,7 @@ const PostInfoIcon = ({ children, info, className, onClick }) => {
             <div className='flex justify-center items-center hover:text-neutral-300 hover:bg-neutral-600/20 p-[0.4rem] rounded-full'>
                 {children}
             </div>
-            {info && <span className='text-[0.8rem]'>{info}</span>}
+            {info > 0 && <span className='text-[0.8rem]'>{info}</span>}
         </div>
     )
 }

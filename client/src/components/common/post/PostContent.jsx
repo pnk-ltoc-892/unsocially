@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const PostContent = ({ post }) => {
 
     return (
-        <div className='py-2'>
+        <div className='pt-2'>
             {
                 post?.tags?.length > 0 ? (
                     <div className='my-2 flex justify-start items-center flex-wrap gap-2'>
@@ -26,7 +26,7 @@ const PostContent = ({ post }) => {
             <Link to={`/post/${post?._id}`} className='bg-red-900 cursor-pointer'>
                 {
                     post?.content &&
-                    <div className='pb-2 text-lg font-[400]'>
+                    <div className='pb-2 text-[1.05rem] font-[350]'>
                         {post?.content}
                     </div>
                 }
@@ -43,7 +43,6 @@ const PostContent = ({ post }) => {
                     )
                     : null
                 }
-
             </Link>
         </div>
     )

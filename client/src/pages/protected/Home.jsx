@@ -28,7 +28,7 @@ const Home = () => {
 
 
     return (
-        <div className=''>
+        <div>
             {/* // ! Add Post Filter On This Drop Icon */}
             <div className='py-2 flex justify-center items-center gap-2'>
                 <span className='py-2 rounded-full'>
@@ -38,15 +38,15 @@ const Home = () => {
             </div>
 
             {/* // ! All Posts */}
-            <div className='w-[45%] mx-auto'>
+            <div className='w-[44%] mx-auto'>
                 <InfiniteScroll
-                    className='flex flex-col justify-center items-center gap-4'
+                    className='flex flex-col justify-center items-center gap-6'
                     dataLength={posts.length}
                     next={handlePostFetching}
                     hasMore={nextPage != null}
                     loader={<Loading />}
                     endMessage={
-                        <div className='w-full py-4 bg-black rounded-md text-center'>
+                        <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
                             That All Daisy!
                         </div>
                     }

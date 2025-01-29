@@ -7,10 +7,10 @@ import { Copy } from 'lucide-react'
 import { toast } from '@/hooks/use-toast.js'
 
 
-const PostShareDialog = () => {
+const PostShareDialog = ({postLink}) => {
 
     const handleShare = () => {
-        navigator.clipboard.writeText(window.location.href)
+        navigator.clipboard.writeText(`http://localhost:5173/post/${postLink}`)
         toast({
             title: "Copied!"
         })
@@ -18,8 +18,7 @@ const PostShareDialog = () => {
 
     return (
         <>
-            
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="w-[450px] h-[150px]">
                 <DialogSideBar>
                     <DialogTitle>Share link</DialogTitle>
                     <DialogDescription>
@@ -33,7 +32,7 @@ const PostShareDialog = () => {
                         </Label>
                         <Input
                             id="link"
-                            defaultValue={window.location.href}
+                            defaultValue={`http://localhost:5173/post/${postLink}`}
                             readOnly
                         />
                     </div>
