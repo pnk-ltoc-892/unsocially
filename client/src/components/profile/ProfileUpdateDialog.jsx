@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog.jsx'
+import { Dialog, DialogContent, DialogSideBar, DialogTitle } from '../ui/dialog.jsx'
 import { Label } from '../ui/label.jsx';
 import { Input } from '../ui/input.jsx';
 import { Button } from '../ui/button.jsx';
@@ -41,9 +41,9 @@ const ProfileUpdateDialog = ({ profileUpdateDialog, setProfileUpdateDialog }) =>
             className='max-h-screen overflow-y-scroll'
         >
             <DialogContent>
-                <DialogHeader>
+                <DialogSideBar>
                     <DialogTitle className='text-center' >Update profile</DialogTitle>
-                </DialogHeader>
+                </DialogSideBar>
 
                 {/* // ! Update Avatar */}
                 <ProfileAvatarUpdate />

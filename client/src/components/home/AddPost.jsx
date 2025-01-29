@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog.jsx';
+import { Dialog, DialogContent, DialogDescription, DialogSideBar, DialogTitle, DialogTrigger } from '../ui/dialog.jsx';
 import { Textarea } from '../ui/textarea.jsx';
 import { Button } from '../ui/button.jsx';
 import PostImageUpload from './PostImageUpload.jsx';
@@ -59,9 +59,9 @@ const AddPost = () => {
 
             {/* // ! Add Post Dialog Trigger */}
             <div onClick={() => setOpenPostDialog(true)}
-                className=' bg-white px-5 py-2 text-md font-semibold text-neutral-900 rounded-lg cursor-pointer'
+                className=' text-gray-400 hover:bg-white hover:text-black p-2 text-md font-semibold rounded-xl cursor-pointer'
             >
-                < SquarePlus />
+                <SquarePlus size={32} />
             </div>
 
             <Dialog open={openPostDialog}
@@ -69,9 +69,9 @@ const AddPost = () => {
             >
                 {/* // ! Dialog Pop-Up Content */}
                 <DialogContent className='p-4'>
-                    <DialogHeader>
+                    <DialogSideBar>
                         <DialogTitle className='flex justify-center items-center gap-6 text-lg'>Create New Post</DialogTitle>
-                    </DialogHeader>
+                    </DialogSideBar>
 
                     <div className='flex justify-center items-center gap-2'>
                         {/* // ! Image Section */}

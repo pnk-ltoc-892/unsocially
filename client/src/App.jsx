@@ -1,31 +1,30 @@
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import './App.css'
-import ProtectedLayout from './pages/protected/ProtectedLayout.jsx'
-import Error from './pages/Error.jsx'
-import Home from './pages/protected/Home.jsx'
-import Post from './pages/protected/Post/Post.jsx'
-import ProfileLayout from './pages/protected/profile/ProfileLayout.jsx'
-import Login from './pages/Login.jsx'
+import ProtectedLayout from './Pages/Protected/ProtectedLayout.jsx'
+import Error from './Pages/Error.jsx'
+import Home from './Pages/Protected/Home.jsx'
+import Post from './Pages/Protected/Post/Post.jsx'
+import ProfileLayout from './Pages/Protected/Profile/ProfileLayout.jsx'
+import Login from './Pages/Login.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
 import { Toaster } from './components/ui/toaster.jsx'
-import UserProfile from './pages/protected/profile/UserProfile/UserProfile.jsx'
+import UserProfile from './Pages/Protected/Profile/UserProfile/UserProfile.jsx'
 import Posts from './components/Profile/Content/Posts.jsx'
 import Comments from './components/Profile/Content/Comments.jsx'
 import Bookmarks from './components/Profile/Content/Bookmarks.jsx'
-import People from './pages/protected/People.jsx'
-import Search from './pages/protected/Search.jsx'
+import People from './Pages/Protected/People.jsx'
+import Search from './Pages/Protected/Search.jsx'
 
 function App() {
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch])
 
   return (
-    <div >
+    <div>
       <Toaster />
       <Routes>
         <Route path='/login' element={<Login />} />

@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 export const verifyJWT = asyncHandler( async (req, _, next) => {
     try {
         const token =
-            req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+            req.cookies?.accessToken || req.SideBar("Authorization")?.replace("Bearer ", "");
         if (!token) {
             throw new ApiError(401, "Unauthorized, Please Login First");
         }
@@ -34,7 +34,7 @@ export const verifyJWT = asyncHandler( async (req, _, next) => {
 // Middleware to check if user is logged in, for unprotected routes, if no user  then fail silently
 export const getLoggedInUserOrIgnore = asyncHandler( async (req, _, next) => {
     const token =  req.cookies?.accessToken 
-                || req.header("Authorization")?.replace("Bearer ", "");
+                || req.SideBar("Authorization")?.replace("Bearer ", "");
 
     try {
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);

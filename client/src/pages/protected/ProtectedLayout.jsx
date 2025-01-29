@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import Header from '../../components/header/Header.jsx'
+import SideBar from '../../components/SideBar/SideBar.jsx'
 import { useSelector } from 'react-redux'
 
 
@@ -21,10 +21,14 @@ const ProtectedLayout = () => {
 
 
     return (
-        // <div className='h-screen text-white overflow-y-scroll overflow-x-auto'>
-        <div>
-            <Header />
-            <Outlet />
+        <div className='flex max-h-screen relative'>
+            {/* <div className='fixed bg-background rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10'> */}
+            <div className='fixed bg-background'>
+                <SideBar />
+            </div>
+            <div className='flex-1 bg-gradient-to-r from-[#0f172a]  to-[#334155]'>
+                <Outlet />
+            </div>
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../../ui/dialog.jsx'
+import { DialogContent, DialogDescription, DialogSideBar, DialogTitle } from '../../ui/dialog.jsx'
 import { Button } from '../../ui/button.jsx'
 import { Label } from '../../ui/label.jsx'
 import { Input } from '../../ui/input.jsx'
@@ -20,12 +20,12 @@ const PostShareDialog = () => {
         <>
             
             <DialogContent className="sm:max-w-md">
-                <DialogHeader>
+                <DialogSideBar>
                     <DialogTitle>Share link</DialogTitle>
                     <DialogDescription>
                         Copy Link And Share To Anyone.
                     </DialogDescription>
-                </DialogHeader>
+                </DialogSideBar>
                 <div className="flex items-center space-x-2">
                     <div className="grid flex-1 gap-2">
                         <Label htmlFor="link" className="sr-only">

@@ -28,7 +28,7 @@ const Home = () => {
 
 
     return (
-        <div className='bg-[#040D12]'>
+        <div className=''>
             {/* // ! Add Post Filter On This Drop Icon */}
             <div className='py-2 flex justify-center items-center gap-2'>
                 <span className='py-2 rounded-full'>
