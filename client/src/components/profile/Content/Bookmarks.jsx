@@ -1,4 +1,4 @@
-import CommonPost from '@/components/common/post/CommonPost.jsx';
+import CommonPost from '@/components/Common/Post/CommonPost.jsx';
 import { Button } from '@/components/ui/button.jsx';
 import { getUserBookmarks } from '@/store/slices/profileSlice.js';
 import React, { useEffect } from 'react'

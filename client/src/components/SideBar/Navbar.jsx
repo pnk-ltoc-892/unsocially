@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Compass, House, UserRound, UserRoundPlus } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import AddPost from '../home/AddPost.jsx';
+import AddPost from '../Home/AddPost.jsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.jsx';
 
 
