@@ -33,7 +33,7 @@ const togglePostBookmark = asyncHandler(async (req, res) => {
 
 
 const getBookMarkedPosts = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 5 } = req.query;
 
     const postAggregation = Bookmark.aggregate(
         [
@@ -161,6 +161,7 @@ const getBookMarkedPosts = asyncHandler(async (req, res) => {
                 $project: {
                     _id: 0,
                     Post: 1,
+                    updatedAt: 1
                 },
             },
             // {
@@ -168,6 +169,11 @@ const getBookMarkedPosts = asyncHandler(async (req, res) => {
             //         newRoot: "$Post",
             //     },
             // },
+            {
+                $sort: {
+                    updatedAt: -1
+                }
+            }
         ]
     );
 
