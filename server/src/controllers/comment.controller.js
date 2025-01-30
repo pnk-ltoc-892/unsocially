@@ -150,7 +150,7 @@ const getUserComments = asyncHandler(async (req, res) => {
                 pipeline: [
                     {
                         $match: {
-                            author: new mongoose.Types.ObjectId(req.user?._id)
+                            likedBy: new mongoose.Types.ObjectId(req.user?._id)
                         }
                     }
                 ]

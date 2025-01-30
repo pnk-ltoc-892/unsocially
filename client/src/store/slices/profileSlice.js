@@ -147,8 +147,10 @@ export const getUserPosts = createAsyncThunk('get/userPosts',
 
 
 export const getUserComments = createAsyncThunk('get/userComments',
-    async (userId) => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/u/${userId}`,
+    async (userId, {getState}) => {
+        const {profileSlice} = getState();
+        
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/u/${userId}/?page=${profileSlice.commentControls.nextPage || profileSlice.commentControls.page}&limit=${profileSlice.commentControls.limit}`,
             {
                 withCredentials: true
             });

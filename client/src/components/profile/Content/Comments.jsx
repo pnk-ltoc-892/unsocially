@@ -1,44 +1,47 @@
 import Comment from "@/components/Comments/Comment.jsx";
-import { Button } from "@/components/ui/button.jsx";
+import Loading from "@/components/Common/Loading.jsx";
 import { getUserComments } from "@/store/slices/profileSlice.js";
-import { useEffect, useId } from "react"
+import { useEffect } from "react"
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux"
-import { useParams } from "react-router-dom";
-
-
 
 const Comments = () => {
-    const { user } = useSelector(state => state.auth);
     const { profile } = useSelector(state => state.profileSlice);
-    const { comments } = useSelector(state => state.profileSlice);
-    
-    
-    console.log(comments);
-    
+    const { comments, commentControls: { nextPage } } = useSelector(state => state.profileSlice);
 
     const dispatch = useDispatch();
-    useEffect( () => {
-        if(profile?._id) dispatch(getUserComments(profile?._id))
-        
-    },[profile] )
+    const handleCommentFetching = () => {
+        if(profile?._id){
+            dispatch(getUserComments(profile?._id));
+        }
+    }
+
+    useEffect(() => {
+        handleCommentFetching();
+    }, [profile])
+
     return (
         <div>
-            <div className='rounded-t-md mt-2'>
-                {
-                    comments?.length ? comments?.map((comment) => <Comment comment={comment} key={comment._id} />)
-                    :
-                    <div className='text-center py-4' >"No Comments Found"</div>
+            <InfiniteScroll
+                className='flex flex-col justify-center items-center gap-4'
+                dataLength={comments?.length}
+                next={handleCommentFetching}
+                hasMore={nextPage != null}
+                loader={<Loading />}
+                endMessage={
+                    <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
+                        That All Daisy!
+                    </div>
                 }
-            </div>
-            {/* <div className='py-8 flex justify-center items-center gap-4' >
-                <Button onClick={() => handlePostLoading(-1)}
-                    disabled={prevPage === null}
-                >{"<"}</Button>
-                <Button>{page}</Button>
-                <Button onClick={() => handlePostLoading(1)}
-                    disabled={nextPage === null}
-                >{">"}</Button>
-            </div> */}
+            >
+                {
+                    comments?.length
+                        ?
+                        comments?.map((comment, index) => <Comment comment={comment} key={index} />)
+                        :
+                        <Loading />
+                }
+            </InfiniteScroll>
         </div>
     )
 }
