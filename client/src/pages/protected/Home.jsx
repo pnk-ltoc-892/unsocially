@@ -11,19 +11,16 @@ import { Loader } from 'lucide-react';
 const Home = () => {
     const { posts, nextPage } = useSelector((state) => state.homeSlice);
 
-    // const [page, setPage] = useState(1);
     const dispatch = useDispatch();
     const handlePostFetching = () => {
         setTimeout(() => {
-            dispatch(getAllPosts()).then( () => {
-                // setPage((prev) => prev + 1);
-            } )
-        }, 2000);
+            dispatch(getAllPosts());
+        }, 1000);
     }
 
+    // ! Fetching Posts, When Component Mounts
     useEffect(() => {
         handlePostFetching();
-        // dispatch(getAllPosts(1))
     }, [])
 
 
