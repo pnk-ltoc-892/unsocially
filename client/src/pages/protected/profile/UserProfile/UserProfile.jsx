@@ -37,14 +37,19 @@ const UserProfile = () => {
                     <Link to={'./'} className='hover:underline cursor-pointer'>
                         Posts
                     </Link>
-                    <div className='px-2'>|</div>
+                    <div >|</div>
                     <Link to={'./comments'} className='hover:underline cursor-pointer'>
                         Comments
                     </Link>
-                    <div className='px-2'>|</div>
-                    <Link to={'./saved'} className='hover:underline cursor-pointer'>
-                        Saved
-                    </Link>
+                    {
+                        isCurrentUserProfile && (
+                            <>
+                                <div>|</div>
+                                <Link to={'./saved'} className='hover:underline cursor-pointer'>
+                                    Saved
+                                </Link>
+                            </>)
+                    }
                 </div>
                 <div className='w-[80%] mx-auto'>
                     <Outlet />

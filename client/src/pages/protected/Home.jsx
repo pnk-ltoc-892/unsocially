@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CommonPost from '@/components/Common/Post/CommonPost.jsx';
 import { getAllPosts } from '@/store/slices/homeSlice.js';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Loader } from 'lucide-react';
+import Loading from '@/components/Common/Loading.jsx';
 
 
 const Home = () => {
@@ -13,9 +13,7 @@ const Home = () => {
 
     const dispatch = useDispatch();
     const handlePostFetching = () => {
-        setTimeout(() => {
-            dispatch(getAllPosts());
-        }, 1000);
+        dispatch(getAllPosts());
     }
 
     // ! Fetching Posts, When Component Mounts
@@ -50,21 +48,13 @@ const Home = () => {
                 >
                     {
                         posts?.length
-                        ?
-                        posts?.map((post, index) => <CommonPost post={post} key={index} index={index} />)
-                        :
-                        <Loading />
+                            ?
+                            posts?.map((post, index) => <CommonPost post={post} key={index} index={index} />)
+                            :
+                            <Loading />
                     }
                 </InfiniteScroll>
             </div>
-        </div>
-    )
-}
-
-const Loading = () => {
-    return (
-        <div className='flex justify-center items-center py-4 text-4xl' >
-            <Loader />
         </div>
     )
 }

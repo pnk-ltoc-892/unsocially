@@ -7,10 +7,32 @@ const initialState = {
     isContentLoading: false,
     isFollowLoading: false,
     isCurrentUserProfile: false,
+
+    // Profile Data
     profile: {},
+
+    // Profile Content
     posts: [],
+    postControls: {
+        limit: 5,
+        prevPage: null,
+        page: 1,
+        nextPage: null,
+    },
     comments: [],
-    bookmarks: []
+    commentControls: {
+        limit: 5,
+        prevPage: null,
+        page: 1,
+        nextPage: null,
+    },
+    bookmarks: [],
+    bookmarkControls: {
+        limit: 5,
+        prevPage: null,
+        page: 1,
+        nextPage: null,
+    }
 }
 
 export const profileSlice = createSlice({
@@ -20,7 +42,7 @@ export const profileSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        // Posts
+            // Posts
             .addCase(getUserPosts.pending, (state) => {
                 state.isContentLoading = true;
             })
@@ -28,13 +50,19 @@ export const profileSlice = createSlice({
                 state.isContentLoading = false;
                 // console.log(action.payload.data);
 
-                state.posts = action.payload.data.posts
+                state.posts = [...state.posts, ...action.payload.data.posts];
+
+                state.postControls.limit = action.payload.data.limit;
+                state.postControls.prevPage = action.payload.data.prevPage;
+                state.postControls.page = action.payload.data.page;
+                state.postControls.nextPage = action.payload.data.nextPage;
             })
             .addCase(getUserPosts.rejected, (state, action) => {
                 state.isContentLoading = false;
-                state.posts = {};
+                state.posts = [];
             })
-        // Comments
+
+            // Comments
             .addCase(getUserComments.pending, (state) => {
                 state.isContentLoading = true;
             })
@@ -42,34 +70,46 @@ export const profileSlice = createSlice({
                 state.isContentLoading = false;
                 // console.log(action.payload.data);
 
-                state.comments = action.payload.data.comments
+                state.comments = [...state.comments, ...action.payload.data.comments];
+
+                state.commentControls.limit = action.payload.data.limit;
+                state.commentControls.prevPage = action.payload.data.prevPage;
+                state.commentControls.page = action.payload.data.page;
+                state.commentControls.nextPage = action.payload.data.nextPage;
             })
             .addCase(getUserComments.rejected, (state, action) => {
                 state.isContentLoading = false;
-                state.posts = {};
+                state.comments = [];
             })
-        // Bookmarks
+
+            // Bookmarks
             .addCase(getUserBookmarks.pending, (state) => {
                 state.isContentLoading = true;
             })
             .addCase(getUserBookmarks.fulfilled, (state, action) => {
                 state.isContentLoading = false;
-                console.log(action.payload.data);
 
-                state.bookmarks = action.payload.data.bookmarkedPosts
+                state.bookmarks = [...state.bookmarks, ...action.payload.data.bookmarkedPosts];
+                // console.log(state.bookmarks);
+                
+                state.bookmarkControls.limit = action.payload.data.limit;
+                state.bookmarkControls.prevPage = action.payload.data.prevPage;
+                state.bookmarkControls.page = action.payload.data.page;
+                state.bookmarkControls.nextPage = action.payload.data.nextPage;
             })
             .addCase(getUserBookmarks.rejected, (state, action) => {
                 state.isContentLoading = false;
-                state.posts = {};
+                state.bookmarks = [];
             })
 
+            // Profile Data
             .addCase(getUserProfile.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(getUserProfile.fulfilled, (state, action) => {
                 state.isLoading = false;
                 // console.log(action.payload.data.profile);
-                
+
                 state.profile = action.payload.data.profile;
                 state.isCurrentUserProfile = action.payload.data.profile.isCurrentUserProfile;
             })
@@ -94,13 +134,17 @@ export const profileSlice = createSlice({
 // Asynchronous Actions Thunks
 //! Profile Data Fetching
 export const getUserPosts = createAsyncThunk('get/userPosts',
-    async (username) => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/u/${username}`,
+    async (username, {getState}) => {
+        const {profileSlice} = getState();
+        // console.log(profileSlice);
+        
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/u/${username}/?page=${profileSlice.postControls.nextPage || profileSlice.postControls.page}&limit=${profileSlice.postControls.limit}`,
             {
                 withCredentials: true
             });
         return response.data;
     });
+
 
 export const getUserComments = createAsyncThunk('get/userComments',
     async (userId) => {
@@ -111,12 +155,16 @@ export const getUserComments = createAsyncThunk('get/userComments',
         return response.data;
     });
 
+
 export const getUserBookmarks = createAsyncThunk('get/userBookmarks',
-    async (username) => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/bookmarks`,
+    async (_, {getState}) => {
+        const {profileSlice} = getState();
+
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/bookmarks/?page=${profileSlice.bookmarkControls.nextPage || profileSlice.bookmarkControls.page}&limit=${profileSlice.bookmarkControls.limit}`,
             {
                 withCredentials: true
             });
+        
         return response.data;
     });
 

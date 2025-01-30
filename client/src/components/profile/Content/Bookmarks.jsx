@@ -1,39 +1,45 @@
+import Loading from '@/components/Common/Loading.jsx';
 import CommonPost from '@/components/Common/Post/CommonPost.jsx';
-import { Button } from '@/components/ui/button.jsx';
 import { getUserBookmarks } from '@/store/slices/profileSlice.js';
 import React, { useEffect } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { useDispatch, useSelector } from 'react-redux';
 
 
 const Bookmarks = () => {
-    const { bookmarks } = useSelector(state => state.profileSlice);
-
-    const handlePostLoading = () => {
-    }
+    const { bookmarks, bookmarkControls: { nextPage } } = useSelector(state => state.profileSlice);
 
     const dispatch = useDispatch();
-    useEffect(() => {
+    const handlePostFetching = () => {
         dispatch(getUserBookmarks());
+    }
+
+    useEffect(() => {
+        handlePostFetching();
     }, []);
 
     return (
         <div>
-            <div className='rounded-t-md mt-2'>
-                {
-                    bookmarks?.length ? bookmarks?.map((data,index) => <CommonPost post={data?.Post} key={index} />)
-                    :
-                    <div className='text-center py-4' >"No Saved Posts"</div>
+            <InfiniteScroll
+                className='flex flex-col justify-center items-center gap-6'
+                dataLength={bookmarks?.length}
+                next={handlePostFetching}
+                hasMore={nextPage != null}
+                loader={<Loading />}
+                endMessage={
+                    <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
+                        That All Daisy!
+                    </div>
                 }
-            </div>
-            <div className='py-8 flex justify-center items-center gap-4' >
-                <Button onClick={() => handlePostLoading(-1)}
-                    // disabled={prevPage === null}
-                >{"<"}</Button>
-                {/* <Button>{page}</Button> */}
-                <Button onClick={() => handlePostLoading(1)}
-                    // disabled={nextPage === null}
-                >{">"}</Button>
-            </div>
+            >
+                {
+                    bookmarks?.length
+                        ?
+                        bookmarks?.map((data, index) => <CommonPost post={data?.Post} key={index} index={index} />)
+                        :
+                        <Loading />
+                }
+            </InfiniteScroll>
         </div>
     )
 }
