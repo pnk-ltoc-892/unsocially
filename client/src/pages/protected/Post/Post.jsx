@@ -23,7 +23,7 @@ const Post = () => {
         <div className='h-screen overflow-y-scroll overflow-x-auto'>
             <div className='md:max-w-[50%] mx-auto'>
                 {/* // ! Post Card */}
-                <div className='mt-4 border p-4 rounded-md'>
+                <div className='mt-12 border p-4 rounded-md'>
                     <PostHeader post={post}/>
                     <PostContent post={post}/>
                     <PostInfo post={post}/>

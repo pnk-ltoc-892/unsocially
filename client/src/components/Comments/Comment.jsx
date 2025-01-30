@@ -12,10 +12,9 @@ import { Button } from '../ui/button.jsx'
 import { getPostById } from '@/store/slices/post-slice.js'
 
 
-const Comment = ({ comment }) => {
+const Comment = ({ comment, handleCommentFetching }) => {
     const { user } = useSelector(state => state.auth);
     const { postId } = useParams();
-    // console.log(comment);
     
 
     const [isEdit, setIsEdit] = useState(false);
@@ -24,8 +23,9 @@ const Comment = ({ comment }) => {
     const dispatch = useDispatch();
     const handleCommentDelete = () => {
         dispatch(deletePostComment(comment._id)).then(() => {
-            dispatch(getPostComments(comment.postId))
+            // dispatch(getPostComments(comment.postId))
             dispatch(getPostById(postId));
+            handleCommentFetching();
             // window.location.reload();
             toast({
                 title: "Comment Deleted"
@@ -35,7 +35,8 @@ const Comment = ({ comment }) => {
     const handleCommentEdit = () => {
         const data = { content: edit };
         dispatch(editPostComment({ commentId: comment._id, data })).then(() => {
-            dispatch(getPostComments(comment.postId));
+            handleCommentFetching();
+            // dispatch(getPostComments(comment.postId));
             // window.location.reload();
             setEdit('');
             toast({
@@ -46,7 +47,7 @@ const Comment = ({ comment }) => {
     }
 
     return (
-        <div className='p-4 pb-1 w-full border rounded-md'>
+        <div className='p-4 pb-1 border rounded-md'>
             <div className='flex gap-2' >
                 <div>
                     <Avatar className='cursor-pointer h-10 w-10'>

@@ -8,21 +8,23 @@ import { Link } from 'react-router-dom'
 
 const PostHeader = ({ post }) => {
     const { user } = useSelector(state => state.auth);
-    // console.log(user);
-    // console.log(post);
+    // console.log(user, 'user');
+    // console.log(post, 'post');
 
     const handleDeletePost = () => {
-
+        console.log('Delete Post');
+        
 
     }
     const handleEditPost = () => {
+        console.log('edit Post');
 
     }
 
 
     return (
         <div className='flex justify-between items-center pb-3 border-b-[1px]'>
-            <Link to={`/profile/user/${post?.author?.username}/posts`}>
+            <Link to={`/profile/user/${post?.author?.username}/`}>
                 <div className='cursor-pointer flex justify-start items-center gap-2'>
                     <div>
                         <Avatar className='cursor-pointer h-10 w-10'>
@@ -42,23 +44,23 @@ const PostHeader = ({ post }) => {
             </Link>
 
             {/* // ! Only Author Menu */}
-            {
+            {/* {
                 user?._id === post?.author?._id
                     ?
                     <DropdownMenu>
                         <DropdownMenuTrigger>
                             <div className='hover:bg-neutral-600/20 rounded-full p-0.5 cursor-pointer'>
-                                <Ellipsis />
+                                <Ellipsis size={32} />
                             </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className='bg-black'>
-                            <DropdownMenuLabel className='cursor-pointer'>Edit</DropdownMenuLabel>
+                            <DropdownMenuLabel className='cursor-pointer' onClick={handleEditPost}>Edit</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuLabel className='cursor-pointer text-red-800' onClick={handleDeletePost} >Delete</DropdownMenuLabel>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     : null
-            }
+            } */}
         </div>
     )
 }

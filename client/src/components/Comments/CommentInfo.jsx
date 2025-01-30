@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 
 const CommentInfo = ({ comment }) => {
     const { postId } = useParams();
-    console.log(comment);
 
     const dispatch = useDispatch();
     const handleCommentLike = (commentId) => {

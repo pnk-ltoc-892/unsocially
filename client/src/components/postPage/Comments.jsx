@@ -7,31 +7,44 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addPostComment, getPostComments } from '@/store/slices/commentSlice.js'
 import { Button } from '../ui/button.jsx'
 import { getPostById } from '@/store/slices/post-slice.js'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { Loader } from 'lucide-react'
 
 
 const Comments = () => {
     const { postId } = useParams();
     const { user } = useSelector(state => state.auth);
-    const { comments } = useSelector(state => state.commentSlice);
+    const { comments, nextPage } = useSelector(state => state.commentSlice);
 
+    const [page, setPage] = useState(1);
+    console.log("rerender");
+    
     const [comment, setComment] = useState('');
     const dispatch = useDispatch();
     const handleAddComment = () => {
         const data = { content: comment };
-
+        
         dispatch(addPostComment({ postId, data })).then(() => {
             dispatch(getPostById(postId));
-            dispatch(getPostComments(postId));
+            handleCommentFetching();
             setComment('');
         })
     }
 
+    const handleCommentFetching = () => {
+        setTimeout(() => {
+            dispatch(getPostComments({postId, page:page})).then( () => {
+                setPage((prev) => prev + 1);
+            } )
+        }, 500);
+    }
+
     useEffect(() => {
-        dispatch(getPostComments(postId));
+        handleCommentFetching();
     }, [postId])
 
     return (
-        <div className="" >
+        <div>
             <div className='mt-4 bg-[#000000] flex justify-center items-center gap-2' >
                 <div>
                     <Avatar className='cursor-pointer h-10 w-10'>
@@ -52,16 +65,39 @@ const Comments = () => {
             </div>
 
             {/* // ! Comments-Rendering */}
-            <div className='w-full mx-auto mt-4 flex flex-col justify-start items-start gap-4'>
+            <div className=''>
                 <span>Comments</span>
-                {
-                    comments?.length > 0 &&
-                    comments?.map((comment, index) => <Comment comment={comment} key={index} />)
-                }
+                <InfiniteScroll
+                    className='flex flex-col justify-center items-center gap-6'
+                    dataLength={comments.length}
+                    next={handleCommentFetching}
+                    hasMore={nextPage != null}
+                    loader={<Loading />}
+                    endMessage={
+                        <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
+                            That All Daisy!
+                        </div>
+                    }
+                >
+                    {
+                        comments?.length
+                        ?
+                        comments?.map((comment, index) => <Comment comment={comment} key={index} handleCommentFetching={handleCommentFetching}/>)
+                        :
+                        <Loading />
+                    }
+                </InfiniteScroll>
             </div>
         </div>
     )
 }
 
+const Loading = () => {
+    return (
+        <div className='flex justify-center items-center py-4 text-4xl' >
+            <Loader />
+        </div>
+    )
+}
 
 export default Comments;

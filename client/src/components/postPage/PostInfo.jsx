@@ -77,7 +77,7 @@ const PostInfoIcon = ({ children, info, className, onClick }) => {
             <div className='flex justify-center items-center hover:text-neutral-300 hover:bg-neutral-600/20 p-[0.4rem] rounded-full'>
                 {children}
             </div>
-            {info && <span className='text-[0.8rem]'>{info}</span>}
+            {info > 0 && <span className='text-[0.8rem]'>{info}</span>}
         </div>
     )
 }

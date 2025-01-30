@@ -5,9 +5,10 @@ import axios from "axios";
 const initialState = {
     isLoading: false,
     comments: [],
-    // page: 1,
-    // prevPage: null,
-    // nextPage: null,
+    page: 1,
+    limit: 0,
+    prevPage: null,
+    nextPage: null,
 }
 
 export const commentSlice = createSlice({
@@ -22,12 +23,15 @@ export const commentSlice = createSlice({
             })
             .addCase(getPostComments.fulfilled, (state, action) => {
                 state.isLoading = false;
-                console.log(action.payload.data.comments);
+                console.log(action.payload.data.comments, 'comments');
+                
 
-                state.comments = action.payload.data.comments;
-                // state.prevPage = action.payload.data.prevPage;
-                // state.page = action.payload.data.page;
-                // state.nextPage = action.payload.data.nextPage;
+                state.comments = [...state.comments, ...action.payload.data.comments];
+
+                state.limit = action.payload.data.limit;
+                state.prevPage = action.payload.data.prevPage;
+                state.page = action.payload.data.page;
+                state.nextPage = action.payload.data.nextPage;
             })
             .addCase(getPostComments.rejected, (state, action) => {
                 state.isLoading = false;
@@ -41,8 +45,11 @@ export const commentSlice = createSlice({
 
 // ! Comment Fetching
 export const getPostComments = createAsyncThunk('comment/getPostComments',
-    async (postId) => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/${postId}`,
+    async ({ postId, page}, {getState}) => {
+        const state = getState();
+        console.log(state, 'state');
+        
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/${postId}/?page=${page}&limit=${5}`,
             {
                 withCredentials: true
             });
@@ -52,9 +59,9 @@ export const getPostComments = createAsyncThunk('comment/getPostComments',
 
 // ! Comment Controllers
 export const addPostComment = createAsyncThunk('comment/addPostComments',
-    async ({postId, data}) => {
+    async ({ postId, data }) => {
         // console.log({postId, data});
-        
+
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/comments/post/${postId}`,
             data,
             {
@@ -73,7 +80,7 @@ export const deletePostComment = createAsyncThunk('comment/deletePostComments',
     });
 
 export const editPostComment = createAsyncThunk('comment/deletePostComments',
-    async ({commentId, data}) => {
+    async ({ commentId, data }) => {
         const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}`,
             data,
             {

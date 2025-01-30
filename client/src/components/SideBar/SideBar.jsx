@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import Navbar from './Navbar.jsx'
-import { LogOut, Power } from 'lucide-react';
+import { ArrowLeft, LogOut, Power } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { logOutUser } from '@/store/slices/authSlice.js';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.jsx';
+import { useNavigate } from 'react-router-dom';
 
 
 const SideBar = ({ setInit, init }) => {
+    const navigate = useNavigate();
+
     const dispatch = useDispatch()
     const handleLogout = () => {
         dispatch(logOutUser());
@@ -14,6 +17,12 @@ const SideBar = ({ setInit, init }) => {
 
     return (
         <div className='h-screen flex flex-col justify-center items-center gap-12 px-3'>
+            {/* // Navigate Backward */}
+            <div onClick={() => navigate(-1)}
+                className='text-white hover:bg-gray-900/40 rounded-xl p-2 cursor-pointer'>
+                <ArrowLeft size={30} />
+            </div>
+
             {/* // ! Logo */}
             <div className='cursor-pointer tracking-wider font-bold text-xl px-3 py-1 bg-gray-900/40 text-white rounded-xl'>US</div>
 

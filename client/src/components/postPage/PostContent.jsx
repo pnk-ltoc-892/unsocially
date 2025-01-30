@@ -22,17 +22,18 @@ const PostContent = ({post}) => {
                     : null
             }
             {
-                post.content && 
-                    <div className='pb-4 text-lg font-[400]'>
+                post?.content && 
+                    <div className='pb-2 text-lg font-[400]'>
                         {post.content}
                     </div>
             }
             {
-                post.images?.length && (
+                post?.images?.length && (
                     <div className='rounded-[0.5rem]'>
                         <img src={post.images[0]} 
+                            onError={(e) => e.target.className = 'hidden'}
                             alt="Post Image" 
-                            className='h-auto object-cover rounded-[1.25rem] border-[1px]'
+                            className='h-auto object-cover rounded-[0.5rem] border-[1px]'
                             loading='lazy'
                             />
                     </div>
