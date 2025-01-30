@@ -5,9 +5,9 @@ import axios from "axios";
 const initialState = {
     isLoading: false,
     comments: [],
-    page: 1,
-    limit: 0,
+    limit: 5,
     prevPage: null,
+    page: 1,
     nextPage: null,
 }
 
@@ -23,11 +23,10 @@ export const commentSlice = createSlice({
             })
             .addCase(getPostComments.fulfilled, (state, action) => {
                 state.isLoading = false;
-                console.log(action.payload.data.comments, 'comments');
-                
 
                 state.comments = [...state.comments, ...action.payload.data.comments];
-
+                console.log(action.payload.data);
+                
                 state.limit = action.payload.data.limit;
                 state.prevPage = action.payload.data.prevPage;
                 state.page = action.payload.data.page;
@@ -35,7 +34,19 @@ export const commentSlice = createSlice({
             })
             .addCase(getPostComments.rejected, (state, action) => {
                 state.isLoading = false;
-                state.posts = [];
+                state.comments = [];
+            })
+            .addCase(addPostComment.fulfilled, (state) => {
+                state.isLoading = false;
+                state.comments = [];
+            })
+            .addCase(deletePostComment.fulfilled, (state) => {
+                state.isLoading = false;
+                state.comments = [];
+            })
+            .addCase(editPostComment.fulfilled, (state) => {
+                state.isLoading = false;
+                state.comments = [];
             })
     }
 })
@@ -45,11 +56,10 @@ export const commentSlice = createSlice({
 
 // ! Comment Fetching
 export const getPostComments = createAsyncThunk('comment/getPostComments',
-    async ({ postId, page}, {getState}) => {
-        const state = getState();
-        console.log(state, 'state');
+    async (postId, {getState}) => {
+        const {commentSlice} = getState();
         
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/${postId}/?page=${page}&limit=${5}`,
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/${postId}/?page=${commentSlice.nextPage || commentSlice.page}&limit=${commentSlice.limit}`,
             {
                 withCredentials: true
             });
@@ -79,7 +89,7 @@ export const deletePostComment = createAsyncThunk('comment/deletePostComments',
         return response.data;
     });
 
-export const editPostComment = createAsyncThunk('comment/deletePostComments',
+export const editPostComment = createAsyncThunk('comment/editPostComments',
     async ({ commentId, data }) => {
         const response = await axios.patch(`${import.meta.env.VITE_BACKEND_URL}/comments/${commentId}`,
             data,

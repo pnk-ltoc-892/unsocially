@@ -13,7 +13,7 @@ import { getPostById } from '@/store/slices/post-slice.js'
 
 
 
-const Comment = ({ comment, handleCommentFetching }) => {
+const Comment = ({ comment }) => {
     const { user } = useSelector(state => state.auth);
 
     const [isEdit, setIsEdit] = useState(false);

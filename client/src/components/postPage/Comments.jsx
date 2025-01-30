@@ -9,6 +9,7 @@ import { Button } from '../ui/button.jsx'
 import { getPostById } from '@/store/slices/post-slice.js'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Loader } from 'lucide-react'
+import Loading from '../Common/Loading.jsx'
 
 
 const Comments = () => {
@@ -16,32 +17,25 @@ const Comments = () => {
     const { user } = useSelector(state => state.auth);
     const { comments, nextPage } = useSelector(state => state.commentSlice);
 
-    const [page, setPage] = useState(1);
-    console.log("rerender");
-    
+
     const [comment, setComment] = useState('');
+    
     const dispatch = useDispatch();
     const handleAddComment = () => {
         const data = { content: comment };
-        
         dispatch(addPostComment({ postId, data })).then(() => {
-            dispatch(getPostById(postId));
-            handleCommentFetching();
             setComment('');
+            window.location.reload();
         })
     }
 
     const handleCommentFetching = () => {
-        setTimeout(() => {
-            dispatch(getPostComments({postId, page:page})).then( () => {
-                setPage((prev) => prev + 1);
-            } )
-        }, 500);
+        dispatch(getPostComments(postId));
     }
 
     useEffect(() => {
         handleCommentFetching();
-    }, [postId])
+    }, [])
 
     return (
         <div>
@@ -69,7 +63,7 @@ const Comments = () => {
                 <span>Comments</span>
                 <InfiniteScroll
                     className='flex flex-col justify-center items-center gap-6'
-                    dataLength={comments.length}
+                    dataLength={comments?.length}
                     next={handleCommentFetching}
                     hasMore={nextPage != null}
                     loader={<Loading />}
@@ -81,21 +75,13 @@ const Comments = () => {
                 >
                     {
                         comments?.length
-                        ?
-                        comments?.map((comment, index) => <Comment comment={comment} key={index} handleCommentFetching={handleCommentFetching}/>)
-                        :
-                        <Loading />
+                            ?
+                            comments?.map((comment, index) => <Comment comment={comment} key={comment?._id} />)
+                            :
+                            <Loading />
                     }
                 </InfiniteScroll>
             </div>
-        </div>
-    )
-}
-
-const Loading = () => {
-    return (
-        <div className='flex justify-center items-center py-4 text-4xl' >
-            <Loader />
         </div>
     )
 }
