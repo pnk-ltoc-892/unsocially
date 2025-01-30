@@ -11,19 +11,19 @@ import { Loader } from 'lucide-react';
 const Home = () => {
     const { posts, nextPage } = useSelector((state) => state.homeSlice);
 
-    const [page, setPage] = useState(1);
+    // const [page, setPage] = useState(1);
     const dispatch = useDispatch();
     const handlePostFetching = () => {
         setTimeout(() => {
-            dispatch(getAllPosts(page+1)).then( () => {
-                setPage((prev) => prev + 1);
+            dispatch(getAllPosts()).then( () => {
+                // setPage((prev) => prev + 1);
             } )
-        }, 1000);
+        }, 2000);
     }
 
     useEffect(() => {
-        // handlePostFetching();
-        dispatch(getAllPosts(1))
+        handlePostFetching();
+        // dispatch(getAllPosts(1))
     }, [])
 
 
@@ -41,7 +41,7 @@ const Home = () => {
             <div className='w-[44%] mx-auto'>
                 <InfiniteScroll
                     className='flex flex-col justify-center items-center gap-6'
-                    dataLength={posts.length}
+                    dataLength={posts?.length}
                     next={handlePostFetching}
                     hasMore={nextPage != null}
                     loader={<Loading />}
