@@ -1,4 +1,3 @@
-import SideBar from '@/components/SideBar/SideBar.jsx'
 import Comments from '@/components/PostPage/Comments.jsx'
 import PostContent from '@/components/PostPage/PostContent.jsx'
 import PostHeader from '@/components/PostPage/PostHeader.jsx'

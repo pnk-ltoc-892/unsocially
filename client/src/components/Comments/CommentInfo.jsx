@@ -28,7 +28,7 @@ const CommentInfo = ({ comment }) => {
 
 
 const Like = ({ active, className }) => {
-    return <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill={active ? "rgb(22 163 74)" : "none"} stroke="currentColor" strokeWidth={active ? "0" : "2"} strokeLinecap="round" strokeLinejoin="round" className={`${className} lucide lucide-arrow-big-up`}><path d="M9 18v-6H5l7-7 7 7h-4v6H9z"/></svg>
+    return <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill={active ? "rgb(22 163 74)" : "none"} stroke="currentColor" strokeWidth={active ? "0" : "2"} strokeLinecap="round" strokeLinejoin="round" className={`${className} lucide lucide-arrow-big-up`}><path d="M9 18v-6H5l7-7 7 7h-4v6H9z"/></svg>
 }
 
 export default CommentInfo;

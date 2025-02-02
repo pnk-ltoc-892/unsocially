@@ -10,7 +10,7 @@ const Navbar = () => {
     const { user } = useSelector(state => state.auth);
 
     return (
-        <div className='text-gray-400 flex flex-col justify-center items-center gap-6'>
+        <div className='flex flex-col justify-center items-center gap-6'>
             <Link to={'/home'} title="Home">
                 <House size={32} />
             </Link>
@@ -45,7 +45,7 @@ const Navbar = () => {
 
 
 const Link = ({ to, children, title }) => {
-    const styles = "hover:bg-gray-900/40 text-white rounded-xl p-2 flex justify-start items-center gap-1"
+    const styles = "hover:bg-white hover:text-black hover:scale-110 text-white rounded-xl p-2 flex justify-start items-center gap-1 animate-scale-in-top cursor-pointer";
     return (
         <>
             <TooltipProvider delayDuration={200} >

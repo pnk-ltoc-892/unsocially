@@ -59,7 +59,7 @@ const AddPost = () => {
 
             {/* // ! Add Post Dialog Trigger */}
             <div onClick={() => setOpenPostDialog(true)}
-                className=' text-gray-400 hover:bg-white hover:text-black p-2 text-md font-semibold rounded-xl cursor-pointer'
+                className='text-white hover:bg-white hover:text-black p-2 text-md font-semibold rounded-xl cursor-pointer'
             >
                 <SquarePlus size={32} />
             </div>

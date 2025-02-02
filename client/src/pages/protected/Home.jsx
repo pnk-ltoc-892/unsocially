@@ -33,9 +33,9 @@ const Home = () => {
             </div>
 
             {/* // ! All Posts */}
-            <div className='w-[44%] mx-auto'>
+            <div className='w-[50%] mx-auto'>
                 <InfiniteScroll
-                    className='flex flex-col justify-center items-center gap-6'
+                    className='flex flex-col justify-center items-center gap-12 pt-12'
                     dataLength={posts?.length}
                     next={handlePostFetching}
                     hasMore={nextPage != null}

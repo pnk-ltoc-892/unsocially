@@ -41,7 +41,7 @@ const Comment = ({ comment }) => {
     }
 
     return (
-        <div className='w-full p-4 pb-1 border rounded-md'>
+        <div className='w-full pt-3 px-4 pb-1 border rounded-md'>
             <div className='flex justify-between items-center border-b-[1px] pb-2'>
                 <Link to={`/profile/user/${comment?.author?.username}`}  >
                     <div className='cursor-pointer flex justify-start items-center gap-2'>
@@ -97,7 +97,7 @@ const Comment = ({ comment }) => {
                             </Button>
                         </div>
                         :
-                        <div className='pt-2 pb-1 font-semibold text-neutral-300'>
+                        <div className='pt-2 pb-1 text-[1.125rem] font-[350] text-neutral-300'>
                             {comment.content}
                         </div>
                 }

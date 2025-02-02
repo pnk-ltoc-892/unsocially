@@ -9,11 +9,11 @@ const PostContent = ({ post }) => {
         <div className='pt-2'>
             {
                 post?.tags?.length > 0 ? (
-                    <div className='my-2 flex justify-start items-center flex-wrap gap-2'>
+                    <div className='my-1 flex justify-start items-center flex-wrap gap-2'>
                         {
                             post?.tags?.map((tag, index) => {
                                 return <Badge onClick={() => console.log({ tag, index })}
-                                    className="px-4 py-1 text-sm cursor-pointer hover:bg-white hover:text-black"
+                                    className="px-4 py-1 text-xs cursor-pointer hover:bg-white hover:text-black"
                                     variant={"outline"}
                                     key={index}
                                 >{tag}</Badge>
@@ -26,7 +26,7 @@ const PostContent = ({ post }) => {
             <Link to={`/post/${post?._id}`} className='bg-red-900 cursor-pointer'>
                 {
                     post?.content &&
-                    <div className='pb-2 text-[1.05rem] font-[350]'>
+                    <div className='pb-2 text-[1.125rem] font-[350]'>
                         {post?.content}
                     </div>
                 }

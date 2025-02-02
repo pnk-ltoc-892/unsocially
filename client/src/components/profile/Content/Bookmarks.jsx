@@ -21,7 +21,7 @@ const Bookmarks = () => {
     return (
         <div>
             <InfiniteScroll
-                className='flex flex-col justify-center items-center gap-6'
+                className='flex flex-col justify-center items-center gap-8 pt-6'
                 dataLength={bookmarks?.length}
                 next={handlePostFetching}
                 hasMore={nextPage != null}

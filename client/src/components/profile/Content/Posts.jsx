@@ -21,9 +21,9 @@ const Posts = () => {
     }, [])
     return (
         <div>
-            <div className=''>
+            <div className='w-full mx-auto'>
                 <InfiniteScroll
-                    className='flex flex-col justify-center items-center gap-6'
+                    className='flex flex-col justify-center items-center gap-8 pt-6'
                     dataLength={posts?.length}
                     next={handlePostFetching}
                     hasMore={nextPage != null}

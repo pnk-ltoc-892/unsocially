@@ -33,7 +33,7 @@ const UserProfile = () => {
                 </div>
 
                 {/* // ! For Routes Stats */}
-                <div className='py-4 flex justify-center items-center gap-4 text-neutral-100 text-3xl font-bold tracking-wide'>
+                <div className='py-2 flex justify-center items-center gap-4 text-neutral-100 text-2xl font-bold tracking-wide'>
                     <Link to={'./'}>
                         Posts
                     </Link>
