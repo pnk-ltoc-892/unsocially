@@ -6,7 +6,7 @@ import AddPost from '../Home/AddPost.jsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.jsx';
 
 
-const Navbar = ({ open }) => {
+const Navbar = () => {
     const { user } = useSelector(state => state.auth);
 
     return (

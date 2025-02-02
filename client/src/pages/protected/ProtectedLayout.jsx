@@ -24,7 +24,7 @@ const ProtectedLayout = ({setInit, init}) => {
             <div className='fixed bg-transparent rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10'>
                 <SideBar setInit={setInit} init={init}/>
             </div>
-            <div className='flex-1'>
+            <div className='flex-1 mt-12'>
                 <Outlet />
             </div>
         </div>

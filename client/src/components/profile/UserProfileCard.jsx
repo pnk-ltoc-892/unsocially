@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { avatar } from '@/config/index.js'
 import { toast } from '@/hooks/use-toast.js'
 import { getUserProfile, toggleUserFollow } from '@/store/slices/profileSlice.js'
+import { Button } from '../ui/button.jsx'
 
 
 export const UserProfileCard = ({ profile }) => {
@@ -13,10 +14,10 @@ export const UserProfileCard = ({ profile }) => {
 
     // ! Handle Toggling User Following
     const handleUserFollow = () => {
-        dispatch(toggleUserFollow(profile._id)).then( (data) => {
-            dispatch(getUserProfile(profile.username));            
+        dispatch(toggleUserFollow(profile?._id)).then( (data) => {
+            dispatch(getUserProfile(profile?.username));            
             toast({
-                title: profile.isFollowing ? "Unfollowed" : "Followed"
+                title: profile?.isFollowing ? "Unfollowed" : "Followed"
             })
         } )
     }
@@ -52,15 +53,15 @@ export const UserProfileCard = ({ profile }) => {
                 {/* // ! For Profile Stats */}
                 <div className='flex justify-start items-center text-neutral-100 text-xl font-bold tracking-wide py-4 gap-4'>
                     <div className='hover:underline'>
-                        {profile.posts} Posts
+                        {profile?.posts} Posts
                     </div>
                     <div className='px-2'>|</div>
                     <div className='hover:underline'>
-                        {profile.followers} Followers
+                        {profile?.followers} Followers
                     </div>
                     <div className='px-2'>|</div>
                     <div className='hover:underline'>
-                        {profile.following} Following
+                        {profile?.following} Following
                     </div>
                 </div>
 
@@ -69,9 +70,9 @@ export const UserProfileCard = ({ profile }) => {
                     !isFollowLoading
                         ?
                         <ProfileButton
-                            className={profile.isFollowing ? "bg-[#0f0521] text-white" : ""}
+                            classname={profile?.isFollowing ? "bg-[#000000] text-white hover:bg-black" : ""}
                             onClick={handleUserFollow}
-                        >{profile.isFollowing ? "UnFollow" : "Follow"}</ProfileButton>
+                        >{profile?.isFollowing ? "UnFollow" : "Follow"}</ProfileButton>
                         :
                         <Spinner />
                 }
@@ -80,11 +81,10 @@ export const UserProfileCard = ({ profile }) => {
 }
 
 
-const ProfileButton = ({ children, className, onClick }) => {
+const ProfileButton = ({ children, classname, onClick }) => {
     return (
-        <button onClick={onClick}
-            type="button"
-            className={`w-full max-w-sm py-1 text-md font-medium text-gray-900 bg-white rounded-xl border border-gray-200 focus:z-10 focus:ring-2 focus:ring-neutral-600 ${className}`}>{children}</button>
+        <Button onClick={onClick}
+            className={`w-full max-w-sm py-1 text-md font-medium text-gray-900 bg-white rounded-xl border border-gray-200 focus:z-10 focus:ring-2 focus:ring-neutral-600 ${classname}`}>{children}</Button>
     )
 }
 

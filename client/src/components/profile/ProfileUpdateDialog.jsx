@@ -40,7 +40,7 @@ const ProfileUpdateDialog = ({ profileUpdateDialog, setProfileUpdateDialog }) =>
             onOpenChange={() => { setProfileUpdateDialog(false) }}
             className='max-h-screen overflow-y-scroll'
         >
-            <DialogContent>
+            <DialogContent className='min-w-[500px]'>
                 <DialogSideBar>
                     <DialogTitle className='text-center' >Update profile</DialogTitle>
                 </DialogSideBar>
@@ -49,7 +49,7 @@ const ProfileUpdateDialog = ({ profileUpdateDialog, setProfileUpdateDialog }) =>
                 <ProfileAvatarUpdate />
 
                 {/* // ! Update Data */}
-                <div className='grid gap-4'>
+                <div className='grid gap-6'>
                     <div className="grid items-center gap-1.5">
                         <Label htmlFor="username">Username</Label>
                         <Input type="username" id="username" placeholder="Username"

@@ -19,12 +19,12 @@ const UserProfile = () => {
                     title: "User Profile Fetched"
                 })
             })
-    }, [dispatch])
+    }, [username])
 
     return (
         <>
-            <div className='flex flex-col gap-2' >
-                <div className='w-[90%] mx-auto' >
+            <div className='w-[80%] mx-auto flex flex-col gap-2 bg-[#020202] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-20 backdrop-saturate-100 backdrop-contrast-100 ' >
+                <div className='mt-16' >
                     {
                         isCurrentUserProfile
                             ? <MyProfileCard profile={profile} />
@@ -33,25 +33,25 @@ const UserProfile = () => {
                 </div>
 
                 {/* // ! For Routes Stats */}
-                <div className='flex justify-center items-center gap-4 text-neutral-100 text-xl font-bold tracking-wide'>
-                    <Link to={'./'} className='hover:underline cursor-pointer'>
+                <div className='py-4 flex justify-center items-center gap-4 text-neutral-100 text-3xl font-bold tracking-wide'>
+                    <Link to={'./'}>
                         Posts
                     </Link>
                     <div >|</div>
-                    <Link to={'./comments'} className='hover:underline cursor-pointer'>
+                    <Link to={'./comments'}>
                         Comments
                     </Link>
                     {
                         isCurrentUserProfile && (
                             <>
                                 <div>|</div>
-                                <Link to={'./saved'} className='hover:underline cursor-pointer'>
+                                <Link to={'./saved'}>
                                     Saved
                                 </Link>
                             </>)
                     }
                 </div>
-                <div className='w-[80%] mx-auto'>
+                <div className=''>
                     <Outlet />
                 </div>
             </div>
@@ -61,7 +61,7 @@ const UserProfile = () => {
 
 
 const Link = ({ to, classname = "", children }) => {
-    const styles = "hover:underline p-2"
+    const styles = "hover:underline p-2 hover:underline cursor-pointer"
     return (
         <NavLink to={to}
             // className={({ isActive }) => isActive ? `underline ${styles}` : styles}
