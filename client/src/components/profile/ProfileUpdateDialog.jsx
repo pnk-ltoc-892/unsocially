@@ -71,7 +71,7 @@ const ProfileUpdateDialog = ({ profileUpdateDialog, setProfileUpdateDialog }) =>
                     <div className="grid items-center gap-1.5">
                         <Label htmlFor="bio">Bio</Label>
                         <Textarea type="bio" id="bio" placeholder="Bio"
-                            className='min-h-[100px]'
+                            className='min-h-[100px] text-sm'
                             value={profileData.bio}
                             onChange={(e) => SetprofileData(
                                 { ...profileData, bio: e.target.value })

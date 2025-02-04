@@ -10,3 +10,11 @@ export const boxGradients = [
     "bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-600 via-blue-600 to-gray-600",
     "bg-[conic-gradient(at_top_left,_var(--tw-gradient-stops))] from-neutral-600 via-indigo-600 to-fuchsia-600"
 ]
+
+// export const boxGradients = [
+//     "",
+//     "",
+//     "",
+//     "",
+//     ""
+// ]

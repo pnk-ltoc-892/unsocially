@@ -56,7 +56,7 @@ const CommentWrapper = ({ children, index }) => {
         <div
             className={`absolute -inset-1 rounded-lg ${boxGradients[index % 5]} opacity-80 blur-[8px]`}
         ></div>
-        <div className="relative bg-clip-padding backdrop-filter backdrop-blur-x2l bg-opacity-90 backdrop-saturate-100 backdrop-contrast-100 border rounded-md w-full text-slate-300 bg-black">
+        <div className="relative bg-clip-padding backdrop-filter backdrop-blur-x2l bg-opacity-100 backdrop-saturate-100 backdrop-contrast-100 border rounded-md w-full text-slate-300 bg-black">
             {children}
         </div>
     </div>

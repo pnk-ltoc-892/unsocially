@@ -1,5 +1,6 @@
 import { MyProfileCard } from '@/components/Profile/MyProfileCard.jsx'
 import { UserProfileCard } from '@/components/Profile/UserProfileCard.jsx'
+import AnimatedBorderWrapper from '@/components/UI Components/AnimatedBorderWrapper.jsx'
 import { toast } from '@/hooks/use-toast.js'
 import { getUserProfile } from '@/store/slices/profileSlice.js'
 import React, { useEffect } from 'react'
@@ -24,16 +25,19 @@ const UserProfile = () => {
     return (
         <>
             <div className='w-[80%] mx-auto flex flex-col gap-2 bg-[#020202] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-20 backdrop-saturate-100 backdrop-contrast-100 ' >
-                <div className='mt-16' >
-                    {
-                        isCurrentUserProfile
-                            ? <MyProfileCard profile={profile} />
-                            : <UserProfileCard profile={profile} />
-                    }
+                <div className='mt-8' >
+                    <AnimatedBorderWrapper>
+                        {
+                            isCurrentUserProfile
+                                ? <MyProfileCard profile={profile} />
+                                : <UserProfileCard profile={profile} />
+                        }
+                    </AnimatedBorderWrapper>
                 </div>
+                {/* <AnimatedBorderWrapper><MyProfileCard profile={profile} /></AnimatedBorderWrapper> */}
 
                 {/* // ! For Routes Stats */}
-                <div className='py-2 flex justify-center items-center gap-4 text-neutral-100 text-2xl font-bold tracking-wide'>
+                <div className='mt-4 py-1 flex justify-center items-center gap-4 text-neutral-100 text-xl font-bold tracking-wide'>
                     <Link to={'./'}>
                         Posts
                     </Link>
@@ -54,14 +58,14 @@ const UserProfile = () => {
                 <div className=''>
                     <Outlet />
                 </div>
-            </div>
+            </div >
         </>
     )
 }
 
 
 const Link = ({ to, classname = "", children }) => {
-    const styles = "hover:underline p-2 hover:underline cursor-pointer"
+    const styles = "hover:bg-gray-500/20 px-4 py-1 rounded-lg cursor-pointer"
     return (
         <NavLink to={to}
             // className={({ isActive }) => isActive ? `underline ${styles}` : styles}

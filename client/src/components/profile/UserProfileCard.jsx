@@ -5,6 +5,9 @@ import { avatar } from '@/config/index.js'
 import { toast } from '@/hooks/use-toast.js'
 import { getUserProfile, toggleUserFollow } from '@/store/slices/profileSlice.js'
 import { Button } from '../ui/button.jsx'
+import NameBox from './ProfileCard/NameBox.jsx'
+import Bio from './ProfileCard/Bio.jsx'
+import ProfileStats from './ProfileCard/ProfileStats.jsx'
 
 
 export const UserProfileCard = ({ profile }) => {
@@ -14,31 +17,25 @@ export const UserProfileCard = ({ profile }) => {
 
     // ! Handle Toggling User Following
     const handleUserFollow = () => {
-        dispatch(toggleUserFollow(profile?._id)).then( (data) => {
-            dispatch(getUserProfile(profile?.username));            
+        dispatch(toggleUserFollow(profile?._id)).then((data) => {
+            dispatch(getUserProfile(profile?.username));
             toast({
                 title: profile?.isFollowing ? "Unfollowed" : "Followed"
             })
-        } )
+        })
     }
 
     return (
         <>
-            <div className='border-[1px] border-neutral-500 rounded-lg p-8'>
+            <div className='w-full border-[1px] border-neutral-300 rounded-lg p-10'>
                 {/* // ! For Profile Info */}
                 <div className='flex'>
                     {/* // ! Name Section */}
-                    <div className='flex-1 flex flex-col justify-center gap-1'>
-                        <div className='text-2xl font-semibold tracking-wide'>
-                            {profile?.username || ""}
-                        </div>
-                        <div className='text-xl font-normal text-neutral-300'>
-                            {profile?.fullname || ""}
-                        </div>
-                    </div>
+                    <NameBox profile={profile} />
+
                     {/* // ! Avatar Section */}
-                    <div className="relative flex justify-center items-center bg-slate-100 rounded-full">
-                        <Avatar className='cursor-pointer'>
+                    <div className="relative flex justify-center items-center bg-slate-100 rounded-full bg-gradient-to-tr from-indigo-600 to-pink-600 p-0.5">
+                        <Avatar className='cursor-pointer w-28 h-28'>
                             <AvatarImage src={profile?.avatar || avatar} className='object-cover' />
                             <AvatarFallback>{profile?.username || ""}</AvatarFallback>
                         </Avatar>
@@ -46,36 +43,24 @@ export const UserProfileCard = ({ profile }) => {
                 </div>
 
                 {/* // ! Bio Section */}
-                <div className='max-w-lg text-md py-5'>
-                    {profile?.bio}
-                </div>
+                <Bio profile={profile} />
 
                 {/* // ! For Profile Stats */}
-                <div className='flex justify-start items-center text-neutral-100 text-xl font-bold tracking-wide py-4 gap-4'>
-                    <div className='hover:underline'>
-                        {profile?.posts} Posts
-                    </div>
-                    <div className='px-2'>|</div>
-                    <div className='hover:underline'>
-                        {profile?.followers} Followers
-                    </div>
-                    <div className='px-2'>|</div>
-                    <div className='hover:underline'>
-                        {profile?.following} Following
-                    </div>
-                </div>
+                <ProfileStats profile={profile} />
 
                 {/* // ! For Follow Button */}
-                {
-                    !isFollowLoading
-                        ?
-                        <ProfileButton
-                            classname={profile?.isFollowing ? "bg-[#000000] text-white hover:bg-black" : ""}
-                            onClick={handleUserFollow}
-                        >{profile?.isFollowing ? "UnFollow" : "Follow"}</ProfileButton>
-                        :
-                        <Spinner />
-                }
+                <div className='flex items-center justify-center pt-3'>
+                    {
+                        !isFollowLoading
+                            ?
+                            <ProfileButton
+                                classname={profile?.isFollowing ? "bg-[#000000] text-white hover:bg-black" : ""}
+                                onClick={handleUserFollow}
+                            >{profile?.isFollowing ? "UnFollow" : "Follow"}</ProfileButton>
+                            :
+                            <Spinner />
+                    }
+                </div>
             </div>
         </>)
 }
@@ -84,7 +69,7 @@ export const UserProfileCard = ({ profile }) => {
 const ProfileButton = ({ children, classname, onClick }) => {
     return (
         <Button onClick={onClick}
-            className={`w-full max-w-sm py-1 text-md font-medium text-gray-900 bg-white rounded-xl border border-gray-200 focus:z-10 focus:ring-2 focus:ring-neutral-600 ${classname}`}>{children}</Button>
+            className={`w-full py-1 text-md font-medium text-gray-900 bg-white rounded-xl border border-gray-200 focus:z-10 focus:ring-2 focus:ring-neutral-600 ${classname}`}>{children}</Button>
     )
 }
 
