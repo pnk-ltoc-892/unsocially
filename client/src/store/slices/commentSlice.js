@@ -10,8 +10,7 @@ const initialState = {
     page: 1,
     nextPage: null,
     hasPrevPage: null,
-    hasNextPage: true,
-    totalComments: 0,
+    hasNextPage: true
 }
 
 export const commentSlice = createSlice({

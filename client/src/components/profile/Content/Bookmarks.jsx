@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 const Bookmarks = () => {
-    const { bookmarks, bookmarkControls: { nextPage } } = useSelector(state => state.profileSlice);
+    const { bookmarks, bookmarkControls: { nextPage, hasNextPage } } = useSelector(state => state.profileSlice);
 
     const dispatch = useDispatch();
     const handlePostFetching = () => {
-        dispatch(getUserBookmarks());
+        if(hasNextPage === true) dispatch(getUserBookmarks());
     }
 
     useEffect(() => {

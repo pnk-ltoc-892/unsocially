@@ -18,6 +18,8 @@ const initialState = {
         prevPage: null,
         page: 1,
         nextPage: null,
+        hasPrevPage: null,
+        hasNextPage: true
     },
     comments: [],
     commentControls: {
@@ -25,6 +27,8 @@ const initialState = {
         prevPage: null,
         page: 1,
         nextPage: null,
+        hasPrevPage: null,
+        hasNextPage: true
     },
     bookmarks: [],
     bookmarkControls: {
@@ -32,6 +36,8 @@ const initialState = {
         prevPage: null,
         page: 1,
         nextPage: null,
+        hasPrevPage: null,
+        hasNextPage: true
     }
 }
 
@@ -56,6 +62,8 @@ export const profileSlice = createSlice({
                 state.postControls.prevPage = action.payload.data.prevPage;
                 state.postControls.page = action.payload.data.page;
                 state.postControls.nextPage = action.payload.data.nextPage;
+                state.postControls.hasPrevPage = action.payload.data.hasPrevPage;
+                state.postControls.hasNextPage = action.payload.data.hasNextPage;
             })
             .addCase(getUserPosts.rejected, (state, action) => {
                 state.isContentLoading = false;
@@ -76,6 +84,8 @@ export const profileSlice = createSlice({
                 state.commentControls.prevPage = action.payload.data.prevPage;
                 state.commentControls.page = action.payload.data.page;
                 state.commentControls.nextPage = action.payload.data.nextPage;
+                state.commentControls.hasPrevPage = action.payload.data.hasPrevPage;
+                state.commentControls.hasNextPage = action.payload.data.hasNextPage;
             })
             .addCase(getUserComments.rejected, (state, action) => {
                 state.isContentLoading = false;
@@ -96,6 +106,8 @@ export const profileSlice = createSlice({
                 state.bookmarkControls.prevPage = action.payload.data.prevPage;
                 state.bookmarkControls.page = action.payload.data.page;
                 state.bookmarkControls.nextPage = action.payload.data.nextPage;
+                state.bookmarkControls.hasPrevPage = action.payload.data.hasPrevPage;
+                state.bookmarkControls.hasNextPage = action.payload.data.hasNextPage;
             })
             .addCase(getUserBookmarks.rejected, (state, action) => {
                 state.isContentLoading = false;
@@ -137,8 +149,9 @@ export const getUserPosts = createAsyncThunk('get/userPosts',
     async (username, {getState}) => {
         const {profileSlice} = getState();
         // console.log(profileSlice);
+        const nextPage = profileSlice.postControls.nextPage || profileSlice.postControls.page;
         
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/u/${username}/?page=${profileSlice.postControls.nextPage || profileSlice.postControls.page}&limit=${profileSlice.postControls.limit}`,
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/u/${username}/?page=${nextPage}&limit=${profileSlice.postControls.limit}`,
             {
                 withCredentials: true
             });

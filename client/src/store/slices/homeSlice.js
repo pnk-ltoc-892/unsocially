@@ -9,6 +9,8 @@ const initialState = {
     prevPage: null,
     page: 1,
     nextPage: null,
+    hasPrevPage: null,
+    hasNextPage: true
 }
 
 export const homeSlice = createSlice({
@@ -31,6 +33,8 @@ export const homeSlice = createSlice({
             state.prevPage = action.payload.data.prevPage;
             state.page = action.payload.data.page;
             state.nextPage = action.payload.data.nextPage;
+            state.hasPrevPage = action.payload.data.hasPrevPage;
+            state.hasNextPage = action.payload.data.hasNextPage;
         })
         .addCase(getAllPosts.rejected, (state, action) => {
             state.isLoading = false;
@@ -47,8 +51,9 @@ export const getAllPosts = createAsyncThunk('post/getAllPosts',
     async (_, {getState}) => {
         const {homeSlice} = getState();
         // console.log(homeSlice);
+        const nextPage = homeSlice.nextPage || homeSlice.page;
         
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?page=${homeSlice.nextPage || homeSlice.page}&limit=${homeSlice.limit}`,
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?page=${nextPage}&limit=${homeSlice.limit}`,
             {
                 withCredentials: true
             });

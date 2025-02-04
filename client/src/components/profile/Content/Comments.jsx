@@ -8,11 +8,11 @@ import { useDispatch, useSelector } from "react-redux"
 
 const Comments = () => {
     const { profile } = useSelector(state => state.profileSlice);
-    const { comments, commentControls: { nextPage } } = useSelector(state => state.profileSlice);
+    const { comments, commentControls: { nextPage, hasNextPage } } = useSelector(state => state.profileSlice);
 
     const dispatch = useDispatch();
     const handleCommentFetching = () => {
-        if (profile?._id) {
+        if (profile?._id && hasNextPage === true) {
             dispatch(getUserComments(profile?._id));
         }
     }

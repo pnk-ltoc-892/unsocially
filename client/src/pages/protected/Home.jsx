@@ -9,18 +9,17 @@ import Loading from '@/components/Common/Loading.jsx';
 
 
 const Home = () => {
-    const { posts, nextPage } = useSelector((state) => state.homeSlice);
+    const { posts, nextPage, hasNextPage } = useSelector((state) => state.homeSlice);
 
     const dispatch = useDispatch();
     const handlePostFetching = () => {
-        dispatch(getAllPosts());
+        if(hasNextPage === true) dispatch(getAllPosts());
     }
 
     // ! Fetching Posts, When Component Mounts
     useEffect(() => {
         handlePostFetching();
-    }, [])
-
+    }, []);
 
     return (
         <div>

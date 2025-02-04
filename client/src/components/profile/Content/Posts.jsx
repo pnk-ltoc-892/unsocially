@@ -8,11 +8,12 @@ import { useParams } from 'react-router-dom';
 
 const Posts = () => {
     const { username } = useParams();
-    const { posts, postControls: { nextPage } } = useSelector(state => state.profileSlice);
-
+    const { posts, postControls: { nextPage, hasNextPage } } = useSelector(state => state.profileSlice);
+    console.log(hasNextPage);
+    
     const dispatch = useDispatch();
     const handlePostFetching = () => {
-        dispatch(getUserPosts(username));
+        if(hasNextPage === true) dispatch(getUserPosts(username));
     }
 
 
