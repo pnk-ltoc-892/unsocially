@@ -9,28 +9,38 @@ const initialState = {
     prevPage: null,
     page: 1,
     nextPage: null,
+    hasPrevPage: null,
+    hasNextPage: true,
+    totalComments: 0,
 }
 
 export const commentSlice = createSlice({
     name: "commentSlice",
     initialState,
     reducers: {
+        // addComment: (state, action) => {
+        //     state.comments = [action.payload, ...state.comments];
+        //     console.log(state.comments);
+            
+        // }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getPostComments.pending, (state, action) => {
+            .addCase(getPostComments.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(getPostComments.fulfilled, (state, action) => {
                 state.isLoading = false;
 
                 state.comments = [...state.comments, ...action.payload.data.comments];
-                console.log(action.payload.data);
-                
+                // console.log(action.payload.data);
+
                 state.limit = action.payload.data.limit;
+                state.hasPrevPage = action.payload.data.hasPrevPage;
                 state.prevPage = action.payload.data.prevPage;
                 state.page = action.payload.data.page;
                 state.nextPage = action.payload.data.nextPage;
+                state.hasNextPage = action.payload.data.hasNextPage;
             })
             .addCase(getPostComments.rejected, (state, action) => {
                 state.isLoading = false;
@@ -56,10 +66,11 @@ export const commentSlice = createSlice({
 
 // ! Comment Fetching
 export const getPostComments = createAsyncThunk('comment/getPostComments',
-    async (postId, {getState}) => {
-        const {commentSlice} = getState();
-        
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/${postId}/?page=${commentSlice.nextPage || commentSlice.page}&limit=${commentSlice.limit}`,
+    async (postId, { getState }) => {
+        const { commentSlice } = getState();
+        const nextPage = commentSlice.nextPage || commentSlice.page;
+
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/comments/${postId}/?page=${nextPage}&limit=${commentSlice.limit}`,
             {
                 withCredentials: true
             });
@@ -109,5 +120,6 @@ export const toggleCommentLike = createAsyncThunk('comment/likePostComments',
         return response.data;
     });
 
+// export const {addComment} = commentSlice.actions;
 
 export default commentSlice.reducer;

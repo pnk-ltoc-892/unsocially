@@ -9,7 +9,6 @@ import { deletePostComment, editPostComment } from '@/store/slices/commentSlice.
 import { Link, useParams } from 'react-router-dom'
 import { toast } from '@/hooks/use-toast.js'
 import { Button } from '../ui/button.jsx'
-import { getPostById } from '@/store/slices/post-slice.js'
 
 
 

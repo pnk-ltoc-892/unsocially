@@ -6,17 +6,14 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addPostComment, getPostComments } from '@/store/slices/commentSlice.js'
 import { Button } from '../ui/button.jsx'
-import { getPostById } from '@/store/slices/post-slice.js'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { Loader } from 'lucide-react'
 import Loading from '../Common/Loading.jsx'
 
 
 const Comments = () => {
     const { postId } = useParams();
     const { user } = useSelector(state => state.auth);
-    const { comments, nextPage } = useSelector(state => state.commentSlice);
-
+    const { comments, nextPage, hasNextPage } = useSelector(state => state.commentSlice);
 
     const [comment, setComment] = useState('');
     
@@ -24,13 +21,16 @@ const Comments = () => {
     const handleAddComment = () => {
         const data = { content: comment };
         dispatch(addPostComment({ postId, data })).then(() => {
-            setComment('');
+            setComment('');            
+            // dispatch(addComment(comment));  // ! Need to return whole data, after applying aggregation
             window.location.reload();
         })
     }
 
     const handleCommentFetching = () => {
-        dispatch(getPostComments(postId));
+        // ! if nextPage is present or first API Call, 
+        // ! Then only call API
+        if(hasNextPage === true) dispatch(getPostComments(postId));
     }
 
     useEffect(() => {
