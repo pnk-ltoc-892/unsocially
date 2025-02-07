@@ -11,7 +11,8 @@ import {
 
         getProfileByUsername,
         getMyProfile,
-        searchUsers
+        searchUsers,
+        getProfileCardByUsername
 } from "../controllers/user.controller.js";
 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -44,6 +45,10 @@ router
     .route("/u/:username")
     .get(getProfileByUsername);
 
+router
+    .route("/card/:username")
+    .get(getProfileCardByUsername);
+
 
 router
     .route("/update-avatar")
@@ -56,7 +61,6 @@ router
 
 
 // ! User Profile Searching
-
 router
     .route("/search")
     .get(searchUsers);
