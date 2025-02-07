@@ -1,5 +1,5 @@
-import Loading from '@/components/Common/Loading.jsx';
-import CommonPost from '@/components/Common/Post/CommonPost.jsx'
+import Loading from '@/components/common/Loading.jsx';
+import CommonPost from '@/components/common/post/CommonPost.jsx'
 import { getUserPosts } from '@/store/slices/profileSlice.js';
 import React, { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component';

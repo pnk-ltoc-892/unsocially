@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addPostComment, getPostComments } from '@/store/slices/commentSlice.js'
 import { Button } from '../ui/button.jsx'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Loading from '../Common/Loading.jsx'
+import Loading from '../common/Loading.jsx'
 
 
 const Comments = () => {

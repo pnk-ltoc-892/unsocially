@@ -1,5 +1,5 @@
 import Comment from "@/components/Comments/Comment.jsx";
-import Loading from "@/components/Common/Loading.jsx";
+import Loading from "@/components/common/Loading.jsx";
 import { boxGradients } from "@/config/styles.js";
 import { getUserComments } from "@/store/slices/profileSlice.js";
 import { useEffect } from "react"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import SearchInput from '../../components/Search/SearchInput.jsx'
-import SearchProfileBar from '../../components/Search/SearchProfileBar.jsx'
+import SearchInput from '../../components/search/SearchInput.jsx'
+import SearchProfileBar from '../../components/search/SearchProfileBar.jsx'
 import { useDispatch, useSelector } from 'react-redux';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
 

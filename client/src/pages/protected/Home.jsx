@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { IoIosArrowDropdown } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 
-import CommonPost from '@/components/Common/Post/CommonPost.jsx';
+import CommonPost from '@/components/common/post/CommonPost.jsx';
 import { getAllPosts } from '@/store/slices/homeSlice.js';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Loading from '@/components/Common/Loading.jsx';
+import Loading from '@/components/common/Loading.jsx';
 
 
 const Home = () => {
