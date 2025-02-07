@@ -92,7 +92,7 @@ export const togglePostBookmark = createAsyncThunk('post/toggleBookmark',
 
 export const addNewPost = createAsyncThunk('post/addNewPost',
     async (data) => {
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/posts/post`,
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/posts/post`,
             data,
             {
                 withCredentials: true
@@ -103,7 +103,7 @@ export const addNewPost = createAsyncThunk('post/addNewPost',
 
 export const deletePost = createAsyncThunk('post/deletePost',
     async (data) => {
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/v1/posts/post`,
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/posts/post`,
             data,
             {
                 withCredentials: true
