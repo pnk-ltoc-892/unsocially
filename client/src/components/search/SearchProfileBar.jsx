@@ -8,7 +8,7 @@ const SearchProfileBar = ({ profile }) => {
 
     return (
         <Link className ="w-full"
-            to={`http://localhost:5173/profile/user/${profile.username}/`}
+            to={`http://unsocially.in/profile/user/${profile.username}/`}
         >
             <div className="hover:slide-top-normal bg-[#060607]  hover:bg-neutral-900/40 flex gap-4 border-neutral-600 rounded-xl cursor-pointer p-2">
                 <div className="pl-2 flex justify-center items-center">

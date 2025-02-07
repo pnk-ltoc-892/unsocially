@@ -38,7 +38,7 @@ const PostImageUpload = ({
         formData.append("imageFile", postImage);
 
         const response = await axios.post(
-                "http://localhost:5000/api/v1/posts/post-image",
+                `${import.meta.env.VITE_BACKEND_URL}posts/post-image`,
                 formData,
                 {
                     withCredentials: true,
