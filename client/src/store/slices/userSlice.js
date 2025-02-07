@@ -21,8 +21,8 @@ export const userSlice = createSlice({
             })
             .addCase(searchProfiles.fulfilled, (state, action) => {
                 state.isSearchLoading = false;
-                // console.log(action.payload.data.users);
-                state.searchProfiles = action.payload.data.users;
+                // console.log(action.payload.data.users.users);
+                state.searchProfiles = action.payload.data.users.users;
             })
             .addCase(searchProfiles.rejected, (state) => {
                 state.isSearchLoading = false;
@@ -36,7 +36,7 @@ export const userSlice = createSlice({
 //! Profile Searching Actions
 export const searchProfiles = createAsyncThunk('get/searchProfiles',
     async (keyword) => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/search?keyword=${keyword}`,
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/search?keyword=${keyword}&?page=1&limit=100`,
             {
                 withCredentials: true
             });

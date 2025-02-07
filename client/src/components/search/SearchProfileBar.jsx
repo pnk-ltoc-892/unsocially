@@ -1,38 +1,49 @@
 import React from 'react'
 import { Avatar } from '@mui/material'
 import { avatar } from '@/config/index.js'
+import { Link } from 'react-router-dom'
 
 
-const SearchProfileBar = ({profile}) => {
+const SearchProfileBar = ({ profile }) => {
 
     return (
-        
-        <div className="flex border-b-[1px] border-neutral-600 cursor-pointer mb-2">
-            <div className="flex justify-center items-center px-2 py-1">
-                <Avatar
-                    alt="Profile"
-                    src={profile?.avatar || avatar}
-                    sx={{ width: 62, height: 62 }}
-                />
-            </div>
+        <Link className ="w-full"
+            to={`http://localhost:5173/profile/user/${profile.username}/`}
+        >
+            <div className="hover:slide-top-normal bg-[#060607]  hover:bg-neutral-900/40 flex gap-4 border-neutral-600 rounded-xl cursor-pointer p-2">
+                <div className="pl-2 flex justify-center items-center">
+                    <Avatar
+                        alt="Profile"
+                        src={profile?.avatar || avatar}
+                        sx={{ width: 62, height: 62 }}
+                    />
+                </div>
 
-            <div className='flex-1 flex flex-col py-2 ml-3'>
-                <div className='text-lg tracking-wide font-semibold'>
-                    {profile?.username || "dev.ultimate.892"}
+                <div className='flex-1 flex flex-col text-neutral-300'>
+                    <div className='flex flex-col'>
+                        <div className='text-lg tracking-wide font-semibold text-white'>
+                            {profile?.username || ""}
+                        </div>
+                        <div className='text-[1rem] font-normal'>
+                            {profile?.fullname || ""}
+                        </div>
+                    </div>
+                    <div className='max-h-[1.6rem] max-w-full overflow-clip text-[1rem]'>
+                        {profile?.bio}
+                    </div>
                 </div>
-                <div className='text-[1.2rem] font-normal text-neutral-300'>
-                    {profile?.fullname || "User Singh"}
+                <div className='flex justify-center items-center text-lg font-bold px-8'>
+                    <div className='mt-2 font-medium'>
+                        {profile?.Followers || "0"} Followers
+                    </div>
                 </div>
-                {/* <div className='mt-2 font-medium'>
-                    {profile?.followers || "0"} Followers
-                </div> */}
-            </div>
-            <div className="flex justify-center items-center">
-                <button className="px-10 text-lg font-semibold text-gray-900 bg-white rounded-full border border-gray-200 hover:bg-[#000000] hover:text-white focus:z-10 focus:ring-2 focus:ring-neutral-600">
-                    Follow
+                {/* <div className="flex justify-center items-center">
+                <button className="px-10 text-md font-semibold text-white bg-[#000] rounded-full border border-gray-200 hover:bg-white hover:text-black focus:z-10 focus:ring-2 focus:ring-neutral-600">
+                    View Profile
                 </button>
+            </div> */}
             </div>
-        </div>
+        </Link>
     )
 }
 

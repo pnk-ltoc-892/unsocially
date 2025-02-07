@@ -11,13 +11,6 @@ const Navbar = () => {
 
     return (
         <div className='flex flex-col justify-center items-center gap-6'>
-            <Link to={'/home'} title="Home">
-                <House size={32} />
-            </Link>
-
-            <Link to={'/people'} title="People">
-                <UserRoundPlus size={32} />
-            </Link>
 
             <TooltipProvider delayDuration={200} >
                 <Tooltip>
@@ -32,9 +25,19 @@ const Navbar = () => {
                 </Tooltip>
             </TooltipProvider>
 
-            <Link to={'/search'} title="Search">
+            <Link to={'/home'} title="Home">
+                <House size={32} />
+            </Link>
+
+            <Link to={'/people'} title="Explore">
                 <Compass size={32} />
             </Link>
+
+
+
+            {/* <Link to={'/search'} title="Search">
+                <Compass size={32} />
+            </Link> */}
 
             <Link to={`/profile/user/${user?.username}/`} title="Profile">
                 <UserRound size={32} />

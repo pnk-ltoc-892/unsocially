@@ -6,22 +6,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchProfiles } from "@/store/slices/userSlice.js";
 
 
-const SearchInput = () => {
+const SearchInput = ({ setSearch }) => {
     const [keyword, setKeyword] = useState("");
 
     const dispatch = useDispatch();
-    useEffect( () => {
-        if(keyword && keyword.trim() !== "" && keyword.trim().length > 0){
+    const fetchSearchedUsers = () => {
+        // if (keyword && keyword.trim() !== "" && keyword.trim().length > 0) {
             setTimeout(() => {
                 dispatch(searchProfiles(keyword))
-            }, 2000);
-        }
-
+            }, 500);
+        // }
+    }
+    useEffect( () => {
+        fetchSearchedUsers();
     }, [keyword] )
 
     return (
         <div>
-            <div className="flex bg-[#060607] px-4 rounded-xl p-1 justify-center items-center border-gray-600">
+            <div className="flex w-[80%] mx-auto bg-[#060607] px-4 rounded-xl p-1 justify-center items-center border-gray-400 border">
                 <div className="text-lg font-light text-neutral-600 pr-4">
                     <FaSearch />
                 </div>

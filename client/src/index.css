@@ -117,8 +117,25 @@
       transform: translateX(2px);
     }
   }
+  @keyframes slide-top-normal {
+    0% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-4px);
+    }
+
+    100% {
+      transform: translateY(-2px);
+    }
+  }
 
   .slide-right-normal {
     animation: slide-right-normal 0.75s ease-in-out 0s 1 normal both;
+  }
+
+  .slide-top-normal {
+    animation: slide-top-normal 0.75s ease-in-out 0s 1 normal both;
   }
 }
