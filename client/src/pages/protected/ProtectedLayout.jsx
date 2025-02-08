@@ -13,7 +13,9 @@ const ProtectedLayout = ({setInit, init}) => {
     // ! Call navigate Inside useEffect
     useEffect(() => {
         if (!isAuthenticated) {
-            sessionStorage.setItem('redirect', location.pathname);
+            console.log(location.pathname);
+            const redirect = location.pathname === '/' ? '/home' : location.pathname;
+            sessionStorage.setItem('redirect', redirect);
             navigate('/login');
         }
     }, [isAuthenticated]);

@@ -43,8 +43,9 @@ const Login = () => {
         }
         setLoading(false);
     }
+    
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated === true) {
             const redirect = sessionStorage.getItem('redirect') || '/home';
             navigate(redirect);
         }
