@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
-    const { isAuthenticated } = useSelector(state => state.auth);
+    const { isAuthenticated, isLoading } = useSelector(state => state.auth);
 
     const [formData, setFormData] = useState({
         username: '',
@@ -25,7 +25,7 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleLogin = () => {
-        setLoading(() => true);
+        // setLoading(() => true);
         if (login) {
             dispatch(loginUser(formData)).then(() => {
                 toast({
@@ -41,7 +41,7 @@ const Login = () => {
                 setLogin(true);
             })
         }
-        setLoading(() => false);
+        // setLoading(() => false);
     }
     
     useEffect(() => {
@@ -104,7 +104,7 @@ const Login = () => {
                                 </div>
 
                                 {
-                                    loading
+                                    isLoading
                                         ?
                                         <Button className="w-full mt-8">
                                             <Spinner />
