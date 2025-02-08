@@ -123,7 +123,7 @@ function App() {
       }
       <Toaster />
       <Routes>
-        <Route path='/login' element={<Login />} setInit={setInit} init={init} />
+        <Route path='/login' element={<Login />}/>
         <Route path='/' element={<ProtectedLayout setInit={setInit} init={init} />} >
           <Route path='home' element={<Home />} />
           <Route path='people' element={<People />} />

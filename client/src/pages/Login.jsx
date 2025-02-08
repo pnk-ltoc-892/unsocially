@@ -1,10 +1,8 @@
-import Header from '@/components/landing/Header.jsx'
 import Heading from '@/components/landing/Heading.jsx'
 import Spinner from '@/components/UI Components/Spinner.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Label } from '@/components/ui/label.jsx'
-import { boxGradients } from '@/config/styles.js'
 import { toast } from '@/hooks/use-toast.js'
 import { loginUser, registerUser } from '@/store/slices/authSlice.js'
 import React, { useEffect, useState } from 'react'
@@ -12,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 
-const Login = ({ setInit, init }) => {
+const Login = () => {
     const { isAuthenticated } = useSelector(state => state.auth);
 
     const [formData, setFormData] = useState({
@@ -43,26 +41,17 @@ const Login = ({ setInit, init }) => {
                 setLogin(true);
             })
         }
-        // setInit(true);
         setLoading(false);
-        // login ? dispatch(loginUser(formData)) : dispatch(registerUser(formData));
     }
-    // const handleAnimation = () => {
-    //     setInit(false);
-    // }
-
     useEffect(() => {
-        // handleAnimation();
         if (isAuthenticated) {
             const redirect = sessionStorage.getItem('redirect') || '/home';
             navigate(redirect);
         }
-
     }, [isAuthenticated])
 
     return (
         <>
-            {/* <Header /> */}
             <div className='h-full flex justify-center items-start absolute inset-0  bg-black bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]'>
 
                 <div className='pt-16 flex flex-col justify-center items-center gap-8'>
