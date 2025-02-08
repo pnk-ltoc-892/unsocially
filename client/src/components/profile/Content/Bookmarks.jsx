@@ -1,5 +1,6 @@
 import Loading from '@/components/common/Loading.jsx';
 import CommonPost from '@/components/common/post/CommonPost.jsx';
+import PostSkeleton from '@/components/skeletons/PostSkeleton.jsx';
 import { getUserBookmarks } from '@/store/slices/profileSlice.js';
 import React, { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -25,7 +26,7 @@ const Bookmarks = () => {
                 dataLength={bookmarks?.length}
                 next={handlePostFetching}
                 hasMore={nextPage != null}
-                loader={<Loading />}
+                loader={<PostSkeleton />}
                 endMessage={
                     <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
                         That All Daisy!
@@ -37,7 +38,7 @@ const Bookmarks = () => {
                         ?
                         bookmarks?.map((data, index) => <CommonPost post={data?.Post} key={index} index={index} />)
                         :
-                        <Loading />
+                        <PostSkeleton />
                 }
             </InfiniteScroll>
         </div>

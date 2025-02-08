@@ -3,6 +3,7 @@ import SearchInput from '../../components/search/SearchInput.jsx'
 import SearchProfileBar from '../../components/search/SearchProfileBar.jsx'
 import { useDispatch, useSelector } from 'react-redux';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
+import ProfileBarSkeleton from '@/components/skeletons/ProfileBarSkeleton.jsx';
 
 const People = () => {
     const { searchProfiles, isSearchLoading } = useSelector((state) => state.userSlice);
@@ -36,6 +37,7 @@ const People = () => {
                                     No User Found
                                 </div>
                         }
+                        {/* <ProfileBarSkeleton /> */}
                     </div>
                     : null
             }

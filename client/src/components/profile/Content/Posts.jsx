@@ -1,5 +1,6 @@
 import Loading from '@/components/common/Loading.jsx';
 import CommonPost from '@/components/common/post/CommonPost.jsx'
+import PostSkeleton from '@/components/skeletons/PostSkeleton.jsx';
 import { getUserPosts } from '@/store/slices/profileSlice.js';
 import React, { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -28,7 +29,7 @@ const Posts = () => {
                     dataLength={posts?.length}
                     next={handlePostFetching}
                     hasMore={nextPage != null}
-                    loader={<Loading />}
+                    loader={<PostSkeleton />}
                     endMessage={
                         <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
                             That All Daisy!
@@ -40,7 +41,7 @@ const Posts = () => {
                             ?
                             posts?.map((post, index) => <CommonPost post={post} key={index} index={index} />)
                             :
-                            <Loading />
+                            <PostSkeleton />
                     }
                 </InfiniteScroll>
             </div>

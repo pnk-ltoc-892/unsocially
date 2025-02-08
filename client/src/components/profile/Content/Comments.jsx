@@ -1,5 +1,7 @@
 import Comment from "@/components/Comments/Comment.jsx";
 import Loading from "@/components/common/Loading.jsx";
+import CommentSkeleton from "@/components/skeletons/CommentSkeleton.jsx";
+import PostSkeleton from "@/components/skeletons/PostSkeleton.jsx";
 import { boxGradients } from "@/config/styles.js";
 import { getUserComments } from "@/store/slices/profileSlice.js";
 import { useEffect } from "react"
@@ -28,7 +30,7 @@ const Comments = () => {
                 dataLength={comments?.length}
                 next={handleCommentFetching}
                 hasMore={nextPage != null}
-                loader={<Loading />}
+                loader={<CommentSkeleton />}
                 endMessage={
                     <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
                         That All Daisy!
@@ -43,7 +45,7 @@ const Comments = () => {
                                 <Comment comment={comment} key={index} index={index} />
                             </CommentWrapper>))
                         :
-                        <Loading />
+                        <CommentSkeleton />
                 }
             </InfiniteScroll>
         </div>

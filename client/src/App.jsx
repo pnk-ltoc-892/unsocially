@@ -19,6 +19,7 @@ import Search from './pages/protected/Search.jsx'
 
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
+import ComponentTest from './pages/ComponentTest.jsx'
 
 function App() {
   const [init, setInit] = useState(false);
@@ -124,6 +125,7 @@ function App() {
       <Toaster />
       <Routes>
         <Route path='/login' element={<Login />}/>
+        <Route path='/test' element={<ComponentTest />}/>
         <Route path='/' element={<ProtectedLayout setInit={setInit} init={init} />} >
           <Route path='home' element={<Home />} />
           <Route path='people' element={<People />} />

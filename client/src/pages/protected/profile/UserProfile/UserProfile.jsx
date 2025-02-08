@@ -1,9 +1,10 @@
 import { MyProfileCard } from '@/components/profile/MyProfileCard.jsx'
 import { UserProfileCard } from '@/components/profile/UserProfileCard.jsx'
+import ProfileCardSkeleton from '@/components/skeletons/ProfileCardSkeleton.jsx'
 import AnimatedBorderWrapper from '@/components/UI Components/AnimatedBorderWrapper.jsx'
 import { toast } from '@/hooks/use-toast.js'
 import { getUserProfile } from '@/store/slices/profileSlice.js'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, Outlet, useParams } from 'react-router-dom'
 
@@ -11,14 +12,17 @@ const UserProfile = () => {
     const { profile, isCurrentUserProfile } = useSelector((state) => state.profileSlice);
     const { username } = useParams();
 
+    const [loading, setLoading] = useState(true);
+
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getUserProfile(username))
             .then(() => {
                 // ! Error -  Cases Not Handled
-                toast({
-                    title: "User Profile Fetched"
-                })
+                // toast({
+                //     title: "User Profile Fetched"
+                // })
+                setLoading(false);
             })
     }, [username])
 
@@ -28,11 +32,14 @@ const UserProfile = () => {
                 <div className='mt-8' >
                     <AnimatedBorderWrapper>
                         {
-                            isCurrentUserProfile
-                                ? <MyProfileCard profile={profile} />
-                                : <UserProfileCard profile={profile} />
+                            loading
+                                ? <ProfileCardSkeleton />
+                                : isCurrentUserProfile
+                                    ? <MyProfileCard profile={profile} />
+                                    : <UserProfileCard profile={profile} />
                         }
                     </AnimatedBorderWrapper>
+
                 </div>
                 {/* <AnimatedBorderWrapper><MyProfileCard profile={profile} /></AnimatedBorderWrapper> */}
 

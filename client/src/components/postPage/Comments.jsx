@@ -8,6 +8,7 @@ import { addPostComment, getPostComments } from '@/store/slices/commentSlice.js'
 import { Button } from '../ui/button.jsx'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Loading from '../common/Loading.jsx'
+import CommentSkeleton from '../skeletons/CommentSkeleton.jsx'
 
 
 const Comments = () => {
@@ -66,7 +67,7 @@ const Comments = () => {
                     dataLength={comments?.length}
                     next={handleCommentFetching}
                     hasMore={nextPage != null}
-                    loader={<Loading />}
+                    loader={<CommentSkeleton />}
                     endMessage={
                         <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
                             That All Daisy!
@@ -78,7 +79,7 @@ const Comments = () => {
                             ?
                             comments?.map((comment, index) => <Comment comment={comment} key={comment?._id} />)
                             :
-                            <Loading />
+                            <CommentSkeleton />
                     }
                 </InfiniteScroll>
             </div>
