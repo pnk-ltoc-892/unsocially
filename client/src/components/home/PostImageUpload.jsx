@@ -3,7 +3,6 @@ import { Label } from '../ui/label.jsx'
 import { ImagePlus } from 'lucide-react'
 import { Input } from '../ui/input.jsx'
 import axios from 'axios'
-import { Skeleton } from '../ui/skeleton.jsx'
 import { toast } from '@/hooks/use-toast.js'
 
 
@@ -38,7 +37,7 @@ const PostImageUpload = ({
         formData.append("imageFile", postImage);
 
         const response = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}posts/post-image`,
+                `${import.meta.env.VITE_BACKEND_URL}/posts/post-image`,
                 formData,
                 {
                     withCredentials: true,
