@@ -25,7 +25,7 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleLogin = () => {
-        setLoading(true);
+        setLoading(() => true);
         if (login) {
             dispatch(loginUser(formData)).then(() => {
                 toast({
@@ -41,7 +41,7 @@ const Login = () => {
                 setLogin(true);
             })
         }
-        setLoading(false);
+        setLoading(() => false);
     }
     
     useEffect(() => {
