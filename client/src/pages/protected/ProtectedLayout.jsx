@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import SideBar from '../../components/SideBar/SideBar.jsx'
 import { useSelector } from 'react-redux'
 
+// ! avoid Using useEffect check for authentication directly, using if statements
 
 const ProtectedLayout = ({setInit, init}) => {
     const { isAuthenticated } = useSelector(state => state.auth);

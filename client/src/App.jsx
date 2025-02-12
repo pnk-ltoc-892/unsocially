@@ -6,7 +6,7 @@ import Home from './pages/protected/Home.jsx'
 import Post from './pages/protected/Post/Post.jsx'
 import ProfileLayout from './pages/protected/profile/ProfileLayout.jsx'
 import Login from './pages/Login.jsx'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useMemo, useState, useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
 import { Toaster } from './components/ui/toaster.jsx'
@@ -20,113 +20,55 @@ import Search from './pages/protected/Search.jsx'
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import ComponentTest from './pages/ComponentTest.jsx'
+import Spinner from './components/UI Components/Spinner.jsx'
+import CheckAuth from './pages/auth/CheckAuth.jsx'
+import AuthLayout from './pages/layout/AuthLayout.jsx'
+import UserLayout from './pages/layout/UserLayout.jsx'
 
 function App() {
-  const [init, setInit] = useState(false);
-
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
-  }, []);
-
-  const particlesLoaded = (container) => {
-    // console.log(container);
-  };
-
-  const options = useMemo(
-    () => ({
-      background: {
-        color: {
-          value: "#000000",
-        },
-      },
-      fpsLimit: 120,
-      interactivity: {
-        events: {
-          onClick: {
-            enable: true,
-            mode: "push",
-          },
-          onHover: {
-            enable: true,
-            mode: "repulse",
-          },
-        },
-        modes: {
-          push: {
-            quantity: 1,
-          },
-          repulse: {
-            distance: 100,
-            duration: 0.4,
-          },
-        },
-      },
-      particles: {
-        color: {
-          value: "#ffffff",
-        },
-        links: {
-          color: "#ffffff",
-          distance: 150,
-          enable: true,
-          opacity: 0.5,
-          width: 2,
-        },
-        move: {
-          direction: "none",
-          enable: true,
-          outModes: {
-            default: "bounce",
-          },
-          random: false,
-          speed: 6,
-          straight: false,
-        },
-        number: {
-          density: {
-            enable: true,
-          },
-          value: 80,
-        },
-        opacity: {
-          value: 0.5,
-        },
-        shape: {
-          type: "circle",
-        },
-        size: {
-          value: { min: 1, max: 8 },
-        },
-      },
-      detectRetina: true,
-    }),
-    [],
-  );
-
+  const {isloading} = useSelector(state => state.auth);
+  // const isloading = true;
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch])
 
+  // Manage a loader and to check auth,
+  // After first call for auth, set the auth in session storage itself,
+  //  will this solve the problem ? - Lets see
+
+  if(isloading){
+    return (
+      <div className='h-screen w-screen flex justify-center items-center'>
+        <Spinner />
+      </div>
+    )
+  }
+
   return (
     <div>
-      {
-        init && <Particles
-        id="tsparticles"
-        particlesLoaded={particlesLoaded}
-        options={options}
-      />
-      }
       <Toaster />
       <Routes>
-        <Route path='/login' element={<Login />}/>
-        <Route path='/test' element={<ComponentTest />}/>
-        <Route path='/' element={<ProtectedLayout setInit={setInit} init={init} />} >
+
+        <Route 
+          path='/auth' 
+          element={
+            <CheckAuth>
+              <AuthLayout />
+            </CheckAuth>}
+        >
+          <Route path='login' element={<Login />}/>
+        </Route>
+
+        // Inside This Code Only '/login' can handled along with AuthLayout Using Nesting without using '/auth' additional route
+        <Route
+            path='/' 
+            element={
+                <CheckAuth>
+                  <UserLayout />
+                </CheckAuth>} 
+        >
           <Route path='home' element={<Home />} />
           <Route path='people' element={<People />} />
           <Route path='search' element={<Search />} />
@@ -140,6 +82,7 @@ function App() {
             </Route>
           </Route>
         </Route>
+        <Route path='/test' element={<ComponentTest />}/>
         <Route path='*' element={<Error />} />
       </Routes>
     </div>

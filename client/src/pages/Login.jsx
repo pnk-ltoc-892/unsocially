@@ -7,30 +7,27 @@ import { toast } from '@/hooks/use-toast.js'
 import { loginUser, registerUser } from '@/store/slices/authSlice.js'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
-    const { isAuthenticated, isLoading } = useSelector(state => state.auth);
-
     const [formData, setFormData] = useState({
         username: '',
         email: '',
         password: '',
     })
 
+    const [isLoading, setIsLoading] = useState(false);
     const [login, setLogin] = useState(true);
-    const [loading, setLoading] = useState(false);
 
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleLogin = () => {
-        // setLoading(() => true);
+        setIsLoading(true);
         if (login) {
             dispatch(loginUser(formData)).then(() => {
                 toast({
                     title: "Welcome Back"
                 })
+                setIsLoading(false);
             })
         }
         else {
@@ -39,17 +36,17 @@ const Login = () => {
                     title: "Registered"
                 })
                 setLogin(true);
+                setIsLoading(false);
             })
         }
-        // setLoading(() => false);
     }
     
-    useEffect(() => {
-        if (isAuthenticated === true) {
-            const redirect = sessionStorage.getItem('redirect') || '/home';
-            navigate(redirect);
-        }
-    }, [isAuthenticated])
+    // useEffect(() => {
+    //     if (isAuthenticated === true) {
+    //         const redirect = sessionStorage.getItem('redirect') || '/home';
+    //         navigate(redirect);
+    //     }
+    // }, [isAuthenticated])
 
     return (
         <>
