@@ -56,7 +56,13 @@ export const profileSlice = createSlice({
                 state.isContentLoading = false;
                 // console.log(action.payload.data);
 
-                state.posts = [...state.posts, ...action.payload.data.posts];
+                // state.posts = [...state.posts, ...action.payload.data.posts];
+                if(action.payload.data.page === 1){
+                    state.posts = action.payload.data.posts;
+                }
+                else{
+                    state.posts = [...state.posts, ...action.payload.data.posts];
+                }
 
                 state.postControls.limit = action.payload.data.limit;
                 state.postControls.prevPage = action.payload.data.prevPage;
@@ -78,7 +84,13 @@ export const profileSlice = createSlice({
                 state.isContentLoading = false;
                 // console.log(action.payload.data);
 
-                state.comments = [...state.comments, ...action.payload.data.comments];
+                // state.comments = [...state.comments, ...action.payload.data.comments];
+                if(action.payload.data.page === 1){
+                    state.comments = action.payload.data.comments;
+                }
+                else{
+                    state.comments = [...state.comments, ...action.payload.data.comments];
+                }
 
                 state.commentControls.limit = action.payload.data.limit;
                 state.commentControls.prevPage = action.payload.data.prevPage;
@@ -99,8 +111,14 @@ export const profileSlice = createSlice({
             .addCase(getUserBookmarks.fulfilled, (state, action) => {
                 state.isContentLoading = false;
 
-                state.bookmarks = [...state.bookmarks, ...action.payload.data.bookmarkedPosts];
+                // state.bookmarks = [...state.bookmarks, ...action.payload.data.bookmarkedPosts];
                 // console.log(state.bookmarks);
+                if(action.payload.data.page === 1){
+                    state.bookmarks = action.payload.data.bookmarkedPosts;
+                }
+                else{
+                    state.bookmarks = [...state.bookmarks, ...action.payload.data.bookmarkedPosts];
+                }
                 
                 state.bookmarkControls.limit = action.payload.data.limit;
                 state.bookmarkControls.prevPage = action.payload.data.prevPage;

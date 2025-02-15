@@ -31,8 +31,14 @@ export const commentSlice = createSlice({
             .addCase(getPostComments.fulfilled, (state, action) => {
                 state.isLoading = false;
 
-                state.comments = [...state.comments, ...action.payload.data.comments];
+                // state.comments = [...state.comments, ...action.payload.data.comments];
                 // console.log(action.payload.data);
+                if(action.payload.data.page === 1){
+                    state.comments = action.payload.data.comments;
+                }
+                else{
+                    state.comments = [...state.comments, ...action.payload.data.comments];
+                }
 
                 state.limit = action.payload.data.limit;
                 state.hasPrevPage = action.payload.data.hasPrevPage;

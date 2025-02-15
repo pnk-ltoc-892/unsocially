@@ -25,9 +25,14 @@ export const homeSlice = createSlice({
         })
         .addCase(getAllPosts.fulfilled, (state, action) => {
             state.isLoading = false;
-            // console.log(action.payload.data);  
+            console.log(action.payload.data);  
 
-            state.posts = [...state.posts, ...action.payload.data.posts];
+            if(action.payload.data.page === 1){
+                state.posts = action.payload.data.posts;
+            }
+            else{
+                state.posts = [...state.posts, ...action.payload.data.posts];
+            }
 
             state.limit = action.payload.data.limit;
             state.prevPage = action.payload.data.prevPage;
