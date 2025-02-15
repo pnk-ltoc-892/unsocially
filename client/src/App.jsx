@@ -1,13 +1,12 @@
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import ProtectedLayout from './pages/protected/ProtectedLayout.jsx'
 import Error from './pages/Error.jsx'
 import Home from './pages/protected/Home.jsx'
 import Post from './pages/protected/Post/Post.jsx'
 import ProfileLayout from './pages/protected/profile/ProfileLayout.jsx'
 import Login from './pages/Login.jsx'
 import { useDispatch, useSelector } from 'react-redux'
-import { useMemo, useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { checkAuth } from './store/slices/authSlice.js'
 import { Toaster } from './components/ui/toaster.jsx'
 import UserProfile from './pages/protected/profile/UserProfile/UserProfile.jsx'
@@ -17,8 +16,6 @@ import Bookmarks from './components/profile/Content/Bookmarks.jsx'
 import People from './pages/protected/People.jsx'
 import Search from './pages/protected/Search.jsx'
 
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { loadSlim } from "@tsparticles/slim";
 import ComponentTest from './pages/ComponentTest.jsx'
 import Spinner from './components/UI Components/Spinner.jsx'
 import CheckAuth from './pages/auth/CheckAuth.jsx'
@@ -26,7 +23,7 @@ import AuthLayout from './pages/layout/AuthLayout.jsx'
 import UserLayout from './pages/layout/UserLayout.jsx'
 
 function App() {
-  const {isloading} = useSelector(state => state.auth);
+  const { isAuthLoading } = useSelector(state => state.auth);
   // const isloading = true;
 
   const dispatch = useDispatch();
@@ -38,7 +35,8 @@ function App() {
   // After first call for auth, set the auth in session storage itself,
   //  will this solve the problem ? - Lets see
 
-  if(isloading){
+  if (isAuthLoading === true) {
+    console.log(isAuthLoading);
     return (
       <div className='h-screen w-screen flex justify-center items-center'>
         <Spinner />
@@ -51,23 +49,23 @@ function App() {
       <Toaster />
       <Routes>
 
-        <Route 
-          path='/auth' 
+        <Route
+          path='/auth'
           element={
             <CheckAuth>
               <AuthLayout />
             </CheckAuth>}
         >
-          <Route path='login' element={<Login />}/>
+          <Route path='login' element={<Login />} />
         </Route>
 
         // Inside This Code Only '/login' can handled along with AuthLayout Using Nesting without using '/auth' additional route
         <Route
-            path='/' 
-            element={
-                <CheckAuth>
-                  <UserLayout />
-                </CheckAuth>} 
+          path='/'
+          element={
+            <CheckAuth>
+              <UserLayout />
+            </CheckAuth>}
         >
           <Route path='home' element={<Home />} />
           <Route path='people' element={<People />} />
@@ -82,7 +80,7 @@ function App() {
             </Route>
           </Route>
         </Route>
-        <Route path='/test' element={<ComponentTest />}/>
+        <Route path='/test' element={<ComponentTest />} />
         <Route path='*' element={<Error />} />
       </Routes>
     </div>

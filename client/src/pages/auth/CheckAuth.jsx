@@ -8,16 +8,20 @@ const CheckAuth = ({ children }) => {
 
     const location = useLocation();
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         if(!isAuthenticated){
+            // console.log("Hi", location);
+            sessionStorage.setItem('redirect', location.pathname);
             navigate('/auth/login');
         }
-    
+
         if(isAuthenticated){
             if(location.pathname.includes('/login') || location.pathname === '/'){
                 const redirect = sessionStorage.getItem('redirect') || '/home'
+                console.log(redirect);
                 navigate(redirect);
+                // navigate('/home');
             }
         }
     }, [isAuthenticated]);
