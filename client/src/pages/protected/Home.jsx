@@ -14,7 +14,7 @@ const Home = () => {
 
     const dispatch = useDispatch();
     const handlePostFetching = () => {
-        if(hasNextPage === true) dispatch(getAllPosts());
+        if (hasNextPage === true) dispatch(getAllPosts());
     }
 
     // ! Fetching Posts, When Component Mounts
@@ -39,7 +39,7 @@ const Home = () => {
                     dataLength={posts?.length}
                     next={handlePostFetching}
                     hasMore={nextPage != null}
-                    loader={<PostSkeleton />}
+                    loader={<><PostSkeleton /><PostSkeleton /></>}
                     endMessage={
                         <div className='h-[50px] w-full py-4 rounded-md text-center flex justify-center items-center'>
                             That All Daisy!
@@ -51,7 +51,13 @@ const Home = () => {
                             ?
                             posts?.map((post, index) => <CommonPost post={post} key={index} index={index} />)
                             :
-                            <PostSkeleton />
+                            <>
+                                <PostSkeleton />
+                                <PostSkeleton />
+                                <PostSkeleton />
+                                <PostSkeleton />
+                                <PostSkeleton />
+                            </>
                     }
                 </InfiniteScroll>
             </div>

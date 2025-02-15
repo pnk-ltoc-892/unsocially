@@ -23,7 +23,7 @@ const PostContent = ({post}) => {
             }
             {
                 post?.content && 
-                    <div className='pb-2 text-lg font-[400]'>
+                    <div className='pb-2 text-[1.25rem] font-[400]'>
                         {post.content}
                     </div>
             }

@@ -6,20 +6,26 @@ import { useDispatch } from 'react-redux';
 import { getPostById, togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
 
 
-const PostInfo = ({ post }) => {
+const PostInfo = ({ postData }) => {
+    const [post, setPost] = useState({ ...postData })
+
     const [openShareDialog, setOpenShareDialog] = useState(false);
     // console.log(post);
 
     const dispatch = useDispatch();
     const handlePostLike = () => {
-        dispatch(togglePostLike(post._id)).then( () => {
-            dispatch(getPostById(post._id));
-        } );
+        dispatch(togglePostLike(post._id)).then(() => {
+            const value = post.isLiked ? -1 : 1;
+            dispatch(togglePostLike(post._id)).then(() => {
+                setPost({ ...post, likes: post.likes + value, isLiked: !post.isLiked });
+            });
+        });
     }
     const handlePostBookmark = () => {
-        dispatch(togglePostBookmark(post._id)).then( () => {
-            dispatch(getPostById(post._id));
-        } );
+        dispatch(togglePostBookmark(post._id)).then(() => {
+            // dispatch(getPostById(post._id));
+            setPost({ ...post, isBookmarked: !post.isBookmarked });
+        });
     }
 
     return (
