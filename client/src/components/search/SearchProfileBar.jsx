@@ -8,7 +8,8 @@ const SearchProfileBar = ({ profile }) => {
 
     return (
         <Link className ="w-full"
-            to={`http://unsocially.in/profile/user/${profile.username}/`}
+            to={`../profile/user/${profile?.username}/`}
+            // to={`${import.meta.VITE_FRONTEND_URL}/profile/user/${profile?.username}/`}
         >
             <div className="hover:slide-top-normal bg-[#060607]  hover:bg-neutral-900/40 flex gap-4 border-neutral-600 rounded-xl cursor-pointer p-2">
                 <div className="pl-2 flex justify-center items-center">
@@ -37,11 +38,6 @@ const SearchProfileBar = ({ profile }) => {
                         {profile?.Followers || "0"} Followers
                     </div>
                 </div>
-                {/* <div className="flex justify-center items-center">
-                <button className="px-10 text-md font-semibold text-white bg-[#000] rounded-full border border-gray-200 hover:bg-white hover:text-black focus:z-10 focus:ring-2 focus:ring-neutral-600">
-                    View Profile
-                </button>
-            </div> */}
             </div>
         </Link>
     )
