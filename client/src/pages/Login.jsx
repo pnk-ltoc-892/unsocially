@@ -10,24 +10,34 @@ import { useDispatch, useSelector } from 'react-redux'
 
 
 const Login = () => {
+    const { isLoading } = useSelector(state => state.auth)
     const [formData, setFormData] = useState({
         username: '',
         email: '',
         password: '',
     })
 
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const [login, setLogin] = useState(true);
+
+    const isValidCeredentials = () => {
+        if(login){
+            return formData.email !== '' && formData.password !== '';
+        }
+        else{
+            return formData.username && formData.email!== '' && formData.password !== '';
+        }
+    }
 
     const dispatch = useDispatch();
     const handleLogin = () => {
-        setIsLoading(true);
+        // setIsLoading(true);
         if (login) {
             dispatch(loginUser(formData)).then(() => {
                 toast({
                     title: "Welcome Back"
                 })
-                setIsLoading(false);
+                // setIsLoading(false);
             })
         }
         else {
@@ -36,11 +46,11 @@ const Login = () => {
                     title: "Registered"
                 })
                 setLogin(true);
-                setIsLoading(false);
+                // setIsLoading(false);
             })
         }
     }
-    
+
     // useEffect(() => {
     //     if (isAuthenticated === true) {
     //         const redirect = sessionStorage.getItem('redirect') || '/home';
@@ -109,6 +119,7 @@ const Login = () => {
                                         :
                                         <Button className='w-full mt-8'
                                             onClick={handleLogin}
+                                            disabled={!isValidCeredentials()}
                                         >
                                             {login === true ? "Login" : "Register"}
                                         </Button>
