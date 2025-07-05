@@ -1,14 +1,68 @@
-# Improvements
+# 🌐 Unsocially – Full Stack Social Media Platform
 
-- Separate All MUI And Additonal Compoenets of libararies and Use Wrappers In Your Own Code files
-- Like Stack, Input - Create Their Custom variants and then directly use Customly Created Created Componenets Rather than using thme and passing props again and again
-- Jaise, Stack -  With flex row & column already defined 
-- Input- 2, 3 custom modified modified componenets and stuff Just Think about it
+> 🔥 A modern, full-featured **social media platform** built with the **MERN Stack**  
+> Connect. Share. Engage. Securely and effortlessly.
 
+---
 
+## 🛠️ Tech Stack
 
-# Project - Product
+**Frontend**:  
+- ⚛️ React.js  
+- 🧰 Redux Toolkit  
+- 🎨 Tailwind CSS / CSS Modules  
 
-- Need A Logo Landing Page and Name For The Product
+**Backend**:  
+- 🟢 Node.js  
+- 🚂 Express.js  
+- 🍃 MongoDB + Mongoose  
+- ☁️ Cloudinary (for image hosting)  
+- 🔐 JWT (for authentication)
 
--- Demo edit
+---
+
+## ✨ Features
+
+- 📝 **Post Creation** – Users can create and share posts with text/media  
+- 💬 **Comments** – Threaded discussions on posts  
+- ❤️ **Likes** – Like and unlike posts dynamically  
+- 👤 **User Profiles** – Bio, display picture, and post history  
+- 🔒 **Authentication** – Register/login with JWT-based session management  
+- 📊 **Analytics** – Aggregated insights via MongoDB pipelines  
+- ☁️ **Cloudinary Integration** – Optimized media storage & retrieval  
+- 📄 **Pagination** – Scalable pagination for feeds and comments  
+- ⚙️ **Atomic Activity Tracking** – Consistent post/comment interaction flow
+
+---
+
+## ⚙️ Getting Started (Setup Instructions)
+
+Follow these steps to run **Unsocially** locally on your machine:
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/unsocially.git
+cd unsocially
+```
+
+### 2. Backend Setup (/backend)
+```bash
+cd backend
+cp .env.sample .env
+npm install
+npm run dev
+```
+
+### 2. Frontend Setup (/frontend)
+```bash
+cd ../frontend
+cp .env.sample .env
+npm install
+npm run dev
+```
+## 🤝 Contributing
+
+We welcome contributions from developers of all skill levels!
+
+Please read our [Contributing Guidelines](./CONTRIBUTING.md) before submitting a pull request.
