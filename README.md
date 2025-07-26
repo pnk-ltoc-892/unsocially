@@ -42,7 +42,7 @@ Follow these steps to run **Unsocially** locally on your machine:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/unsocially.git
+git clone https://github.com/pnk-ltoc-892/unsocially.git
 cd unsocially
 ```
 
