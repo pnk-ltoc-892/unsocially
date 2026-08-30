@@ -65,7 +65,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
 
@@ -154,5 +154,15 @@
 
   .scale-in-center-normal {
     animation: scale-in-center-normal 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) 0s 1 normal both;
+  }
+
+  .glass-card {
+    @apply border border-white/15 bg-white/[0.07] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] backdrop-blur-xl backdrop-saturate-150;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float3d {
+      animation: none !important;
+    }
   }
 }

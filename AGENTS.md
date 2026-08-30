@@ -19,12 +19,14 @@ There are no tests and no CI. Don't claim a change is verified without running t
 
 ## Environment
 
-No `.env.sample` exists in either folder (the README's `cp .env.sample .env` step is stale, as are its `backend/` and `frontend/` folder names). Required vars:
+`server/.env.sample` exists but is empty, and `client/` has none (the README's `cp .env.sample .env` step is therefore useless, as are its `backend/` and `frontend/` folder names). Required vars:
 
 - **server**: `PORT`, `MONGODB_URL`, `ACCESS_TOKEN_SECRET`, `ACCESS_TOKEN_EXPIRY`, `CORS_ORIGIN_LOCAL`, `CORS_ORIGIN_1`, `CORS_ORIGIN_2`, `CORS_ORIGIN_3`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
 - **client**: `VITE_BACKEND_URL` (includes the `/api/v1` prefix)
 
-The auth cookie is hardcoded `secure: true, sameSite: "none"` in `server/src/config/index.js`, so it will not be set over plain `http://localhost`. Local dev needs HTTPS or a temporary config change.
+The auth cookie is hardcoded `secure: true, sameSite: "none", partitioned: true` in `server/src/config/index.js`. Browsers treat `localhost` as a secure context, so this generally works in local dev, but it's the first thing to suspect if login appears to succeed yet the session doesn't stick.
+
+`MONGODB_URL` accepts either the `mongodb+srv://` or the plain `mongodb://` form; `connectDB` splits off any query string before appending `DB_NAME` (`"socap"`). The non-SRV form is needed on machines whose Node resolver can't perform SRV lookups — only `mongodb+srv://` needs `dns.resolveSrv`, while `mongodb://` goes through the OS resolver.
 
 ## Backend conventions
 
@@ -47,8 +49,8 @@ Follow these when adding endpoints — they're consistent across the existing co
 
 Fix these if you touch the surrounding area; don't design around them.
 
-- **No Express error-handling middleware exists.** `asyncHandler` calls `next(err)` but nothing serializes it, so every `ApiError` returns a default HTML 500 instead of its intended status and JSON body. Adding the middleware in `app.js` is the highest-impact fix available.
-- **`req.SideBar("Authorization")`** in `server/src/middlewares/auth.middleware.js` (both functions) should be `req.header(...)`. A global "Header" → "SideBar" rename hit an Express API. Cookie auth masks it.
+- **No Express error-handling middleware exists.** `asyncHandler` calls `next(err)` but nothing serializes it. Express's default handler does honour `ApiError.statusCode`, so the status is correct, but the body is an **HTML stack trace** rather than an `ApiResponse` JSON payload — and it leaks absolute server file paths. Adding the middleware in `app.js` is the highest-impact fix available.
+- **`req.SideBar("Authorization")`** in `server/src/middlewares/auth.middleware.js` (both functions) should be `req.header(...)`. A global "Header" → "SideBar" rename hit an Express API. This fires on **every** request that lacks the auth cookie: the `TypeError` is caught and rethrown as a 401 whose message is `req.SideBar is not a function`, so the intended "Unauthorized, Please Login First" never reaches the client. Confirmed live against a running server.
 - **`updateProfile`** runs `User.find({ username })`; Mongoose strips `undefined`, so a bio-only edit queries `find({})`, matches everyone, and falsely throws "username already taken". It also matches the user's own record.
 - **`getPostsByTag`** references an undefined `username` in its success message and throws at runtime.
 - **`updatePost` and `removePostImage`** are empty bodies still wired to live routes, so those requests hang without responding.

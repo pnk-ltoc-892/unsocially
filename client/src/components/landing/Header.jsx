@@ -1,13 +1,23 @@
+import { Link } from 'react-router-dom'
 
+import Wordmark from '@/components/landing/Wordmark.jsx'
+import { Button } from '@/components/ui/button.jsx'
 
-
-function Header() {
-
+const Header = () => {
     return (
-        <nav className="sticky top-0 z-50 backdrop-blur-lg border-b border-neutral-700/80">
-            <div className="py-4 flex justify-center items-center">
-                <div className="bg-white text-black  font-extrabold line-clamp- text-2xl tracking-wider">
-                    unsocially.in
+        <nav className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-lg">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+                <Link to="/" className="text-foreground">
+                    <Wordmark className="text-3xl" />
+                </Link>
+
+                <div className="flex items-center gap-2">
+                    <Button asChild variant="ghost" size="sm">
+                        <Link to="/auth/login">Log in</Link>
+                    </Button>
+                    <Button asChild size="sm">
+                        <Link to="/auth/login">Get started</Link>
+                    </Button>
                 </div>
             </div>
         </nav>

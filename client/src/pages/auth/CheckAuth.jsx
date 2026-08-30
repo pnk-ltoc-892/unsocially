@@ -1,52 +1,30 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 
 const CheckAuth = ({ children }) => {
     const { isAuthenticated } = useSelector(state => state.auth);
 
     const location = useLocation();
     const navigate = useNavigate();
-    
+
     useEffect(() => {
-        if(!isAuthenticated){
-            // console.log("Hi", location);
-            sessionStorage.setItem('redirect', location.pathname);
-            navigate('/auth/login');
-        }
-
-        if(isAuthenticated){
-            if(location.pathname.includes('/login') || location.pathname === '/'){
-                const redirect = sessionStorage.getItem('redirect') || '/home'
-                console.log(redirect);
-                navigate(redirect);
-                // navigate('/home');
+        if (!isAuthenticated) {
+            // Storing an /auth path here would overwrite the destination the user
+            // was actually heading for, stranding them on the login page.
+            if (!location.pathname.startsWith('/auth')) {
+                sessionStorage.setItem('redirect', location.pathname);
             }
+            navigate('/auth/login', { replace: true });
+            return;
         }
-    }, [isAuthenticated]);
-    
 
-    // if(!isAuthenticated){
-    //     navigate('/login');
-    // }
-
-    // if(isAuthenticated){
-    //     if(location.pathname.includes('/login') || location.pathname === '/'){
-    //         const redirect = sessionStorage.getItem('redirect') || '/home'
-    //         navigate(redirect);
-    //     }
-    // }
-
-    // ! Call navigate Inside useEffect - This was a mistake to check Auth inside useEffect
-    // useEffect(() => {
-    //     if (!isAuthenticated) {
-    //         console.log(location.pathname);
-    //         const redirect = location.pathname === '/' ? '/home' : location.pathname;
-    //         sessionStorage.setItem('redirect', redirect);
-    //         navigate('/login');
-    //     }
-    // }, [isAuthenticated]);
+        if (location.pathname.startsWith('/auth')) {
+            const redirect = sessionStorage.getItem('redirect') || '/home';
+            sessionStorage.removeItem('redirect');
+            navigate(redirect, { replace: true });
+        }
+    }, [isAuthenticated, location.pathname, navigate]);
 
     return (
         <>

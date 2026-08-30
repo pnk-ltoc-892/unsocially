@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import Error from './pages/Error.jsx'
+import Landing from './pages/Landing.jsx'
 import Home from './pages/protected/Home.jsx'
 import Post from './pages/protected/Post/Post.jsx'
 import ProfileLayout from './pages/protected/profile/ProfileLayout.jsx'
@@ -49,6 +50,8 @@ function App() {
       <Toaster />
       <Routes>
 
+        <Route path='/' element={<Landing />} />
+
         <Route
           path='/auth'
           element={
@@ -59,9 +62,7 @@ function App() {
           <Route path='login' element={<Login />} />
         </Route>
 
-        // Inside This Code Only '/login' can handled along with AuthLayout Using Nesting without using '/auth' additional route
         <Route
-          path='/'
           element={
             <CheckAuth>
               <UserLayout />

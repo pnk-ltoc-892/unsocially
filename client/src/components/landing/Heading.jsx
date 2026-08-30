@@ -1,12 +1,12 @@
-import React from 'react'
+import Wordmark from '@/components/landing/Wordmark.jsx'
 
 const Heading = () => {
     return (
-        <div className="scale-in-center-normal flex flex-col justify-center items-center">
-            <span className="text-5xl text-center tracking-wider font-semibold">
+        <div className="flex flex-col items-center lg:items-start">
+            <span className="text-center text-lg font-medium tracking-wide text-muted-foreground sm:text-xl lg:text-left">
                 Get Social
             </span>
-            <span className='text-8xl text-center tracking-wide font-bold bg-gradient-to-b from-teal-500 via-purple-600 to-red-600 text-transparent bg-clip-text'> unsocially</span>
+            <Wordmark className="text-6xl sm:text-7xl xl:text-8xl" />
         </div>
     )
 }

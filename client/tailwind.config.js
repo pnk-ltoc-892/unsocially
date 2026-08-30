@@ -5,6 +5,10 @@ export default {
 
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['Outfit', 'system-ui', 'sans-serif'],
+				brand: ['"Grand Hotel"', 'cursive'],
+			},
 			colors: {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
@@ -57,11 +61,16 @@ export default {
 			},
 			animation: {
 				rotate: 'rotate 10s linear infinite',
+				float3d: 'float3d 8s ease-in-out infinite',
 			},
 			keyframes: {
 				rotate: {
 					'0%': { transform: 'rotate(0deg) scale(10)' },
 					'100%': { transform: 'rotate(-360deg) scale(10)' },
+				},
+				float3d: {
+					'0%, 100%': { transform: 'rotateY(-8deg) rotateX(6deg) translateZ(0)' },
+					'50%': { transform: 'rotateY(6deg) rotateX(3deg) translateZ(8px)' },
 				},
 			},
 		}
