@@ -329,14 +329,16 @@ const searchUsers = asyncHandler(async (req, res) => {
 const updateProfile = asyncHandler(async (req, res) => {
     const { username, fullname, bio } = req.body;
 
-    const users = await User.find({ username });
-
-    // TODO: Separate route - check while user is entering info for username - Should be unique
-    if (users.length) {
-        throw new ApiError(400, "username already taken, Try a different username");
+    if (username && username !== req.user?.username) {
+        const taken = await User.findOne({
+            username,
+            _id: { $ne: req.user?._id },
+        });
+        if (taken) {
+            throw new ApiError(400, "username already taken, Try a different username");
+        }
     }
 
-    // Find User, Update local Copy , Save it in DB & Finally Fetch updatedUser
     const user = await User.findById(req.user?._id);
     user.username = username || user.username;
     user.fullname = fullname || user.fullname;

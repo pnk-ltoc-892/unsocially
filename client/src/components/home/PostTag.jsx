@@ -1,75 +1,71 @@
-import React, { useState } from 'react'
-import { Badge } from '../ui/badge.jsx'
-import { Input } from '../ui/input.jsx'
-import { Button } from '../ui/button.jsx'
+import { useState } from 'react'
+import { X } from 'lucide-react'
+
 import { toast } from '@/hooks/use-toast.js'
 
-const PostTag = ({postTags, setPostTags}) => {
+
+const normalizeTag = (value) => value.trim().replace(/^#/, '')
+
+const PostTag = ({ postTags, setPostTags }) => {
     const [tag, setTag] = useState('');
 
     const handleTagDelete = (delTag) => {
-        const filterTags = postTags.filter((tag) => tag !== delTag);
-        // console.log(newTags);
-        setPostTags(filterTags);
+        setPostTags(postTags.filter((item) => item !== delTag));
     }
+
     const handleAddPostTag = () => {
-        if(postTags.length == 5){
+        const next = normalizeTag(tag);
+        if (!next) return;
+        if (postTags.length === 5) {
             toast({
-                title: "Can Only Add Upto 5 Tags",
-                variant: "destructive"
-            })
+                title: "Can only add up to 5 tags",
+                variant: "destructive",
+            });
             return;
         }
-        if(postTags.includes(tag)){
+        if (postTags.some((item) => item.toLowerCase() === next.toLowerCase())) {
             toast({
-                title: "Tag Already Added",
-                variant: "destructive"
-            })
+                title: "Tag already added",
+                variant: "destructive",
+            });
             return;
         }
-        setPostTags((prev) => [...prev, tag]);
-        setTag('')
+        setPostTags((prev) => [...prev, next]);
+        setTag('');
     }
+
     return (
-        <>
-            {
-                postTags?.length > 0 ? (
-                    <div className='py-2 pb-4 flex justify-start items-center flex-wrap gap-3'>
-                        {
-                            postTags?.map((tag, index) => {
-                                return <Badge
-                                    className="px-4 py-1 cursor-pointer hover:bg-red-800"
-                                    variant={"outline"}
-                                    key={index}
-                                    onClick={() => handleTagDelete(tag)}
-                                >{tag}</Badge>
-                            })
-                        }
-                    </div>
-                )
-                : null
-            }
-            {
-                postTags?.length === 5 ? (
-                    <Input
-                        value="You Can Add Max Of 5 Tags"
-                        className='bg-transparent text-red-600 font-semibold text-lg w-[250px]'
-                        disabled
-                    />
-                )
-                : <div className='flex gap-4'>
-                    <Input 
-                        placeholder="Tag"
-                        className='bg-neutral-950 w-[250px]'
-                        value={tag}
-                        onChange={(e) => setTag(e.target.value)}
-                    />
-                    <Button onClick={handleAddPostTag} 
-                            disabled={tag === ''}
-                    >Add</Button>
+        <div className='space-y-2'>
+            {postTags.length > 0 && (
+                <div className='flex flex-wrap gap-2'>
+                    {postTags.map((item) => (
+                        <button
+                            type="button"
+                            key={item}
+                            onClick={() => handleTagDelete(item)}
+                            className='inline-flex items-center gap-1 rounded-full border border-white/15 px-2.5 py-1 text-sm font-semibold text-white hover:border-red-400/40 hover:text-red-300'
+                        >
+                            #{item}
+                            <X size={12} />
+                        </button>
+                    ))}
                 </div>
-            }
-        </>
+            )}
+            {postTags.length < 5 && (
+                <input
+                    value={tag}
+                    onChange={(event) => setTag(event.target.value)}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            handleAddPostTag();
+                        }
+                    }}
+                    placeholder="Add a tag and press Enter"
+                    className='h-9 w-full bg-transparent text-sm text-white placeholder:text-white/35 focus-visible:outline-none'
+                />
+            )}
+        </div>
     )
 }
 

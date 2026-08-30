@@ -3,6 +3,7 @@ import SearchInput from '../../components/search/SearchInput.jsx'
 import SearchProfileBar from '../../components/search/SearchProfileBar.jsx'
 import { useSelector } from 'react-redux';
 import ProfileBarSkeleton from '@/components/skeletons/ProfileBarSkeleton.jsx';
+import SkeletonReveal from '@/components/common/SkeletonReveal.jsx';
 
 const People = () => {
     const { searchProfiles, isSearchLoading } = useSelector((state) => state.userSlice);
@@ -11,39 +12,30 @@ const People = () => {
         <div className='w-[50%] mx-auto'>
 
             <div className='p-2 flex justify-center items-center'>
-                Find Peoples
+                Find people
             </div>
 
             <div className='p-2'>
                 <SearchInput />
             </div>
 
-            <div className='min-h-[20vh] flex flex-col justify-center items-center gap-6 bg-[#020202] bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-20 backdrop-saturate-100 backdrop-contrast-100 border-[1px] border-neutral-500 rounded-lg p-6 my-2'>
-                {
-                    isSearchLoading ? (<>
-                        <ProfileBarSkeleton />
-                        <ProfileBarSkeleton />
-                        <ProfileBarSkeleton />
-                        <ProfileBarSkeleton />
-                        <ProfileBarSkeleton />
-                        <ProfileBarSkeleton />
-                        <ProfileBarSkeleton />
-                    </>
-                    )
-                    : (
-                        searchProfiles?.length > 0
-                            ?
-                            (
-                                searchProfiles.map(profile => (
-                                    <SearchProfileBar profile={profile} key={profile._id} />
-                                ))
-                            )
-                            :
-                            <div className='text-neutral-100 text-center font-semibold text-sm py-4'>
-                                No User Found
-                            </div>
-                    )
-                }
+            <div className='glass-card my-2 flex min-h-[20vh] flex-col items-center justify-center gap-6 rounded-lg p-6'>
+                <SkeletonReveal
+                    loading={isSearchLoading}
+                    stagger={searchProfiles?.length > 0}
+                    className='flex w-full flex-col items-center gap-6'
+                    skeleton={<ProfileBarSkeleton count={6} />}
+                >
+                    {searchProfiles?.length > 0 ? (
+                        searchProfiles.map(profile => (
+                            <SearchProfileBar profile={profile} key={profile._id} />
+                        ))
+                    ) : (
+                        <div className='py-4 text-center text-sm font-semibold text-neutral-100'>
+                            No User Found
+                        </div>
+                    )}
+                </SkeletonReveal>
             </div>
         </div>
     )

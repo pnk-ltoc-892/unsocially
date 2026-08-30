@@ -1,14 +1,26 @@
-import { NavLink } from 'react-router-dom'
-import { Compass, House, LogOut, UserRound } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
-import AddPost from '../home/AddPost.jsx';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.jsx';
-import { toast } from '@/hooks/use-toast.js';
-import { logOutUser } from '@/store/slices/authSlice.js';
+import { NavLink, useLocation } from 'react-router-dom'
+import { Compass, House, LogOut, UserRound } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
 
+import AddPost from '../home/AddPost.jsx'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.jsx'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.jsx'
+import { toast } from '@/hooks/use-toast.js'
+import { logOutUser } from '@/store/slices/authSlice.js'
+import { avatar } from '@/config/index.js'
+import { cn } from '@/lib/utils'
+
+
+const navButtonClass = (active) => cn(
+    'flex h-11 w-11 items-center justify-center rounded-xl transition-colors',
+    active
+        ? 'bg-white/15 text-white'
+        : 'text-white/50 hover:bg-white/10 hover:text-white',
+)
 
 const Navbar = () => {
     const { user } = useSelector(state => state.auth);
+    const profileTo = user?.username ? `/profile/user/${user.username}` : '/profile';
 
     const dispatch = useDispatch();
     const handleLogout = () => {
@@ -24,77 +36,89 @@ const Navbar = () => {
     }
 
     return (
-        <div className='flex flex-col justify-center items-center gap-6'>
-
-            <TooltipProvider delayDuration={50} >
+        <TooltipProvider delayDuration={80}>
+            <div className='flex h-full flex-col items-center px-2 py-5'>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <div>
-                            <AddPost />
-                        </div>
-                    </TooltipTrigger>
-                    <TooltipContent side={"right"} sideOffset={10} className="text-sm px-2 py-1">
-                        {"Add Post"}
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-
-            <Link to={'/home'} title="Home">
-                <House size={32} />
-            </Link>
-
-            <Link to={'/people'} title="Explore">
-                <Compass size={32} />
-            </Link>
-
-            {/* <Link to={'/search'} title="Search">
-                <Compass size={32} />
-            </Link> */}
-
-            <Link to={user?.username ? `/profile/user/${user.username}` : '/profile'} title="Profile">
-                <UserRound size={32} />
-            </Link>
-
-            {/* // ! LogOut */}
-            <TooltipProvider delayDuration={50} >
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <div onClick={handleLogout}
-                            className='text-red-600 hover:bg-gray-900/40 rounded-xl p-2 cursor-pointer'
+                        <NavLink
+                            to="/home"
+                            aria-label="unsocially home"
+                            className='mb-8 flex h-11 w-11 items-center justify-center text-white transition-opacity hover:opacity-80'
                         >
-                            <LogOut size={28} />
-                        </div>
+                            <span className='font-brand text-[2.15rem] leading-none'>u</span>
+                        </NavLink>
                     </TooltipTrigger>
-                    <TooltipContent side={"right"} sideOffset={10} className="text-sm px-2 py-1">
-                        {"Log Out"}
+                    <TooltipContent side="right" sideOffset={10}>
+                        unsocially
                     </TooltipContent>
                 </Tooltip>
-            </TooltipProvider>
-        </div>
+
+                <nav className='flex flex-1 flex-col items-center gap-2'>
+                    <AddPost />
+
+                    <NavItem to="/home" title="Home">
+                        <House size={22} strokeWidth={1.75} />
+                    </NavItem>
+
+                    <NavItem to="/people" title="Explore">
+                        <Compass size={22} strokeWidth={1.75} />
+                    </NavItem>
+
+                    <NavItem to={profileTo} title="Profile">
+                        {user?.username ? (
+                            <Avatar className='h-7 w-7'>
+                                <AvatarImage src={user?.avatar || avatar} className='object-cover' />
+                                <AvatarFallback className='text-xs'>
+                                    {user.username[0]}
+                                </AvatarFallback>
+                            </Avatar>
+                        ) : (
+                            <UserRound size={22} strokeWidth={1.75} />
+                        )}
+                    </NavItem>
+                </nav>
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <button
+                            type="button"
+                            aria-label="Log out"
+                            onClick={handleLogout}
+                            className='mt-auto flex h-11 w-11 items-center justify-center rounded-xl text-white/45 transition-colors hover:bg-red-500/10 hover:text-red-400'
+                        >
+                            <LogOut size={20} strokeWidth={1.75} />
+                        </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" sideOffset={10}>
+                        Log out
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        </TooltipProvider>
     )
 }
 
 
-const Link = ({ to, children, title }) => {
-    const styles = "hover:bg-white hover:text-black hover:scale-110 text-white rounded-xl p-2 flex justify-start items-center gap-1 animate-scale-in-top cursor-pointer";
+const NavItem = ({ to, title, children }) => {
+    const { pathname } = useLocation();
+    const active = pathname === to || (to !== '/home' && pathname.startsWith(`${to}/`));
+
     return (
-        <>
-            <TooltipProvider delayDuration={50} >
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <NavLink to={to}
-                            // className={({ isActive }) => isActive ? `text-white ${styles}` : styles}
-                            className={styles}
-                        >
-                            {children}
-                        </NavLink>
-                    </TooltipTrigger>
-                    <TooltipContent side={"right"} sideOffset={10} className="text-sm px-2 py-1">
-                        {title}
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        </>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <NavLink
+                    to={to}
+                    aria-label={title}
+                    aria-current={active ? 'page' : undefined}
+                    className={navButtonClass(active)}
+                >
+                    {children}
+                </NavLink>
+            </TooltipTrigger>
+            <TooltipContent side="right" sideOffset={10}>
+                {title}
+            </TooltipContent>
+        </Tooltip>
     )
 }
 

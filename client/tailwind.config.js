@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-	darkMode: ["media"],
+	darkMode: ["class"],
 	content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
 
 	theme: {
@@ -62,6 +62,7 @@ export default {
 			animation: {
 				rotate: 'rotate 10s linear infinite',
 				float3d: 'float3d 8s ease-in-out infinite',
+				'icon-float': 'icon-float 16s ease-in-out infinite',
 			},
 			keyframes: {
 				rotate: {
@@ -71,6 +72,10 @@ export default {
 				float3d: {
 					'0%, 100%': { transform: 'rotateY(-8deg) rotateX(6deg) translateZ(0)' },
 					'50%': { transform: 'rotateY(6deg) rotateX(3deg) translateZ(8px)' },
+				},
+				'icon-float': {
+					'0%, 100%': { transform: 'translateY(0) rotate(var(--icon-rotate, 0deg))' },
+					'50%': { transform: 'translateY(-14px) rotate(calc(var(--icon-rotate, 0deg) + 10deg))' },
 				},
 			},
 		}

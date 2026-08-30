@@ -13,10 +13,40 @@ const initialState = {
     hasNextPage: true
 }
 
+const prependUniquePost = (posts, post) => {
+    if (!post?._id) return posts;
+    if (posts.some((item) => item._id === post._id)) return posts;
+    return [post, ...posts];
+}
+
+export const getAllPosts = createAsyncThunk('post/getAllPosts',
+    async (_, {getState}) => {
+        const {homeSlice} = getState();
+        const nextPage = homeSlice.nextPage || homeSlice.page;
+
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?page=${nextPage}&limit=${homeSlice.limit}`,
+            {
+                withCredentials: true
+            });
+            return response.data;
+    });
+
+export const fetchAndPrependPost = createAsyncThunk('home/fetchAndPrependPost',
+    async (postId) => {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/${postId}`,
+            {
+                withCredentials: true
+            });
+        return response.data;
+    });
+
 export const homeSlice = createSlice({
     name: "homeSlice",
     initialState,
     reducers: {
+        prependPost: (state, action) => {
+            state.posts = prependUniquePost(state.posts, action.payload);
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -41,30 +71,18 @@ export const homeSlice = createSlice({
             state.hasPrevPage = action.payload.data.hasPrevPage;
             state.hasNextPage = action.payload.data.hasNextPage;
         })
-        .addCase(getAllPosts.rejected, (state, action) => {
+        .addCase(getAllPosts.rejected, (state) => {
             state.isLoading = false;
             state.posts = [];
+            state.hasNextPage = false;
+            state.nextPage = null;
+        })
+        .addCase(fetchAndPrependPost.fulfilled, (state, action) => {
+            state.posts = prependUniquePost(state.posts, action.payload?.data);
         })
     }
 })
 
-
-// Asynchronous Actions Thunks
-
-// ! Post Fetching
-export const getAllPosts = createAsyncThunk('post/getAllPosts',
-    async (_, {getState}) => {
-        const {homeSlice} = getState();
-        // console.log(homeSlice);
-        const nextPage = homeSlice.nextPage || homeSlice.page;
-        
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?page=${nextPage}&limit=${homeSlice.limit}`,
-            {
-                withCredentials: true
-            });
-            return response.data;
-    });
-
-
+export const { prependPost } = homeSlice.actions;
 
 export default homeSlice.reducer;

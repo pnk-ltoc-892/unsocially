@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 
+import AppBackground from '@/components/common/AppBackground.jsx'
 import BrandPanel from '@/components/landing/BrandPanel.jsx'
 import Wordmark from '@/components/landing/Wordmark.jsx'
 import Spinner from '@/components/UI Components/Spinner.jsx'
@@ -80,11 +81,12 @@ const Login = () => {
     }
 
     return (
-        <div className="grid min-h-screen lg:grid-cols-2">
+        <div className="relative grid min-h-screen lg:grid-cols-2">
+            <AppBackground />
             <BrandPanel />
 
-            <main className="flex items-center justify-center bg-background px-6 py-12">
-                <div className="w-full max-w-md">
+            <main className="relative z-10 flex items-center justify-center px-6 py-12">
+                <div className="glass-card w-full max-w-md rounded-3xl p-8">
                     <Link to="/" className="mb-10 inline-block text-foreground lg:hidden">
                         <Wordmark className="text-4xl" />
                     </Link>

@@ -1,73 +1,72 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Label } from '../ui/label.jsx'
-import { Avatar, AvatarImage } from '../ui/avatar.jsx'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Input } from '../ui/input.jsx'
+
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar.jsx'
 import { getUserProfile, updateProfileAvatar } from '@/store/slices/profileSlice.js'
+import { avatar } from '@/config/index.js'
+import { toast } from '@/hooks/use-toast.js'
 
 
 const ProfileAvatarUpdate = () => {
-    const { profile } = useSelector(state => state.profileSlice);
-    // console.log(profile);
-    
-    const [profileAvatar, setProfileAvatar] = useState(null);
-    const [imageLoadingState, setImageLoadingState] = useState(false);
-    const inputRef = useRef(null);
+    const { profile } = useSelector(state => state.profileSlice)
+    const [profileAvatar, setProfileAvatar] = useState(null)
+    const [imageLoadingState, setImageLoadingState] = useState(false)
+    const inputRef = useRef(null)
+    const dispatch = useDispatch()
 
-    const dispatch = useDispatch();
-    async function handleImageFileChange(e) {
-        const selectedFile = e.target.files?.[0];
-        if (selectedFile) setProfileAvatar(selectedFile);
+    function handleImageFileChange(e) {
+        const selectedFile = e.target.files?.[0]
+        if (selectedFile) setProfileAvatar(selectedFile)
     }
 
     async function handleAvatarUpdate() {
-        const formData = new FormData();
-        formData.append("imageFile", profileAvatar);
-        // console.log(Array.from(formData.entries()));
-
-        setImageLoadingState(true);
-        dispatch(updateProfileAvatar(formData)).then( () => {
-            setImageLoadingState(false);
-            setProfileAvatar(null);
-            inputRef.current.value=""
-
-            dispatch(getUserProfile(profile.username));
-        } )
+        const formData = new FormData()
+        formData.append("imageFile", profileAvatar)
+        setImageLoadingState(true)
+        try {
+            await dispatch(updateProfileAvatar(formData)).unwrap()
+            dispatch(getUserProfile(profile.username))
+            toast({ title: "Photo updated" })
+        } catch (message) {
+            toast({
+                variant: "destructive",
+                title: "Could not update photo",
+                description: typeof message === "string" ? message : undefined,
+            })
+        } finally {
+            setImageLoadingState(false)
+            setProfileAvatar(null)
+            if (inputRef.current) inputRef.current.value = ""
+        }
     }
 
     useEffect(() => {
-        if (profileAvatar !== null) handleAvatarUpdate();
+        if (profileAvatar !== null) handleAvatarUpdate()
     }, [profileAvatar])
 
     return (
-        <div className='flex flex-col justify-center items-center gap-2'>
-            {
-                imageLoadingState
-                    ?
-                    <video className='h-[8.2rem] w-[8.2rem]'
-                        src="../../../public/loading.mp4" autoPlay="autoplay" muted="muted" loop="loop" playsInline="" type="video/mp4"></video>
-                    :
-                    <Avatar className='cursor-pointer h-28 w-28'>
-                        <AvatarImage src={profile?.avatar}
-                            className='object-cover'
-                        />
-                    </Avatar>
-            }
-            {
-                !imageLoadingState ?
-                    <Label htmlFor='avatar'
-                        className="cursor-pointer bg-neutral-950 hover:bg-neutral-900 text-neutral-300 hover:text-white text-sm rounded-lg px-3 py-1"
-                    >
-                        Edit Profile
-                    </Label> : null
-            }
-            <Input ref={inputRef}
+        <div className='flex flex-col items-center gap-3'>
+            <div className={`relative ${imageLoadingState ? 'opacity-50' : ''}`}>
+                <Avatar className='h-24 w-24'>
+                    <AvatarImage src={profile?.avatar || avatar} className='object-cover' />
+                    <AvatarFallback>{profile?.username?.[0] || ''}</AvatarFallback>
+                </Avatar>
+            </div>
+            <label
+                htmlFor='avatar'
+                className={`cursor-pointer text-sm font-medium text-white/70 hover:text-white ${imageLoadingState ? 'pointer-events-none text-white/35' : ''}`}
+            >
+                {imageLoadingState ? 'Uploading...' : 'Change photo'}
+            </label>
+            <input
+                ref={inputRef}
                 id='avatar'
                 type='file'
+                accept='image/*'
                 className='hidden'
+                disabled={imageLoadingState}
                 onChange={handleImageFileChange}
             />
-
         </div>
     )
 }

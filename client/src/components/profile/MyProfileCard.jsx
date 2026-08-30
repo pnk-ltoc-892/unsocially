@@ -6,7 +6,6 @@ import ProfileUpdateDialog from './ProfileUpdateDialog.jsx'
 import NameBox from './ProfileCard/NameBox.jsx'
 import Bio from './ProfileCard/Bio.jsx'
 import ProfileStats from './ProfileCard/ProfileStats.jsx'
-import AnimatedBorderWrapper from '../UI Components/AnimatedBorderWrapper.jsx'
 
 
 export const MyProfileCard = ({ profile }) => {
@@ -15,7 +14,7 @@ export const MyProfileCard = ({ profile }) => {
 
     return (
         <>
-            <div className='w-full border-[1px] border-neutral-500 rounded-lg p-10'>
+            <div className='w-full rounded-lg p-10'>
 
                 {/* // ! For Profile Info */}
                 <div className='flex'>

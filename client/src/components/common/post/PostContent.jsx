@@ -1,23 +1,24 @@
-import { Badge } from '@/components/ui/badge.jsx';
-import React from 'react'
 import { Link } from 'react-router-dom';
+import PostImage from './PostImage.jsx';
 
+const tagLabel = (tag) => {
+    const value = String(tag || '').trim();
+    return value.startsWith('#') ? value : `#${value}`;
+}
 
-const PostContent = ({ post }) => {
+const PostContent = ({ post, priority = false }) => {
 
     return (
         <div className='pt-2'>
             {
                 post?.tags?.length > 0 ? (
-                    <div className='my-1 flex justify-start items-center flex-wrap gap-2'>
+                    <div className='my-1 flex flex-wrap items-center justify-start gap-x-3 gap-y-1'>
                         {
-                            post?.tags?.map((tag, index) => {
-                                return <Badge onClick={() => console.log({ tag, index })}
-                                    className="px-4 py-1 text-xs cursor-pointer hover:bg-white hover:text-black"
-                                    variant={"outline"}
-                                    key={index}
-                                >{tag}</Badge>
-                            })
+                            post.tags.map((tag, index) => (
+                                <span key={`${tag}-${index}`} className='text-sm font-bold text-white'>
+                                    {tagLabel(tag)}
+                                </span>
+                            ))
                         }
                     </div>
                 )
@@ -32,14 +33,7 @@ const PostContent = ({ post }) => {
                 }
                 {
                     post?.images?.length > 0 && post?.images[0] ? (
-                        <div className='rounded-[0.5rem] overflow-clip'>
-                            <img src={post?.images[0]}
-                                onError={(e) => e.target.className = 'hidden'}
-                                alt="Post Image"
-                                className='h-auto object-cover'
-                                loading='lazy'
-                            />
-                        </div>
+                        <PostImage src={post.images[0]} priority={priority} />
                     )
                     : null
                 }

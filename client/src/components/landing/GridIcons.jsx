@@ -1,4 +1,4 @@
-const iconClass = 'text-white/[0.14]'
+const iconClass = 'h-full w-full text-white/[0.14] animate-icon-float'
 
 const HeartMark = ({ className, style }) => (
     <svg aria-hidden viewBox="0 0 80 80" className={className} style={style} fill="none">
@@ -82,17 +82,25 @@ const GridIcons = () => {
     return (
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
             {marks.map(({ El, top, left, size, rotate }, index) => (
-                <El
+                <div
                     key={`${top}-${left}-${index}`}
-                    className={`${iconClass} absolute`}
+                    className="absolute"
                     style={{
                         top,
                         left,
                         width: size,
                         height: size,
-                        transform: `rotate(${rotate}deg)`,
                     }}
-                />
+                >
+                    <El
+                        className={iconClass}
+                        style={{
+                            '--icon-rotate': `${rotate}deg`,
+                            animationDelay: `${index * 0.45}s`,
+                            animationDuration: `${14 + (index % 5) * 1.6}s`,
+                        }}
+                    />
+                </div>
             ))}
         </div>
     )

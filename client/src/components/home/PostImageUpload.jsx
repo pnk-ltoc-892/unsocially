@@ -1,89 +1,85 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Label } from '../ui/label.jsx'
+import { useEffect, useRef } from 'react'
 import { ImagePlus } from 'lucide-react'
-import { Input } from '../ui/input.jsx'
 import axios from 'axios'
+
 import { toast } from '@/hooks/use-toast.js'
 
 
 const PostImageUpload = ({
     postImage,
     setPostImage,
-    uploadedImageUrl,
     setUploadedImageUrl,
     imageLoadingState,
-    setImageLoadingState
+    setImageLoadingState,
 }) => {
-
-    // const [postImage, setPostImage] = useState(null);
     const inputRef = useRef(null);
 
     function handleImageFileChange(e) {
         const selectedFile = e.target.files?.[0];
-        if(selectedFile) setPostImage(selectedFile);
+        if (selectedFile) setPostImage(selectedFile);
     }
 
     function handleRemoveImage() {
         setPostImage(null);
-        if(inputRef.current){
+        if (inputRef.current) {
             inputRef.current.value = "";
         }
     }
 
-    async function handleImageUpload(){
+    async function handleImageUpload() {
         setUploadedImageUrl("");
         setImageLoadingState(true);
         const formData = new FormData();
         formData.append("imageFile", postImage);
 
-        const response = await axios.post(
+        try {
+            const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/posts/post-image`,
                 formData,
-                {
-                    withCredentials: true,
-                }
-        );
-        // console.log(response.data);
-        if(response.data.success){
-            console.log(response.data.data.secure_url);
-            setUploadedImageUrl(response.data.data.secure_url);
-            setImageLoadingState(false);
-            setPostImage(null);
-            handleRemoveImage();
-        }
-        else{
-            // Show a error toast
+                { withCredentials: true },
+            );
+            if (response.data.success) {
+                setUploadedImageUrl(response.data.data.secure_url);
+            } else {
+                toast({ title: "Error Uploading Image" });
+                setUploadedImageUrl("");
+            }
+        } catch {
             toast({
-                title: "Error Uploading Image"
+                variant: "destructive",
+                title: "Could not upload image",
             });
             setUploadedImageUrl("");
+        } finally {
             setImageLoadingState(false);
-            setPostImage(null);
             handleRemoveImage();
         }
     }
 
     useEffect(() => {
-        if(postImage !== null) handleImageUpload();
+        if (postImage !== null) handleImageUpload();
     }, [postImage])
-
 
     return (
         <>
-            {/* // ! Remove Image Button */}
-            <Label htmlFor='postimage' className='cursor-pointer'>
-                <ImagePlus size={32} className='hover:text-white'/>
-            </Label>
-            <Input 
+            <label
+                htmlFor='postimage'
+                className={`flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-white/55 transition-colors hover:bg-white/10 hover:text-white ${imageLoadingState ? 'pointer-events-none opacity-40' : ''}`}
+            >
+                <ImagePlus size={20} strokeWidth={1.75} />
+                <span className='sr-only'>Add image</span>
+            </label>
+            <input
                 ref={inputRef}
                 id='postimage'
                 type="file"
+                accept="image/*"
                 className='hidden'
+                disabled={imageLoadingState}
                 onChange={handleImageFileChange}
             />
         </>
     )
 }
-
 
 export default PostImageUpload

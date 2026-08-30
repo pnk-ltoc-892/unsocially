@@ -16,10 +16,11 @@ export const postSlice = createSlice({
     name: "postSlice",
     initialState,
     reducers: {
-        // setUser: (state, action) => {
-        //     console.log(action)
-        //     state.user = action.payload;
-        // }
+        adjustCommentCount: (state, action) => {
+            if (!state.post?._id) return;
+            const next = (state.post.comments || 0) + action.payload;
+            state.post.comments = Math.max(0, next);
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -116,6 +117,6 @@ export const deletePost = createAsyncThunk('post/deletePost',
 
 
 
-// export const { setUser } = authSlice.actions;
+export const { adjustCommentCount } = postSlice.actions;
 
 export default postSlice.reducer;

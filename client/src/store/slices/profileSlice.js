@@ -45,6 +45,21 @@ export const profileSlice = createSlice({
     name: "profileSlice",
     initialState,
     reducers: {
+        resetProfileContent: (state) => {
+            state.posts = [];
+            state.comments = [];
+            state.bookmarks = [];
+            state.isContentLoading = false;
+            state.postControls = { ...initialState.postControls };
+            state.commentControls = { ...initialState.commentControls };
+            state.bookmarkControls = { ...initialState.bookmarkControls };
+        },
+        prependPost: (state, action) => {
+            const post = action.payload;
+            if (!post?._id || !state.isCurrentUserProfile) return;
+            if (state.posts.some((item) => item._id === post._id)) return;
+            state.posts.unshift(post);
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -71,9 +86,11 @@ export const profileSlice = createSlice({
                 state.postControls.hasPrevPage = action.payload.data.hasPrevPage;
                 state.postControls.hasNextPage = action.payload.data.hasNextPage;
             })
-            .addCase(getUserPosts.rejected, (state, action) => {
+            .addCase(getUserPosts.rejected, (state) => {
                 state.isContentLoading = false;
                 state.posts = [];
+                state.postControls.hasNextPage = false;
+                state.postControls.nextPage = null;
             })
 
             // Comments
@@ -99,9 +116,11 @@ export const profileSlice = createSlice({
                 state.commentControls.hasPrevPage = action.payload.data.hasPrevPage;
                 state.commentControls.hasNextPage = action.payload.data.hasNextPage;
             })
-            .addCase(getUserComments.rejected, (state, action) => {
+            .addCase(getUserComments.rejected, (state) => {
                 state.isContentLoading = false;
                 state.comments = [];
+                state.commentControls.hasNextPage = false;
+                state.commentControls.nextPage = null;
             })
 
             // Bookmarks
@@ -127,9 +146,11 @@ export const profileSlice = createSlice({
                 state.bookmarkControls.hasPrevPage = action.payload.data.hasPrevPage;
                 state.bookmarkControls.hasNextPage = action.payload.data.hasNextPage;
             })
-            .addCase(getUserBookmarks.rejected, (state, action) => {
+            .addCase(getUserBookmarks.rejected, (state) => {
                 state.isContentLoading = false;
                 state.bookmarks = [];
+                state.bookmarkControls.hasNextPage = false;
+                state.bookmarkControls.nextPage = null;
             })
 
             // Profile Data
@@ -251,5 +272,7 @@ export const toggleUserFollow = createAsyncThunk('/profile/toggleUserFollow',
     });
 
 
+
+export const { resetProfileContent, prependPost } = profileSlice.actions;
 
 export default profileSlice.reducer;

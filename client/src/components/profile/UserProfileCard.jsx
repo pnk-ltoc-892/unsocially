@@ -27,7 +27,7 @@ export const UserProfileCard = ({ profile }) => {
 
     return (
         <>
-            <div className='w-full border-[1px] border-neutral-300 rounded-lg p-10'>
+            <div className='w-full rounded-lg p-10'>
                 {/* // ! For Profile Info */}
                 <div className='flex'>
                     {/* // ! Name Section */}

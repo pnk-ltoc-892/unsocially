@@ -18,6 +18,7 @@ import People from './pages/protected/People.jsx'
 import Search from './pages/protected/Search.jsx'
 
 import ComponentTest from './pages/ComponentTest.jsx'
+import AppBackground from './components/common/AppBackground.jsx'
 import Spinner from './components/UI Components/Spinner.jsx'
 import CheckAuth from './pages/auth/CheckAuth.jsx'
 import AuthLayout from './pages/layout/AuthLayout.jsx'
@@ -40,8 +41,11 @@ function App() {
   if (isAuthLoading === true) {
     console.log(isAuthLoading);
     return (
-      <div className='h-screen w-screen flex justify-center items-center'>
-        <Spinner />
+      <div className='relative flex h-screen w-screen items-center justify-center'>
+        <AppBackground />
+        <div className='relative z-10'>
+          <Spinner />
+        </div>
       </div>
     )
   }

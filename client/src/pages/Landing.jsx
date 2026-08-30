@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux'
 import { Link, Navigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 
+import AppBackground from '@/components/common/AppBackground.jsx'
 import Footer from '@/components/landing/Footer.jsx'
-import GridIcons from '@/components/landing/GridIcons.jsx'
 import Header from '@/components/landing/Header.jsx'
 import Heading from '@/components/landing/Heading.jsx'
 import HeroScene from '@/components/landing/HeroScene.jsx'
@@ -19,14 +19,10 @@ const Landing = () => {
     }
 
     return (
-        <div className="relative min-h-screen overflow-x-hidden bg-black text-white">
-            <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:32px_32px]"
-            />
-            <GridIcons />
+        <div className="relative min-h-screen overflow-x-hidden text-white">
+            <AppBackground />
 
-            <div className="relative">
+            <div className="relative z-10">
                 <Header />
 
                 <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-2 lg:py-24">

@@ -52,14 +52,14 @@ const PostInfo = ({ postData }) => {
                 {/* // ! Post Share Dialog */}
                 <Dialog
                     open={openShareDialog}
-                    onOpenChange={() => setOpenShareDialog(false)}
+                    onOpenChange={setOpenShareDialog}
                 >
                     <div>
                         <PostInfoIcon onClick={() => setOpenShareDialog(true)}>
                             <Share size={18} className={"hover:text-blue-600"} />
                         </PostInfoIcon>
                     </div>
-                    <PostShareDialog postLink={post?._id}/>
+                    {openShareDialog ? <PostShareDialog postLink={post?._id} /> : null}
                 </Dialog>
             </div>
         </div>

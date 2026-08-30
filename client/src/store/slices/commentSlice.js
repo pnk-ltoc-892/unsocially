@@ -10,29 +10,34 @@ const initialState = {
     page: 1,
     nextPage: null,
     hasPrevPage: null,
-    hasNextPage: true
+    hasNextPage: true,
+    loadedPostId: null,
 }
 
 export const commentSlice = createSlice({
     name: "commentSlice",
     initialState,
     reducers: {
-        // addComment: (state, action) => {
-        //     state.comments = [action.payload, ...state.comments];
-        //     console.log(state.comments);
-            
-        // }
+        resetComments: (state) => {
+            state.comments = [];
+            state.page = 1;
+            state.nextPage = null;
+            state.prevPage = null;
+            state.hasNextPage = true;
+            state.isLoading = false;
+            state.loadedPostId = null;
+        },
     },
     extraReducers: (builder) => {
         builder
             .addCase(getPostComments.pending, (state) => {
-                state.isLoading = true;
+                if (state.comments.length === 0) {
+                    state.isLoading = true;
+                }
             })
             .addCase(getPostComments.fulfilled, (state, action) => {
                 state.isLoading = false;
 
-                // state.comments = [...state.comments, ...action.payload.data.comments];
-                // console.log(action.payload.data);
                 if(action.payload.data.page === 1){
                     state.comments = action.payload.data.comments;
                 }
@@ -46,22 +51,38 @@ export const commentSlice = createSlice({
                 state.page = action.payload.data.page;
                 state.nextPage = action.payload.data.nextPage;
                 state.hasNextPage = action.payload.data.hasNextPage;
+                state.loadedPostId = action.meta.arg;
             })
-            .addCase(getPostComments.rejected, (state, action) => {
+            .addCase(getPostComments.rejected, (state) => {
                 state.isLoading = false;
                 state.comments = [];
+                state.hasNextPage = false;
+                state.nextPage = null;
             })
-            .addCase(addPostComment.fulfilled, (state) => {
-                state.isLoading = false;
-                state.comments = [];
+            .addCase(addPostComment.fulfilled, (state, action) => {
+                const created = action.payload?.data;
+                if (!created?._id) return;
+                if (state.comments.some((item) => item._id === created._id)) return;
+
+                state.comments.unshift({
+                    ...created,
+                    author: action.meta.arg.author || created.author,
+                    Likes: 0,
+                    isLiked: false,
+                });
             })
-            .addCase(deletePostComment.fulfilled, (state) => {
-                state.isLoading = false;
-                state.comments = [];
+            .addCase(deletePostComment.fulfilled, (state, action) => {
+                const commentId = action.meta.arg;
+                state.comments = state.comments.filter((item) => item._id !== commentId);
             })
-            .addCase(editPostComment.fulfilled, (state) => {
-                state.isLoading = false;
-                state.comments = [];
+            .addCase(editPostComment.fulfilled, (state, action) => {
+                const updated = action.payload?.data;
+                const commentId = action.meta.arg.commentId;
+                state.comments = state.comments.map((item) => (
+                    item._id === commentId
+                        ? { ...item, content: updated?.content ?? action.meta.arg.data.content }
+                        : item
+                ));
             })
     }
 })
@@ -125,6 +146,6 @@ export const toggleCommentLike = createAsyncThunk('comment/likePostComments',
         return response.data;
     });
 
-// export const {addComment} = commentSlice.actions;
+export const { resetComments } = commentSlice.actions;
 
 export default commentSlice.reducer;

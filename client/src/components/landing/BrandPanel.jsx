@@ -6,15 +6,10 @@ const BrandPanel = ({ className, showWordmark = true }) => {
     return (
         <aside
             className={cn(
-                'relative hidden lg:flex flex-col justify-between overflow-hidden bg-black p-12 text-white',
+                'relative z-10 hidden lg:flex flex-col justify-between overflow-hidden bg-transparent p-12 text-white',
                 className
             )}
         >
-            <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)] bg-[size:32px_32px]"
-            />
-
             <div className="relative">
                 {showWordmark && <Wordmark className="text-5xl" />}
             </div>

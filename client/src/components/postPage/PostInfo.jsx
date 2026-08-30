@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Share } from 'lucide-react';
 import PostShareDialog from './PostShareDialog.jsx';
 import { Dialog } from '../ui/dialog.jsx';
@@ -6,8 +6,11 @@ import { useDispatch } from 'react-redux';
 import { getPostById, togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
 
 
-const PostInfo = ({ postData }) => {
+const PostInfo = ({ postData, commentsOpen = false, onToggleComments }) => {
     const [post, setPost] = useState({ ...postData })
+    useEffect(() => {
+        setPost({ ...postData });
+    }, [postData]);
 
     const [openShareDialog, setOpenShareDialog] = useState(false);
     // console.log(post);
@@ -39,8 +42,15 @@ const PostInfo = ({ postData }) => {
                 </PostInfoIcon>
 
                 {/* // ! Add Post Comment */}
-                <PostInfoIcon info={post.comments}>
-                    <Comment active={false} className={"hover:text-green-600"} />
+                <PostInfoIcon
+                    info={post.comments}
+                    onClick={onToggleComments}
+                    className={commentsOpen ? 'text-green-500' : ''}
+                >
+                    <Comment
+                        active={commentsOpen}
+                        className={commentsOpen ? 'text-green-500' : 'hover:text-green-600'}
+                    />
                 </PostInfoIcon>
 
                 {/* // ! Bookmark Post */}
@@ -51,14 +61,14 @@ const PostInfo = ({ postData }) => {
                 {/* // ! Post Share Dialog */}
                 <Dialog
                     open={openShareDialog}
-                    onOpenChange={() => setOpenShareDialog(false)}
+                    onOpenChange={setOpenShareDialog}
                 >
                     <div>
                         <PostInfoIcon onClick={() => setOpenShareDialog(true)}>
                             <Share size={20} className={"hover:text-blue-600"} />
                         </PostInfoIcon>
                     </div>
-                    <PostShareDialog />
+                    {openShareDialog ? <PostShareDialog postLink={post?._id} /> : null}
                 </Dialog>
             </div>
         </div>

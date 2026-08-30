@@ -1,6 +1,7 @@
 import React from 'react'
 import { Avatar } from '@mui/material'
 import { avatar } from '@/config/index.js'
+import { optimizeImageUrl } from '@/lib/image'
 import { Link } from 'react-router-dom'
 
 
@@ -11,11 +12,11 @@ const SearchProfileBar = ({ profile }) => {
             to={`../profile/user/${profile?.username}/`}
             // to={`${import.meta.VITE_FRONTEND_URL}/profile/user/${profile?.username}/`}
         >
-            <div className="hover:slide-top-normal bg-[#060607]  hover:bg-neutral-900/40 flex gap-4 border-neutral-600 rounded-xl cursor-pointer p-2">
+            <div className="flex cursor-pointer gap-4 rounded-xl p-2 hover:bg-white/5">
                 <div className="pl-2 flex justify-center items-center">
                     <Avatar
                         alt="Profile"
-                        src={profile?.avatar || avatar}
+                        src={optimizeImageUrl(profile?.avatar || avatar, { width: 128 })}
                         sx={{ width: 62, height: 62 }}
                     />
                 </div>
