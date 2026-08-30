@@ -1,16 +1,21 @@
 import { useEffect } from 'react'
-import { IoIosArrowDropdown } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 
 import CommonPost from '@/components/common/post/CommonPost.jsx';
 import SkeletonReveal from '@/components/common/SkeletonReveal.jsx';
-import { getAllPosts } from '@/store/slices/homeSlice.js';
+import FeedSwitcher from '@/components/home/FeedSwitcher.jsx';
+import { getAllPosts, HOME_FEEDS, setFeed } from '@/store/slices/homeSlice.js';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostSkeleton from '@/components/skeletons/PostSkeleton.jsx';
 
+const emptyCopy = {
+    [HOME_FEEDS.forYou]: 'No posts yet. Be the first to share something.',
+    [HOME_FEEDS.latest]: 'No posts yet. Be the first to share something.',
+    [HOME_FEEDS.following]: 'No posts from people you follow yet.',
+};
 
 const Home = () => {
-    const { posts, isLoading, nextPage, hasNextPage } = useSelector((state) => state.homeSlice);
+    const { posts, isLoading, nextPage, hasNextPage, feed } = useSelector((state) => state.homeSlice);
     const showInitialSkeleton = posts.length === 0 && (isLoading || hasNextPage);
     const showEmpty = posts.length === 0 && !isLoading && !hasNextPage;
 
@@ -19,21 +24,25 @@ const Home = () => {
         if (hasNextPage === true) dispatch(getAllPosts());
     }
 
+    const handleFeedChange = (nextFeed) => {
+        if (nextFeed === feed) return;
+        dispatch(setFeed(nextFeed));
+        dispatch(getAllPosts());
+    }
+
     useEffect(() => {
         handlePostFetching();
     }, []);
 
     return (
         <div>
-            <div className='flex items-center justify-center gap-2 py-2'>
-                <span className='rounded-full py-2'>
-                    ForYou
-                </span>
-                <span className='rounded-full p-1 text-xl hover:bg-gray-800/60'><IoIosArrowDropdown /></span>
+            <div className='flex items-center justify-center py-2'>
+                <FeedSwitcher feed={feed} onChange={handleFeedChange} />
             </div>
 
             <div className='mx-auto w-[50%]'>
                 <InfiniteScroll
+                    key={feed}
                     className='flex flex-col items-center justify-center gap-8 pt-12'
                     dataLength={posts?.length}
                     next={handlePostFetching}
@@ -55,7 +64,7 @@ const Home = () => {
                     >
                         {showEmpty ? (
                             <p className='py-12 text-center text-sm text-white/55'>
-                                No posts yet. Be the first to share something.
+                                {emptyCopy[feed] || emptyCopy[HOME_FEEDS.forYou]}
                             </p>
                         ) : (
                             posts.map((post, index) => (

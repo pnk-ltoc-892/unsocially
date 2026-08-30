@@ -1,10 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const HOME_FEEDS = {
+    forYou: "forYou",
+    latest: "latest",
+    following: "following",
+};
 
 const initialState = {
     isLoading: false,
     posts: [],
+    feed: HOME_FEEDS.forYou,
+    seed: null,
     limit: 5,
     prevPage: null,
     page: 1,
@@ -23,12 +30,23 @@ export const getAllPosts = createAsyncThunk('post/getAllPosts',
     async (_, {getState}) => {
         const {homeSlice} = getState();
         const nextPage = homeSlice.nextPage || homeSlice.page;
+        const params = new URLSearchParams({
+            page: String(nextPage),
+            limit: String(homeSlice.limit),
+            feed: homeSlice.feed,
+        });
+        if (homeSlice.feed === HOME_FEEDS.forYou && homeSlice.seed != null) {
+            params.set("seed", String(homeSlice.seed));
+        }
 
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?page=${nextPage}&limit=${homeSlice.limit}`,
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/?${params.toString()}`,
             {
                 withCredentials: true
             });
-            return response.data;
+            return {
+                ...response.data,
+                requestedFeed: homeSlice.feed,
+            };
     });
 
 export const fetchAndPrependPost = createAsyncThunk('home/fetchAndPrependPost',
@@ -47,6 +65,18 @@ export const homeSlice = createSlice({
         prependPost: (state, action) => {
             state.posts = prependUniquePost(state.posts, action.payload);
         },
+        setFeed: (state, action) => {
+            if (state.feed === action.payload) return;
+            state.feed = action.payload;
+            state.posts = [];
+            state.page = 1;
+            state.nextPage = null;
+            state.prevPage = null;
+            state.hasPrevPage = false;
+            state.hasNextPage = true;
+            state.seed = null;
+            state.isLoading = true;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -54,8 +84,9 @@ export const homeSlice = createSlice({
             state.isLoading = true;
         })
         .addCase(getAllPosts.fulfilled, (state, action) => {
+            if (action.payload.requestedFeed !== state.feed) return;
+
             state.isLoading = false;
-            // console.log(action.payload.data);  
 
             if(action.payload.data.page === 1){
                 state.posts = action.payload.data.posts;
@@ -70,8 +101,12 @@ export const homeSlice = createSlice({
             state.nextPage = action.payload.data.nextPage;
             state.hasPrevPage = action.payload.data.hasPrevPage;
             state.hasNextPage = action.payload.data.hasNextPage;
+            if (action.payload.data.seed != null) {
+                state.seed = action.payload.data.seed;
+            }
         })
-        .addCase(getAllPosts.rejected, (state) => {
+        .addCase(getAllPosts.rejected, (state, action) => {
+            if (action.payload?.requestedFeed && action.payload.requestedFeed !== state.feed) return;
             state.isLoading = false;
             state.posts = [];
             state.hasNextPage = false;
@@ -83,6 +118,6 @@ export const homeSlice = createSlice({
     }
 })
 
-export const { prependPost } = homeSlice.actions;
+export const { prependPost, setFeed } = homeSlice.actions;
 
 export default homeSlice.reducer;

@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js"
 import { Post } from "../models/post.model.js";
+import { Follow } from "../models/follow.model.js";
 import { Comment } from "../models/comment.model.js";
 import { cloudinary, UploadOnCloudinary } from "../service/cloudinary.js";
 import formidable from "formidable";
@@ -7,7 +8,10 @@ import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
-import { getMongoosePaginationOptions } from "../utils/helpers.js";
+import { getMongoosePaginationOptions, seededShuffle } from "../utils/helpers.js";
+
+const HOME_FEEDS = ["forYou", "latest", "following"];
+const FOR_YOU_POOL = 50;
 
 
 // ! Common Aggregation For Any Given Post - W.R.T Current User
@@ -124,29 +128,122 @@ const postCommonAggregation = (req) => {
 
 
 
+const paginatedPosts = ({ posts, total, page, limit, seed }) => {
+    const pageNum = Math.max(Number(page) || 1, 1);
+    const limitNum = Math.max(Number(limit) || 5, 1);
+    const totalPosts = total;
+    const totalPages = Math.ceil(totalPosts / limitNum) || 0;
+    const hasNextPage = pageNum < totalPages;
+    const hasPrevPage = pageNum > 1;
+
+    return {
+        posts,
+        totalPosts,
+        limit: limitNum,
+        page: pageNum,
+        totalPages,
+        hasPrevPage,
+        hasNextPage,
+        prevPage: hasPrevPage ? pageNum - 1 : null,
+        nextPage: hasNextPage ? pageNum + 1 : null,
+        ...(seed != null ? { seed: Number(seed) } : {}),
+    };
+};
+
+const getForYouPosts = async (req, page, limit, seed) => {
+    const parsedSeed = Number(seed);
+    const shuffleSeed = Number.isFinite(parsedSeed) && String(seed).trim() !== ""
+        ? parsedSeed
+        : (Math.floor(Math.random() * 0xffffffff) || 1);
+
+    const latest = await Post.find({})
+        .sort({ createdAt: -1 })
+        .limit(FOR_YOU_POOL)
+        .select("_id")
+        .lean();
+
+    const shuffledIds = seededShuffle(latest.map((post) => post._id), shuffleSeed);
+    const pageNum = Math.max(Number(page) || 1, 1);
+    const limitNum = Math.max(Number(limit) || 5, 1);
+    const pageIds = shuffledIds.slice((pageNum - 1) * limitNum, pageNum * limitNum);
+
+    if (pageIds.length === 0) {
+        return paginatedPosts({
+            posts: [],
+            total: shuffledIds.length,
+            page: pageNum,
+            limit: limitNum,
+            seed: shuffleSeed,
+        });
+    }
+
+    const docs = await Post.aggregate([
+        {
+            $match: {
+                _id: { $in: pageIds },
+            },
+        },
+        ...postCommonAggregation(req),
+    ]);
+
+    const byId = new Map(docs.map((post) => [String(post._id), post]));
+    const posts = pageIds.map((id) => byId.get(String(id))).filter(Boolean);
+
+    return paginatedPosts({
+        posts,
+        total: shuffledIds.length,
+        page: pageNum,
+        limit: limitNum,
+        seed: shuffleSeed,
+    });
+};
+
 const getAllPosts = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 5 } = req.query;
+    const { page = 1, limit = 5, feed: rawFeed = "forYou", seed } = req.query;
+    const feed = HOME_FEEDS.includes(rawFeed) ? rawFeed : "forYou";
 
-    const postsAggregation = Post.aggregate([...postCommonAggregation(req)]);
+    if (feed === "forYou") {
+        const data = await getForYouPosts(req, page, limit, seed);
+        return res
+            .status(200)
+            .json(new ApiResponse(200, data, "For you feed fetched successfully"));
+    }
 
-    // ! await (Execute Pipeline) - not used as Raw aggregation needs to be passed to pagination
+    const pipeline = [];
+
+    if (feed === "following") {
+        const followeeIds = await Follow.distinct("followeeId", {
+            followerId: req.user._id,
+        });
+        pipeline.push({
+            $match: {
+                author: { $in: followeeIds },
+            },
+        });
+    }
+
+    pipeline.push(...postCommonAggregation(req));
+    pipeline.push({ $sort: { createdAt: -1 } });
+
     const posts = await Post.aggregatePaginate(
-        postsAggregation,
-        getMongoosePaginationOptions(
-            {
-                page,
-                limit,
-                customLabels: {
-                    totalDocs: "totalPosts",
-                    docs: "posts"
-                }
-            }
-        )
-    )
+        Post.aggregate(pipeline),
+        getMongoosePaginationOptions({
+            page,
+            limit,
+            customLabels: {
+                totalDocs: "totalPosts",
+                docs: "posts",
+            },
+        })
+    );
+
+    const message = feed === "following"
+        ? "Following feed fetched successfully"
+        : "Latest posts fetched successfully";
 
     return res
         .status(200)
-        .json(new ApiResponse(200, posts, "All Posts Fetched Successfully"));
+        .json(new ApiResponse(200, posts, message));
 });
 
 
