@@ -1,9 +1,9 @@
-import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Compass, House, LogOut, UserRound, UserRoundPlus } from 'lucide-react';
+import { Compass, House, LogOut, UserRound } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import AddPost from '../home/AddPost.jsx';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip.jsx';
+import { toast } from '@/hooks/use-toast.js';
 import { logOutUser } from '@/store/slices/authSlice.js';
 
 
@@ -12,7 +12,15 @@ const Navbar = () => {
 
     const dispatch = useDispatch();
     const handleLogout = () => {
-        dispatch(logOutUser());
+        dispatch(logOutUser())
+            .unwrap()
+            .catch((message) => {
+                toast({
+                    variant: "destructive",
+                    title: "Could not sign you out",
+                    description: message,
+                });
+            });
     }
 
     return (
@@ -43,7 +51,7 @@ const Navbar = () => {
                 <Compass size={32} />
             </Link> */}
 
-            <Link to={`/profile/user/${user?.username}/`} title="Profile">
+            <Link to={user?.username ? `/profile/user/${user.username}` : '/profile'} title="Profile">
                 <UserRound size={32} />
             </Link>
 

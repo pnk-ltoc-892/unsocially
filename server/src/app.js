@@ -1,11 +1,18 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import { errorHandler } from './middlewares/error.middleware.js'
+import { ApiError } from './utils/ApiError.js'
 
 const app = express()
 
 app.use(cors({
-    origin: [process.env.CORS_ORIGIN_LOCAL, process.env.CORS_ORIGIN_1, process.env.CORS_ORIGIN_2, process.env.CORS_ORIGIN_3],
+    origin: [
+        process.env.CORS_ORIGIN_LOCAL,
+        process.env.CORS_ORIGIN_1,
+        process.env.CORS_ORIGIN_2,
+        process.env.CORS_ORIGIN_3,
+    ].filter(Boolean),
     credentials: true
 }))
 
@@ -49,6 +56,12 @@ app.use("/api/v1/bookmarks", bookmarkRouter);
 app.get("/api/v1/", (req, res) => {
     res.status(200).json({ message: "Server is running !" });
 });
+
+app.use((req, res, next) => {
+    next(new ApiError(404, "Route not found"));
+});
+
+app.use(errorHandler);
 
 
 export { app }

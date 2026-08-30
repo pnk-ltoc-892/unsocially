@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Error from './pages/Error.jsx'
 import Landing from './pages/Landing.jsx'
@@ -22,6 +22,7 @@ import Spinner from './components/UI Components/Spinner.jsx'
 import CheckAuth from './pages/auth/CheckAuth.jsx'
 import AuthLayout from './pages/layout/AuthLayout.jsx'
 import UserLayout from './pages/layout/UserLayout.jsx'
+import MyProfileRedirect from './pages/protected/profile/MyProfileRedirect.jsx'
 
 function App() {
   const { isAuthLoading } = useSelector(state => state.auth);
@@ -59,6 +60,7 @@ function App() {
               <AuthLayout />
             </CheckAuth>}
         >
+          <Route index element={<Navigate to="login" replace />} />
           <Route path='login' element={<Login />} />
         </Route>
 
@@ -74,6 +76,7 @@ function App() {
           <Route path='post/:postId' element={<Post />} />
 
           <Route path='profile' element={<ProfileLayout />}>
+            <Route index element={<MyProfileRedirect />} />
             <Route path='user/:username' element={<UserProfile />} >
               <Route path='' element={<Posts />} />
               <Route path='comments' element={<Comments />} />

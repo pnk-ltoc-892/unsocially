@@ -72,10 +72,7 @@ const Login = () => {
         }))
             .unwrap()
             .then(() => {
-                toast({ title: "Account created", description: "Sign in to get started." });
-                setFormData({ ...emptyForm, identifier: formData.email.trim() });
-                setIsLoginMode(true);
-                setShowPassword(false);
+                toast({ title: "Account created", description: "Welcome to unsocially." });
             })
             .catch((message) => {
                 toast({ variant: "destructive", title: "Could not create your account", description: message });

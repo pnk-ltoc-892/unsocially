@@ -11,6 +11,19 @@ import { Follow } from "../models/follow.model.js";
 import { getMongoosePaginationOptions } from "../utils/helpers.js";
 
 
+const generateAccessToken = (userId) => {
+    const accessToken = jwt.sign(
+        { id: userId },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    );
+    if (!accessToken) {
+        throw new ApiError(500, "Error Generating Access Token");
+    }
+    return accessToken;
+};
+
+
 // ! User - Authentication Controllers
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
@@ -27,7 +40,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     if (!hashedPassword) {
-        throw new ApiError(409, "Error Hashing Passowrd");
+        throw new ApiError(500, "Error hashing password");
     }
 
     const user = await User.create({
@@ -41,8 +54,11 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Error Registering User");
     }
 
+    const accessToken = generateAccessToken(createdUser._id);
+
     return res
         .status(201)
+        .cookie("accessToken", accessToken, cookieOptions)
         .json(new ApiResponse(201, { user: createdUser }, "User Registered Successfully !"));
 
 });
@@ -58,24 +74,15 @@ const loginUser = asyncHandler(async (req, res) => {
         $or: [{ username }, { email }]
     });
     if (!user) {
-        throw new ApiError(400, "User Doesn't Exist !");
+        throw new ApiError(401, "Invalid credentials");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-        throw new ApiError(400, "Invalid Credentials !");
+        throw new ApiError(401, "Invalid credentials");
     }
 
-    const accessToken = jwt.sign(
-        {
-            id: user._id
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
-    );
-    if (!accessToken) {
-        throw new ApiError(500, "Error Generating Access Token");
-    }
+    const accessToken = generateAccessToken(user._id);
 
     const loggedUser = await User.findById(user._id).select("-password");
 

@@ -38,9 +38,10 @@ export const authSlice = createSlice({
             state.isLoading = true;
             state.error = null;
         })
-        .addCase(registerUser.fulfilled, (state) => {
+        .addCase(registerUser.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.isAuthenticated = false;
+            state.isAuthenticated = true;
+            state.user = action.payload?.data?.user;
             state.error = null;
         })
         .addCase(registerUser.rejected, (state, action) => {
@@ -66,20 +67,24 @@ export const authSlice = createSlice({
             state.error = action.payload;
         })
         // Check For Authentication
-        .addCase(checkAuth.pending, (state, action) => {
-            // state.isAuthLoading = true;
+        .addCase(checkAuth.pending, (state) => {
+            state.isAuthLoading = true;
         })
         .addCase(checkAuth.fulfilled, (state, action) => {
             state.isAuthLoading = false;
             state.isAuthenticated = true;
-            state.user = action.payload?.user;
+            state.user = action.payload?.data?.user;
         })
-        .addCase(checkAuth.rejected, (state, action) => {
+        .addCase(checkAuth.rejected, (state) => {
             state.isAuthLoading = false;
             state.isAuthenticated = false;
             state.user = null;
         })
-        .addCase(logOutUser.fulfilled, (state, action) => {
+        .addCase(logOutUser.fulfilled, (state) => {
+            state.isAuthenticated = false;
+            state.user = null;
+        })
+        .addCase(logOutUser.rejected, (state) => {
             state.isAuthenticated = false;
             state.user = null;
         })
@@ -123,22 +128,36 @@ export const loginUser = createAsyncThunk('auth/loginUser',
     })
 
 export const checkAuth = createAsyncThunk('auth/checkAuth',
-    async () => {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/check-auth`,
-            {
-                withCredentials: true
-            });
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/check-auth`,
+                {
+                    withCredentials: true
+                });
             return response.data;
+        }
+        catch (error) {
+            return rejectWithValue(
+                extractErrorMessage(error, "Unauthorized, Please Login First")
+            );
+        }
     })
 
 export const logOutUser = createAsyncThunk('auth/logOutUser',
-    async (formData) => {
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/logout`,
-            formData,
-            {
-                withCredentials: true
-            });
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/logout`,
+                {},
+                {
+                    withCredentials: true
+                });
             return response.data;
+        }
+        catch (error) {
+            return rejectWithValue(
+                extractErrorMessage(error, "Could not sign you out. Please try again.")
+            );
+        }
     })
 
 

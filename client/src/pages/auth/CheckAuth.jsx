@@ -1,36 +1,20 @@
-import { useEffect } from 'react'
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const CheckAuth = ({ children }) => {
     const { isAuthenticated } = useSelector(state => state.auth);
-
     const location = useLocation();
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            // Storing an /auth path here would overwrite the destination the user
-            // was actually heading for, stranding them on the login page.
-            if (!location.pathname.startsWith('/auth')) {
-                sessionStorage.setItem('redirect', location.pathname);
-            }
-            navigate('/auth/login', { replace: true });
-            return;
-        }
+    const isAuthRoute = location.pathname.startsWith('/auth');
+    if (!isAuthenticated) {
+        return isAuthRoute
+            ? children
+            : <Navigate to="/auth/login" replace state={{ from: location.pathname }} />;
+    }
 
-        if (location.pathname.startsWith('/auth')) {
-            const redirect = sessionStorage.getItem('redirect') || '/home';
-            sessionStorage.removeItem('redirect');
-            navigate(redirect, { replace: true });
-        }
-    }, [isAuthenticated, location.pathname, navigate]);
-
-    return (
-        <>
-            {children}
-        </>
-    )
+    return isAuthRoute
+        ? <Navigate to={location.state?.from || '/home'} replace />
+        : children;
 }
 
 export default CheckAuth

@@ -16,6 +16,7 @@ import {
 } from "../controllers/user.controller.js";
 
 import { upload } from "../middlewares/multer.middleware.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const router = Router();
 
@@ -28,7 +29,7 @@ router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 
 router.get("/check-auth", verifyJWT, async (req, res) => {
-    res.status(201).json({ user: req.user });
+    res.status(200).json(new ApiResponse(200, { user: req.user }, "Authenticated"));
 })
 
 

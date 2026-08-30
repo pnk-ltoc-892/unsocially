@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 
 import Footer from '@/components/landing/Footer.jsx'
@@ -14,13 +13,10 @@ import { Button } from '@/components/ui/button.jsx'
 
 const Landing = () => {
     const { isAuthenticated } = useSelector(state => state.auth);
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/home', { replace: true });
-        }
-    }, [isAuthenticated, navigate]);
+    if (isAuthenticated) {
+        return <Navigate to="/home" replace />;
+    }
 
     return (
         <div className="relative min-h-screen overflow-x-hidden bg-black text-white">
