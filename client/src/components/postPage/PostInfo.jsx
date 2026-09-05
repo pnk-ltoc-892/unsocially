@@ -3,32 +3,49 @@ import { Share } from 'lucide-react';
 import PostShareDialog from './PostShareDialog.jsx';
 import { Dialog } from '../ui/dialog.jsx';
 import { useDispatch } from 'react-redux';
-import { getPostById, togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
+import { togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
+import { toggleLikedState, useOptimisticAction } from '@/hooks/useOptimisticAction.js';
 
 
 const PostInfo = ({ postData, commentsOpen = false, onToggleComments }) => {
     const [post, setPost] = useState({ ...postData })
     useEffect(() => {
-        setPost({ ...postData });
+        setPost((current) => {
+            if (!postData?._id || current?._id !== postData._id) {
+                return { ...postData };
+            }
+
+            return {
+                ...postData,
+                isLiked: current.isLiked,
+                likes: current.likes,
+                isBookmarked: current.isBookmarked,
+            };
+        });
     }, [postData]);
 
     const [openShareDialog, setOpenShareDialog] = useState(false);
-    // console.log(post);
 
     const dispatch = useDispatch();
+    const runOptimistic = useOptimisticAction();
+
     const handlePostLike = () => {
-        dispatch(togglePostLike(post._id)).then(() => {
-            const value = post.isLiked ? -1 : 1;
-            dispatch(togglePostLike(post._id)).then(() => {
-                setPost({ ...post, likes: post.likes + value, isLiked: !post.isLiked });
-            });
-        });
+        const previous = post;
+        runOptimistic(
+            `like-${post._id}`,
+            () => setPost(toggleLikedState(previous)),
+            () => dispatch(togglePostLike(previous._id)).unwrap(),
+            () => setPost(previous),
+        );
     }
     const handlePostBookmark = () => {
-        dispatch(togglePostBookmark(post._id)).then(() => {
-            // dispatch(getPostById(post._id));
-            setPost({ ...post, isBookmarked: !post.isBookmarked });
-        });
+        const previous = post;
+        runOptimistic(
+            `bookmark-${post._id}`,
+            () => setPost({ ...previous, isBookmarked: !previous.isBookmarked }),
+            () => dispatch(togglePostBookmark(previous._id)).unwrap(),
+            () => setPost(previous),
+        );
     }
 
     return (

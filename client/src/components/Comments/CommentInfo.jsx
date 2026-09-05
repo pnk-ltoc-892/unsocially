@@ -1,17 +1,26 @@
 import { toggleCommentLike } from '@/store/slices/commentSlice.js';
-import { useState } from 'react'
+import { toggleLikedState, useOptimisticAction } from '@/hooks/useOptimisticAction.js';
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 
 
 const CommentInfo = ({ comment }) => {
     const [commentData, setCommentData] = useState({ ...comment });
+    useEffect(() => {
+        setCommentData({ ...comment });
+    }, [comment?._id]);
 
     const dispatch = useDispatch();
+    const runOptimistic = useOptimisticAction();
+
     const handleCommentLike = (commentId) => {
-        const value = commentData.isLiked ? -1 : 1;
-        dispatch(toggleCommentLike(commentId)).then(() => {
-            setCommentData({ ...commentData, Likes: commentData.Likes + value, isLiked: !commentData.isLiked });
-        });
+        const previous = commentData;
+        runOptimistic(
+            `comment-like-${commentId}`,
+            () => setCommentData(toggleLikedState(previous, "isLiked", "Likes")),
+            () => dispatch(toggleCommentLike(commentId)).unwrap(),
+            () => setCommentData(previous),
+        );
     }
 
     return (

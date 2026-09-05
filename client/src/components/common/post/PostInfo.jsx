@@ -1,29 +1,41 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Share } from 'lucide-react';
 import PostShareDialog from './PostShareDialog.jsx';
 import { Dialog } from '../../ui/dialog.jsx';
 import { useDispatch } from 'react-redux';
 import { togglePostBookmark, togglePostLike } from '@/store/slices/post-slice.js';
 import { Link } from 'react-router-dom';
+import { toggleLikedState, useOptimisticAction } from '@/hooks/useOptimisticAction.js';
 
 
 const PostInfo = ({ postData }) => {
-    // ! Storing PostData locally To Reflect Changes On Static Site
-    const [post, setPost] = useState({...postData})
+    const [post, setPost] = useState({ ...postData })
+    useEffect(() => {
+        setPost({ ...postData });
+    }, [postData?._id]);
 
     const [openShareDialog, setOpenShareDialog] = useState(false);
 
     const dispatch = useDispatch();
-    const handlePostLike = () => {   
-        const value = post.isLiked ? -1 : 1;
-        dispatch(togglePostLike(post._id)).then(() => {
-            setPost({...post, likes: post.likes+value, isLiked: !post.isLiked});
-        });
+    const runOptimistic = useOptimisticAction();
+
+    const handlePostLike = () => {
+        const previous = post;
+        runOptimistic(
+            `like-${post._id}`,
+            () => setPost(toggleLikedState(previous)),
+            () => dispatch(togglePostLike(previous._id)).unwrap(),
+            () => setPost(previous),
+        );
     }
     const handlePostBookmark = () => {
-        dispatch(togglePostBookmark(post._id)).then(() => {
-            setPost({...post, isBookmarked: !post.isBookmarked});
-        });
+        const previous = post;
+        runOptimistic(
+            `bookmark-${post._id}`,
+            () => setPost({ ...previous, isBookmarked: !previous.isBookmarked }),
+            () => dispatch(togglePostBookmark(previous._id)).unwrap(),
+            () => setPost(previous),
+        );
     }
 
     return (
